@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nueva Estadística</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #FFFDF6;
+            padding: 2rem;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: auto;
+            background: #FAF6E9;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #A0C878;
+            border-color: #A0C878;
+            color: #FFFDF6;
+        }
+        .btn-primary:hover {
+            background-color: #DDEB9D;
+            border-color: #DDEB9D;
+            color: #333;
+        }
+        .btn-secondary {
+            background-color: #DDEB9D;
+            border-color: #DDEB9D;
+            color: #333;
+        }
+        .btn-secondary:hover {
+            background-color: #A0C878;
+            border-color: #A0C878;
+            color: #FFFDF6;
+        }
+        .row {
+            margin-bottom: 1rem;
+        }
+        .form-control {
+            background-color: #FFFDF6;
+            border-color: #DDEB9D;
+        }
+        .form-control:focus {
+            background-color: #FFFDF6;
+            border-color: #A0C878;
+            box-shadow: 0 0 0 0.25rem rgba(160, 200, 120, 0.25);
+        }
+        .form-label {
+            color: #333;
+        }
+        h1 {
+            color: #A0C878;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1 class="mb-4 text-center">Nueva Estadística <i class="bi bi-bar-chart-fill"></i></h1>
+        <form th:action="@{'/admin/provincias/' + ${provinciaId} + '/estadisticas/guardar'}" th:object="${estadistica}" method="post" novalidate>
+            
+            <!-- Año de Actualización -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="anoActualizacion" class="form-label">Año <i class="bi bi-calendar-fill"></i></label>
+                        <input type="number" id="anoActualizacion" th:field="*{anoActualizacion}" class="form-control" required />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="poblacionTotal" class="form-label">Población Total <i class="bi bi-people-fill"></i></label>
+                        <input type="number" id="poblacionTotal" th:field="*{poblacionTotal}" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Densidad Poblacional -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="densidadPoblacional" class="form-label">Densidad Poblacional <i class="bi bi-grid-3x3-gap"></i></label>
+                        <input type="number" step="0.01" id="densidadPoblacional" th:field="*{densidadPoblacional}" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
+                <a th:href="@{'/admin/provincias/' + ${provinciaId} + '/estadisticas'}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Cancelar</a>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

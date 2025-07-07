@@ -1,0 +1,251 @@
+/* Import Bootstrap CSS */
+@import url('https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css');
+
+/* Project color palette variables */
+:root {
+  --color-primary: #a0c878;
+  --color-secondary: #ddeb9d;
+  --color-light: #faf6e9;
+  --color-lightest: #fffdf6;
+  --color-text: #2d3748;
+  --color-text-light: #4a5568;
+  --color-text-muted: #718096;
+  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, #8bb564 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);
+}
+
+/* Body and typography */
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--color-lightest);
+  color: var(--color-text);
+  line-height: 1.7;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  padding-top: 80px; /* space for fixed header */
+}
+
+/* Header styles */
+.navbar-custom {
+  background: rgba(255, 253, 246, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(160, 200, 120, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1030;
+}
+
+.navbar-brand-custom {
+  font-weight: 700;
+  font-size: 1.5rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navbar-brand-custom:hover {
+  transform: scale(1.05);
+}
+
+.nav-link-custom {
+  color: var(--color-text);
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link-custom::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-secondary);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: -1;
+  opacity: 0.1;
+}
+
+.nav-link-custom:hover::before {
+  left: 0;
+}
+
+.nav-link-custom:hover,
+.nav-link-custom:focus {
+  color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.nav-link-custom.active {
+  color: var(--color-primary);
+  background: rgba(160, 200, 120, 0.15);
+}
+
+/* Footer styles */
+.footer-custom {
+  background: linear-gradient(135deg, var(--color-text) 0%, #1a202c 100%);
+  color: white;
+  padding: 4rem 0 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-custom::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="footerPattern" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="%23A0C878" opacity="0.1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23footerPattern)"/></svg>');
+}
+
+.footer-section-custom {
+  position: relative;
+  z-index: 2;
+}
+
+.footer-section-custom h5 {
+  color: var(--color-secondary);
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.footer-section-custom h5::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background: var(--gradient-primary);
+  border-radius: 1px;
+}
+
+.footer-link-custom {
+  color: #cbd5e0;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+  padding: 0.25rem 0;
+  position: relative;
+}
+
+.footer-link-custom::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-primary);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer-link-custom:hover::before {
+  width: 100%;
+}
+
+.footer-link-custom:hover {
+  color: var(--color-secondary);
+  transform: translateX(5px);
+}
+
+.social-links-custom {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.social-link-custom {
+  width: 45px;
+  height: 45px;
+  background: rgba(160, 200, 120, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-secondary);
+  font-size: 1.25rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.social-link-custom::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-primary);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: -1;
+}
+
+.social-link-custom:hover::before {
+  left: 0;
+}
+
+.social-link-custom:hover {
+  color: white;
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 0 0 20px rgba(160, 200, 120, 0.3);
+}
+
+/* Main content styles */
+.main-content {
+  max-width: 900px;
+  margin: 3rem auto 5rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 15px -3px rgba(160, 200, 120, 0.1),
+    0 4px 6px -2px rgba(160, 200, 120, 0.05);
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: transform 0.4s ease;
+}
+
+.main-content:hover {
+  transform: rotateX(5deg) rotateY(5deg);
+}
+
+.main-content h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--color-text) 0%, var(--color-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1.5rem;
+}
+
+.main-content p {
+  font-size: 1.1rem;
+  color: var(--color-text-light);
+  line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main-content {
+    margin: 2rem 1rem 4rem;
+    padding: 1.5rem;
+  }
+}

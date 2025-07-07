@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nuevo Punto de Interés</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 2rem;
+        }
+        .form-container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1 class="mb-4 text-center">Nuevo Punto de Interés <i class="bi bi-geo-alt-fill"></i></h1>
+        <form th:action="@{'/admin/provincias/' + ${provinciaId} + '/puntos-interes/guardar'}" th:object="${puntoInteres}" method="post" novalidate>
+            <input type="hidden" th:field="*{id}"/>
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre <i class="bi bi-card-text"></i></label>
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required />
+            </div>
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción <i class="bi bi-chat-text"></i></label>
+                <textarea id="descripcion" th:field="*{descripcion}" rows="4" class="form-control" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="categoriaId" class="form-label">Categoría <i class="bi bi-tags-fill"></i></label>
+                <select id="categoriaId" th:field="*{categoriaId}" class="form-select" required>
+                    <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.nombre}" th:selected="${cat.id} == *{categoriaId}">Categoría</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="latitud" class="form-label">Latitud <i class="bi bi-geo-alt"></i></label>
+                <input type="number" step="0.00000001" id="latitud" th:field="*{latitud}" class="form-control" required />
+            </div>
+            <div class="mb-3">
+                <label for="longitud" class="form-label">Longitud <i class="bi bi-geo-alt"></i></label>
+                <input type="number" step="0.00000001" id="longitud" th:field="*{longitud}" class="form-control" required />
+            </div>
+            <div class="mb-3">
+                <label for="direccion" class="form-label">Dirección <i class="bi bi-house-door"></i></label>
+                <input type="text" id="direccion" th:field="*{direccion}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono <i class="bi bi-telephone-fill"></i></label>
+                <input type="text" id="telefono" th:field="*{telefono}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email <i class="bi bi-envelope-fill"></i></label>
+                <input type="email" id="email" th:field="*{email}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="sitioWeb" class="form-label">Sitio Web <i class="bi bi-globe"></i></label>
+                <input type="url" id="sitioWeb" th:field="*{sitioWeb}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="horarioAtencion" class="form-label">Horario de Atención <i class="bi bi-clock"></i></label>
+                <input type="text" id="horarioAtencion" th:field="*{horarioAtencion}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="calificacion" class="form-label">Calificación <i class="bi bi-star-fill"></i></label>
+                <input type="number" step="0.1" min="0" max="5" id="calificacion" th:field="*{calificacion}" class="form-control" />
+            </div>
+
+            <div class="form-check mb-3">
+                <input type="checkbox" id="activo" th:field="*{activo}" class="form-check-input" />
+                <label for="activo" class="form-check-label">Activo</label>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
+                <a th:href="@{'/admin/provincias/' + ${provinciaId} + '/puntos-interes'}" class="btn btn-secondary" method="post" novalidate><i class="bi bi-x-circle"></i> Cancelar</a>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

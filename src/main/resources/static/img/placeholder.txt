@@ -1,0 +1,10 @@
+# Image Placeholders
+
+This directory should contain the following images:
+- logo.png (PiuraExpressa logo)
+- hero-piura.jpg (Hero section background)
+- evento-placeholder.jpg (Event placeholder image)
+- plato-placeholder.jpg (Dish placeholder image)
+- user-placeholder.jpg (User avatar placeholder)
+
+For testing purposes, you can use any appropriate images or create simple placeholder images.

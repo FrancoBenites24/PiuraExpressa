@@ -1,0 +1,690 @@
+:root {
+  --color-primary: #a0c878;
+  --color-secondary: #ddeb9d;
+  --color-light: #faf6e9;
+  --color-lightest: #fffdf6;
+  --color-text: #2d3748;
+  --color-text-light: #4a5568;
+  --color-text-muted: #718096;
+  --color-accent: #667eea;
+  --color-success: #48bb78;
+  --color-warning: #ed8936;
+  --color-error: #f56565;
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    #667eea 100%
+  );
+  --gradient-secondary: linear-gradient(
+    135deg,
+    var(--color-secondary) 0%,
+    var(--color-light) 100%
+  );
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --border-radius: 16px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--color-lightest);
+  color: var(--color-text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Hero Parallax Section */
+.hero-parallax {
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+      135deg,
+      rgba(160, 200, 120, 0.9),
+      rgba(102, 126, 234, 0.8)
+    ),
+    url("https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/8b8aa9ca-4cb9-433c-8293-698909baca42.png")
+      fixed center/cover;
+}
+
+.hero-content {
+  text-align: center;
+  color: white;
+  z-index: 10;
+  position: relative;
+}
+
+.hero-title {
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 800;
+  margin-bottom: 2rem;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  margin-bottom: 3rem;
+  opacity: 0.95;
+  font-weight: 300;
+}
+
+/* General section spacing to avoid overlap and excessive gaps */
+.section-spacing {
+  padding: 4rem 0;
+  margin-bottom: 2rem;
+}
+
+/* Stats Cards with Real-time Data */
+.stats-section {
+  margin-top: 0;
+  position: relative;
+  z-index: 20;
+  padding: 0 2rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  padding: 2rem;
+  text-align: center;
+  transition: var(--transition);
+  border: 1px solid rgba(160, 200, 120, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-primary);
+}
+
+.stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.stat-icon {
+  width: 80px;
+  height: 80px;
+  background: var(--gradient-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2rem;
+  color: white;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.stat-label {
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* Interactive Map Section */
+.map-section {
+  padding: 6rem 0;
+  background: var(--gradient-secondary);
+}
+
+.map-container {
+  position: relative;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  height: 600px;
+}
+
+#provinciaMap {
+  height: 100%;
+  width: 100%;
+}
+
+.map-controls {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.map-control-btn {
+  background: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--color-text);
+}
+
+.map-control-btn:hover {
+  background: var(--color-primary);
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Weather Widget */
+.weather-widget {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.weather-widget::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 70%
+  );
+}
+
+.weather-current {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.weather-temp {
+  font-size: 3rem;
+  font-weight: 800;
+}
+
+.weather-icon {
+  font-size: 4rem;
+  opacity: 0.9;
+}
+
+/* Charts Section */
+.charts-section {
+  padding: 6rem 0;
+  background: white;
+}
+
+.chart-container {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(160, 200, 120, 0.1);
+  height: 400px;
+  position: relative;
+}
+
+.chart-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* Gallery 3D */
+.gallery-3d {
+  padding: 6rem 0;
+  background: var(--color-light);
+  overflow: hidden;
+}
+
+.gallery-container {
+  perspective: 1000px;
+  height: 400px;
+  position: relative;
+}
+
+.gallery-slide {
+  position: absolute;
+  width: 300px;
+  height: 200px;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.gallery-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition);
+}
+
+.gallery-slide:hover {
+  transform: scale(1.1) translateZ(50px);
+  z-index: 10;
+}
+
+.gallery-slide:hover img {
+  filter: brightness(1.1);
+}
+
+/* Timeline Section */
+.timeline {
+  padding: 6rem 0;
+  background: white;
+}
+
+.timeline-container {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.timeline-item {
+  padding: 2rem 0;
+  position: relative;
+  border-left: 2px solid var(--color-primary);
+  margin-left: 2rem;
+  padding-left: 4rem;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 2rem;
+  width: 16px;
+  height: 16px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: var(--shadow);
+}
+
+.timeline-year {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.timeline-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.timeline-description {
+  color: var(--color-text-light);
+  line-height: 1.7;
+}
+
+/* Points of Interest */
+.poi-section {
+  padding: 6rem 0;
+  background: var(--gradient-secondary);
+}
+
+.poi-card {
+  background: white;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  height: 100%;
+}
+
+.poi-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.poi-image {
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.poi-category {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.poi-content {
+  padding: 2rem;
+}
+
+.poi-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.poi-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--color-warning);
+}
+
+.poi-details {
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  text-decoration: none;
+  color: var(--color-primary);
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.poi-details:hover {
+  color: var(--color-accent);
+  gap: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-parallax {
+    height: 70vh;
+  }
+
+  .stats-section {
+    margin-top: -50px;
+    padding: 0 1rem;
+  }
+
+  .stat-card {
+    margin-bottom: 1rem;
+  }
+
+  .map-container {
+    height: 400px;
+  }
+
+  .chart-container {
+    height: 300px;
+  }
+
+  .gallery-container {
+    height: 300px;
+  }
+
+  .gallery-slide {
+    width: 250px;
+    height: 150px;
+  }
+
+  .timeline-item {
+    margin-left: 1rem;
+    padding-left: 3rem;
+  }
+}
+
+/* Loading Animation */
+.loading-skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Custom Leaflet Popup */
+.custom-popup {
+  font-family: "Inter", sans-serif;
+}
+
+.custom-popup .leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+}
+
+.custom-popup .leaflet-popup-content {
+  margin: 16px 20px;
+  line-height: 1.6;
+}
+
+.popup-title {
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.popup-address {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.popup-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+
+/* Animated Background Particles */
+.particles-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  background: var(--color-primary);
+  border-radius: 50%;
+  opacity: 0.1;
+  animation: float 6s ease-in-out infinite;
+}
+
+.particle:nth-child(1) { width: 4px; height: 4px; left: 10%; animation-delay: 0s; }
+.particle:nth-child(2) { width: 6px; height: 6px; left: 20%; animation-delay: 1s; }
+.particle:nth-child(3) { width: 3px; height: 3px; left: 30%; animation-delay: 2s; }
+.particle:nth-child(4) { width: 5px; height: 5px; left: 40%; animation-delay: 3s; }
+.particle:nth-child(5) { width: 4px; height: 4px; left: 50%; animation-delay: 4s; }
+.particle:nth-child(6) { width: 6px; height: 6px; left: 60%; animation-delay: 5s; }
+.particle:nth-child(7) { width: 3px; height: 3px; left: 70%; animation-delay: 0.5s; }
+.particle:nth-child(8) { width: 5px; height: 5px; left: 80%; animation-delay: 1.5s; }
+.particle:nth-child(9) { width: 4px; height: 4px; left: 90%; animation-delay: 2.5s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.1; }
+  90% { opacity: 0.1; }
+  50% { transform: translateY(-10vh) rotate(180deg); opacity: 0.3; }
+}
+
+/* Animated Dog Character */
+.animated-dog {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 80px;
+  height: 80px;
+  background: var(--gradient-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: var(--shadow-lg);
+  transition: var(--transition);
+  animation: dogBounce 3s ease-in-out infinite;
+}
+
+.animated-dog:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-xl);
+}
+
+.animated-dog.scrolling {
+  animation: dogWalk 0.5s ease-in-out;
+}
+
+@keyframes dogBounce {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes dogWalk {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+
+/* Province Info Section */
+.province-info {
+  padding: 4rem 0;
+  background: var(--color-light);
+}
+
+.info-card {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  border: 1px solid rgba(160, 200, 120, 0.1);
+  height: 100%;
+}
+
+.info-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.info-icon {
+  width: 60px;
+  height: 60px;
+  background: var(--gradient-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-size: 1.5rem;
+  color: white;
+  animation: pulse 2s infinite;
+}
+
+.info-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 1rem;
+}
+
+.info-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.info-description {
+  color: var(--color-text-light);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Tilt effect for cards */
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: var(--transition);
+}
+
+/* Enhanced responsive design for new elements */
+@media (max-width: 768px) {
+  .animated-dog {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+
+  .particles-container {
+    display: none;
+  }
+
+  .province-info {
+    padding: 3rem 0;
+  }
+
+  .info-card {
+    margin-bottom: 1rem;
+  }
+}

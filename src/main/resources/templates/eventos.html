@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Eventos - Piura Expressa</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+    <div th:replace="fragments/layout :: header"></div>
+
+    <main>
+        <h1>Eventos</h1>
+        <div>
+            <a th:href="@{/eventos/nuevo}" class="btn">Crear Nuevo Evento</a>
+        </div>
+        <div>
+            <ul>
+                <li th:each="evento : ${eventos}">
+                    <h2 th:text="${evento.titulo}">Título del evento</h2>
+                    <p th:text="${evento.descripcion}">Descripción del evento</p>
+                    <p>Lugar: <span th:text="${evento.lugar}">Lugar</span></p>
+                    <p>Fecha: <span th:text="${#dates.format(evento.fecha, 'dd/MM/yyyy HH:mm')}">Fecha</span></p>
+                    <a th:href="@{'/eventos/' + ${evento.id}}">Ver detalles</a>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <div th:replace="fragments/layout :: footer"></div>
+</body>
+</html>

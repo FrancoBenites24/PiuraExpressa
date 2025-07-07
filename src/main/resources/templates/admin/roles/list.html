@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gestión de Roles</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+</head>
+<body class="bg-light text-dark">
+    <div class="container py-4 bg-white rounded shadow-sm">
+        <h1 class="mb-4">Gestión de Roles</h1>
+        <a class="btn btn-success mb-3" th:href="@{/admin/roles/nuevo}">
+            <i class="bi bi-plus-circle"></i> Nuevo Rol
+        </a>
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-success">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="rol : ${rolesPage.content}">
+                    <td th:text="${rol.id}">1</td>
+                    <td th:text="${rol.nombre}">Nombre</td>
+                    <td th:text="${rol.descripcion}">Descripción</td>
+                    <td>
+                        <a class="btn btn-warning btn-sm me-2" th:href="@{'/admin/roles/editar/' + ${rol.id}}">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                        <a class="btn btn-danger btn-sm" th:href="@{'/admin/roles/eliminar/' + ${rol.id}}" 
+                           onclick="return confirm('¿Estás seguro de eliminar este rol?');">
+                            <i class="bi bi-trash"></i> Eliminar
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <nav aria-label="Paginación">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${!rolesPage.hasPrevious()} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/roles(page=${rolesPage.number - 1}, size=${rolesPage.size})}">Anterior</a>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link">Página <span th:text="${rolesPage.number + 1}">1</span> de <span th:text="${rolesPage.totalPages}">1</span></span>
+                </li>
+                <li class="page-item" th:classappend="${!rolesPage.hasNext()} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/roles(page=${rolesPage.number + 1}, size=${rolesPage.size})}">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Eventos')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container mt-4">
+        <h1>Eventos</h1>
+        <a class="btn btn-primary mb-3" th:href="@{/admin/eventos/nuevo}">
+            <i class="fas fa-plus"></i> Nuevo Evento
+        </a>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Provincia</th>
+                    <th>Fecha Inicio</th>
+                    <th>Activo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="evento : ${eventos.content}">
+                    <td th:text="${evento.titulo}">Título</td>
+                    <td th:text="${evento.provincia.nombre}">Provincia</td>
+                    <td th:text="${#temporals.format(evento.fechaInicio, 'dd/MM/yyyy')}">01/01/2024</td>
+                    <td>
+                        <span th:if="${evento.activo}" class="badge bg-success">Sí</span>
+                        <span th:unless="${evento.activo}" class="badge bg-danger">No</span>
+                    </td>
+                    <td>
+                        <a th:href="@{'/admin/eventos/editar/' + ${evento.id}}" class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <form th:action="@{'/admin/eventos/eliminar/' + ${evento.id}}" method="post" 
+                              style="display:inline" 
+                              onsubmit="return confirm('¿Está seguro de eliminar este evento?');">
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Paginación -->
+        <nav th:if="${eventos.totalPages > 1}">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${eventos.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/eventos(page=${eventos.number - 1})}">Anterior</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, eventos.totalPages - 1)}"
+                    th:classappend="${i == eventos.number} ? 'active'">
+                    <a class="page-link" th:href="@{/admin/eventos(page=${i})}" th:text="${i + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${eventos.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/eventos(page=${eventos.number + 1})}">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

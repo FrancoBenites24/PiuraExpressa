@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Gestión de Provincias')}">
+    <title>Gestión de Provincias</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet"/>
+    <style>
+        body {
+            background-color: #FAF6E9;
+            font-family: "Segoe UI", sans-serif;
+        }
+        .navbar {
+            background-color: #A0C878;
+        }
+        .navbar-brand, .nav-link, .btn-volver {
+            color: #fff;
+            font-weight: bold;
+        }
+        .navbar-brand:hover, .nav-link:hover {
+            color: #e8f1d1;
+        }
+        .container {
+            background-color: #FFFDF6;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 0 12px rgba(160, 200, 120, 0.2);
+            margin-top: 2rem;
+        }
+        .table thead {
+            background-color: #DDEB9D;
+        }
+        .btn-accion {
+            font-size: 0.9rem;
+            padding: 0.4rem 0.6rem;
+            margin-right: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Administrador</a>
+    <div class="ms-auto">
+      <a href="/admin/dashboard" class="btn btn-sm btn-light btn-volver">
+        <i class="bi bi-arrow-left-circle"></i> Volver al Dashboard
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <h2 class="mb-4 text-success d-flex justify-content-between align-items-center">
+    Listado de Provincias
+    <a th:href="@{/admin/provincias/nuevo}" class="btn btn-success d-flex align-items-center" style="background-color: #DDEB9D; border-color: #A0C878; color: #FFFDF6;">
+      <i class="bi bi-plus-circle me-2"></i> Crear Provincia
+    </a>
+  </h2>
+
+  <form class="row g-3 mb-4" method="get" th:action="@{/admin/provincias}">
+    <div class="col-md-4">
+      <input type="text" class="form-control" name="search" placeholder="Buscar por nombre..." th:value="${search}">
+    </div>
+    <div class="col-md-3">
+      <select name="estado" class="form-select">
+        <option value="">Todos los estados</option>
+        <option value="true" th:selected="${estado == 'true'}">Activas</option>
+        <option value="false" th:selected="${estado == 'false'}">Inactivas</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-success w-100">
+        <i class="bi bi-search"></i> Buscar
+      </button>
+    </div>
+    <div class="col-md-2">
+      <a th:href="@{/admin/provincias}" class="btn btn-secondary w-100">
+        <i class="bi bi-x-circle"></i> Limpiar
+      </a>
+    </div>
+  </form>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Nombre</th>
+          <th>Subtítulo</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="provincia : ${provincias.content}">
+          <td>
+            <img th:if="${provincia.imagenPrincipal}" th:src="${provincia.imagenPrincipal}" class="img-thumbnail" style="max-width: 50px;">
+            <span th:unless="${provincia.imagenPrincipal}" class="badge bg-secondary">
+              <i class="bi bi-image"></i> Sin imagen
+            </span>
+          </td>
+          <td th:text="${provincia.nombre}">Nombre</td>
+          <td th:text="${provincia.subtitulo ?: '-'}">Subtítulo</td>
+          <td>
+            <span th:if="${provincia.activo}" class="badge bg-success">
+              <i class="bi bi-check-circle"></i> Activa
+            </span>
+            <span th:unless="${provincia.activo}" class="badge bg-danger">
+              <i class="bi bi-x-circle"></i> Inactiva
+            </span>
+          </td>
+          <td>
+            <div class="btn-group" role="group" aria-label="Acciones">
+              <a th:href="@{'/admin/provincias/editar/' + ${provincia.id}}" class="btn btn-outline-warning btn-accion" title="Editar">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <a th:href="@{'/admin/provincias/gestion/' + ${provincia.id}}" class="btn btn-outline-info btn-accion" title="Gestionar">
+                <i class="bi bi-gear"></i>
+              </a>
+              <form th:action="@{'/admin/provincias/' + ${provincia.id} + (provincia.activo ? '/desactivar' : '/activar')}" method="post" style="display: inline;">
+                <button type="submit" th:classappend="${provincia.activo} ? 'btn-outline-danger' : 'btn-outline-success'" class="btn btn-accion" th:title="${provincia.activo} ? 'Desactivar' : 'Activar'">
+                  <i th:class="${provincia.activo} ? 'bi bi-power' : 'bi bi-power'"></i>
+                </button>
+              </form>
+              <button class="btn btn-outline-danger btn-accion" title="Eliminar" th:onclick="'confirmarEliminar(' + ${provincia.id} + ')'">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav th:if="${provincias.totalPages > 1}">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" th:classappend="${provincias.first} ? 'disabled'">
+        <a class="page-link" th:href="@{/admin/provincias(page=0)}">&laquo;</a>
+      </li>
+      <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, provincias.totalPages - 1)}" th:classappend="${pageNum == provincias.number} ? 'active'">
+        <a class="page-link" th:href="@{/admin/provincias(page=${pageNum})}" th:text="${pageNum + 1}">1</a>
+      </li>
+      <li class="page-item" th:classappend="${provincias.last} ? 'disabled'">
+        <a class="page-link" th:href="@{/admin/provincias(page=${provincias.number + 1})}">&raquo;</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

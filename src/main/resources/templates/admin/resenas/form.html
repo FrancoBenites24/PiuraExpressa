@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Formulario Reseña')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container mt-4">
+        <h1 th:text="${resena.id == null} ? 'Nueva Reseña' : 'Editar Reseña'">Formulario Reseña</h1>
+
+        <form th:action="@{/admin/resenas/guardar}" th:object="${resena}" method="post" novalidate>
+            <input type="hidden" th:field="*{id}"/>
+
+            <div class="mb-3">
+                <label for="comentario" class="form-label">Comentario</label>
+                <textarea id="comentario" th:field="*{comentario}" class="form-control" rows="4" placeholder="Comentario de la reseña" required></textarea>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('comentario')}" th:errors="*{comentario}">Error en el comentario</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="evento" class="form-label">Evento</label>
+                <select id="evento" th:field="*{evento}" class="form-select" required>
+                    <option value="" disabled>Seleccione un evento</option>
+                    <option th:each="evento : ${eventos}" th:value="${evento}" th:text="${evento.titulo}"></option>
+                </select>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('evento')}" th:errors="*{evento}">Seleccione un evento</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="usuario" class="form-label">Usuario</label>
+                <select id="usuario" th:field="*{usuario}" class="form-select" required>
+                    <option value="" disabled>Seleccione un usuario</option>
+                    <option th:each="user : ${usuarios}" th:value="${user}" th:text="${user.username}"></option>
+                </select>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('usuario')}" th:errors="*{usuario}">Seleccione un usuario</div>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input type="checkbox" id="activo" th:field="*{activo}" class="form-check-input"/>
+                <label for="activo" class="form-check-label">Activo</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Guardar
+            </button>
+            <a th:href="@{/admin/resenas}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+    <script>
+        // Validación básica del formulario
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('form')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+</body>
+</html>

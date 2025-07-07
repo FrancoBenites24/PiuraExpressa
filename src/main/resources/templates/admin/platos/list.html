@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Platos')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container mt-4">
+        <h1>Platos</h1>
+        <a class="btn btn-primary mb-3" th:href="@{/admin/platos/nuevo}">
+            <i class="fas fa-plus"></i> Nuevo Plato
+        </a>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Provincia</th>
+                    <th>Activo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="plato : ${platos.content}">
+                    <td th:text="${plato.nombre}">Nombre</td>
+                    <td th:text="${plato.provincia.nombre}">Provincia</td>
+                    <td>
+                        <span th:if="${plato.activo}" class="badge bg-success">Sí</span>
+                        <span th:unless="${plato.activo}" class="badge bg-danger">No</span>
+                    </td>
+                    <td>
+                        <a th:href="@{'/admin/platos/editar/' + ${plato.id}}" class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <form th:action="@{'/admin/platos/eliminar/' + ${plato.id}}" method="post" 
+                              style="display:inline" 
+                              onsubmit="return confirm('¿Está seguro de eliminar este plato?');">
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Paginación -->
+        <nav th:if="${platos.totalPages > 1}">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${platos.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/platos(page=${platos.number - 1})}">Anterior</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, platos.totalPages - 1)}"
+                    th:classappend="${i == platos.number} ? 'active'">
+                    <a class="page-link" th:href="@{/admin/platos(page=${i})}" th:text="${i + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${platos.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/platos(page=${platos.number + 1})}">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

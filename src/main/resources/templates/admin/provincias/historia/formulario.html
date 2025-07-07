@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <title th:text="${historiaProvinciaDTO.id} != null ? 'Editar Evento Histórico' : 'Nuevo Evento Histórico'">Evento Histórico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        body { background-color: #FFFDF6; color: #2d3748; font-family: "Inter", sans-serif; }
+        .form-container { background-color: #FAF6E9; padding: 2rem; border-radius: 0.5rem; max-width: 600px; margin: 2rem auto; box-shadow: 0 4px 6px rgba(160, 200, 120, 0.3); }
+        .btn-primary { background-color: #A0C878; border-color: #A0C878; }
+        .btn-primary:hover { background-color: #DDEB9D; border-color: #DDEB9D; color: #2d3748; }
+        label { font-weight: 600; }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h1 class="mb-4" th:text="${historiaProvinciaDTO.id} != null ? 'Editar Evento Histórico' : 'Nuevo Evento Histórico'">Evento Histórico</h1>
+    
+    <!-- Cambia el action dinámicamente -->
+    <form th:action="@{${historiaProvinciaDTO.id} != null ? '/admin/provincias/' + ${provinciaId} + '/historia/actualizar/' + ${historiaProvinciaDTO.id} : '/admin/provincias/' + ${provinciaId} + '/historia/guardar'}"
+          th:object="${historiaProvinciaDTO}" method="post">
+        <input type="hidden" th:if="${historiaProvinciaDTO.id != null}" th:field="*{id}" />
+        <div class="mb-3">
+            <label for="ano" class="form-label">Año:</label>
+            <input type="number" id="ano" th:field="*{ano}" class="form-control" required />
+            <div th:if="${#fields.hasErrors('ano')}" class="text-danger" th:errors="*{ano}"></div>
+        </div>
+        <div class="mb-3">
+            <label for="titulo" class="form-label">Título:</label>
+            <input type="text" id="titulo" th:field="*{titulo}" class="form-control" required />
+            <div th:if="${#fields.hasErrors('titulo')}" class="text-danger" th:errors="*{titulo}"></div>
+        </div>
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción:</label>
+            <textarea id="descripcion" th:field="*{descripcion}" class="form-control" rows="4" required></textarea>
+            <div th:if="${#fields.hasErrors('descripcion')}" class="text-danger" th:errors="*{descripcion}"></div>
+        </div>
+        <div class="mb-3">
+            <label for="ordenCronologico" class="form-label">Orden Cronológico:</label>
+            <input type="number" id="ordenCronologico" th:field="*{ordenCronologico}" class="form-control" required />
+            <div th:if="${#fields.hasErrors('ordenCronologico')}" class="text-danger" th:errors="*{ordenCronologico}"></div>
+        </div>
+        <div class="form-check mb-3">
+            <input type="checkbox" id="activo" th:field="*{activo}" class="form-check-input" />
+            <label for="activo" class="form-check-label">Activo</label>
+        </div>
+        <button type="submit" class="btn btn-primary me-2">
+            <i class="bi bi-save me-1"></i>
+            <span th:text="${historiaProvinciaDTO.id} != null ? 'Actualizar' : 'Guardar'"></span>
+        </button>
+        <a th:href="@{'/admin/provincias/' + ${provinciaId} + '/historia'}" class="btn btn-secondary">
+            <i class="bi bi-x-circle me-1"></i> Cancelar
+        </a>
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

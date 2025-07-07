@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Estadísticas - Provincia</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #FFFDF6;
+            color: #333;
+        }
+        .btn-primary {
+            background-color: #A0C878;
+            border-color: #A0C878;
+        }
+        .btn-primary:hover {
+            background-color: #DDEB9D;
+            border-color: #DDEB9D;
+        }
+        .btn-danger {
+            background-color: #FAF6E9;
+            color: #A0C878;
+            border-color: #FAF6E9;
+        }
+        .btn-danger:hover {
+            background-color: #DDEB9D;
+            color: #333;
+            border-color: #DDEB9D;
+        }
+        table {
+            background-color: #FAF6E9;
+        }
+        thead {
+            background-color: #DDEB9D;
+        }
+        tbody tr:hover {
+            background-color: #A0C878;
+            color: #FFFDF6;
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="container">
+        <h1 class="mb-4">Estadísticas de la Provincia</h1>
+        <a class="btn btn-primary mb-3" th:href="@{'/admin/provincias/' + ${provinciaId} + '/estadisticas/nuevo'}">Nueva Estadística</a>
+        <table class="table table-bordered table-hover align-middle text-center">
+            <thead>
+                <tr>
+                    <th>Año</th>
+                    <th>Población Total</th>
+                    <th>Densidad Poblacional</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="estadistica : ${estadisticas}">
+                    <td th:text="${estadistica.anoActualizacion}">Año</td>
+                    <td th:text="${estadistica.poblacionTotal}">Población</td>
+                    <td th:text="${estadistica.densidadPoblacional}">Densidad</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm me-1" th:href="@{'/admin/provincias/' + ${provinciaId} + '/estadisticas/editar/' + ${estadistica.id}}">Editar</a>
+                        <form th:action="@{'/admin/provincias/' + ${provinciaId} + '/estadisticas/eliminar/' + ${estadistica.id}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Está seguro de eliminar esta estadística?');">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <nav aria-label="Page navigation example" th:if="${currentPage != null and totalPages != null}">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{'/admin/provincias/' + ${provinciaId} + '/estadisticas?page=' + (${currentPage} - 1)}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{'/admin/provincias/' + ${provinciaId} + '/estadisticas?page=' + i}" th:text="${i + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{'/admin/provincias/' + ${provinciaId} + '/estadisticas?page=' + (${currentPage} + 1)}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <a class="btn btn-secondary mt-3" th:href="@{/admin/provincias}">Volver a Provincias</a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

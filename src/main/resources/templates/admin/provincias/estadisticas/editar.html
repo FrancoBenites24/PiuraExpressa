@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Editar Estadística</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 2rem;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1 class="mb-4 text-center">Editar Estadística <i class="bi bi-bar-chart-fill"></i></h1>
+        <form th:action="@{'/admin/provincias/' + ${provinciaId} + '/estadisticas/actualizar/' + ${estadistica.id}}" th:object="${estadistica}" method="post" novalidate>
+            <div class="mb-3">
+                <label for="anoActualizacion" class="form-label">Año <i class="bi bi-calendar-fill"></i></label>
+                <input type="number" id="anoActualizacion" th:field="*{anoActualizacion}" class="form-control" required />
+            </div>
+            <div class="mb-3">
+                <label for="poblacionTotal" class="form-label">Población Total <i class="bi bi-people-fill"></i></label>
+                <input type="number" id="poblacionTotal" th:field="*{poblacionTotal}" class="form-control" required />
+            </div>
+            <div class="mb-3">
+                <label for="superficieKm2" class="form-label">Superficie (km²) <i class="bi bi-aspect-ratio"></i></label>
+                <input type="number" step="0.01" id="superficieKm2" th:field="*{superficieKm2}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="densidadPoblacional" class="form-label">Densidad Poblacional <i class="bi bi-people"></i></label>
+                <input type="number" step="0.01" id="densidadPoblacional" th:field="*{densidadPoblacional}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="altitudPromedio" class="form-label">Altitud Promedio <i class="bi bi-arrow-up-circle"></i></label>
+                <input type="number" id="altitudPromedio" th:field="*{altitudPromedio}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="temperaturaPromedio" class="form-label">Temperatura Promedio <i class="bi bi-thermometer-half"></i></label>
+                <input type="number" step="0.01" id="temperaturaPromedio" th:field="*{temperaturaPromedio}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="precipitacionAnual" class="form-label">Precipitación Anual <i class="bi bi-cloud-rain"></i></label>
+                <input type="number" step="0.01" id="precipitacionAnual" th:field="*{precipitacionAnual}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="pibPerCapita" class="form-label">PIB Per Cápita <i class="bi bi-currency-dollar"></i></label>
+                <input type="number" step="0.01" id="pibPerCapita" th:field="*{pibPerCapita}" class="form-control" required />
+            </div>
+            <div class="mb-3">
+                <label for="tasaAlfabetizacion" class="form-label">Tasa de Alfabetización <i class="bi bi-journal-text"></i></label>
+                <input type="number" step="0.01" id="tasaAlfabetizacion" th:field="*{tasaAlfabetizacion}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="establecimientosSalud" class="form-label">Establecimientos de Salud <i class="bi bi-hospital"></i></label>
+                <input type="number" id="establecimientosSalud" th:field="*{establecimientosSalud}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="centrosEducativos" class="form-label">Centros Educativos <i class="bi bi-building"></i></label>
+                <input type="number" id="centrosEducativos" th:field="*{centrosEducativos}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="hotelesRegistrados" class="form-label">Hoteles Registrados <i class="bi bi-building-check"></i></label>
+                <input type="number" id="hotelesRegistrados" th:field="*{hotelesRegistrados}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="restaurantesRegistrados" class="form-label">Restaurantes Registrados <i class="bi bi-shop"></i></label>
+                <input type="number" id="restaurantesRegistrados" th:field="*{restaurantesRegistrados}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="atractivosTuristicos" class="form-label">Atractivos Turísticos <i class="bi bi-camera-fill"></i></label>
+                <input type="number" id="atractivosTuristicos" th:field="*{atractivosTuristicos}" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="festivalesAnuales" class="form-label">Festivales Anuales <i class="bi bi-calendar-event"></i></label>
+                <input type="number" id="festivalesAnuales" th:field="*{festivalesAnuales}" class="form-control" />
+            </div>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Actualizar</button>
+                <a th:href="@{'/admin/provincias/' + ${provinciaId} + '/estadisticas'}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Cancelar</a>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

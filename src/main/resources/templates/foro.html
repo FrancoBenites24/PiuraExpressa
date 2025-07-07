@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foro Piura Expressa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #A0C878;
+            --secondary-color: #DDEB9D;
+            --light-bg: #FFFDF6;
+            --card-bg: #FAF6E9;
+            --text-dark: #333;
+            --border-color: #DDEB9D;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--primary-color) !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+
+        .forum-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .post-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .post-header {
+            padding: 1rem 1.5rem 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .post-content {
+            padding: 1rem 1.5rem;
+        }
+
+        .post-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .post-actions {
+            padding: 0.5rem 1.5rem 1rem;
+            border-top: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.5);
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+        }
+
+        .action-btn:hover {
+            background: var(--secondary-color);
+            color: var(--text-dark);
+        }
+
+        .action-btn.liked {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .comment-section {
+            background: rgba(255,255,255,0.7);
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .comment-item {
+            background: white;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid var(--secondary-color);
+        }
+
+        .new-post-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .new-post-btn:hover {
+            background: var(--secondary-color);
+            color: var(--text-dark);
+            transform: scale(1.1);
+        }
+
+        .sidebar {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-chip {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: var(--text-dark);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin: 0.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-chip:hover, .filter-chip.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .trending-topic {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .trending-topic:last-child {
+            border-bottom: none;
+        }
+
+        .search-box {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(160, 200, 120, 0.25);
+        }
+
+        .reaction-picker {
+            display: none;
+            position: absolute;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            padding: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 100;
+        }
+
+        .reaction-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .reaction-btn:hover {
+            background: var(--secondary-color);
+            transform: scale(1.2);
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-image:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .forum-header {
+                padding: 1rem 0;
+            }
+            
+            .post-card {
+                margin: 0 0.5rem 1rem;
+            }
+            
+            .new-post-btn {
+                bottom: 1rem;
+                right: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="bi bi-chat-dots-fill me-2"></i>Piura Expressa Foro
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="#"><i class="bi bi-bell"></i></a>
+                <a class="nav-link" href="#"><i class="bi bi-person-circle"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header del Foro -->
+    <div class="forum-header">
+        <div class="container text-center">
+            <h1><i class="bi bi-people-fill me-3"></i>Comunidad Piurana</h1>
+            <p class="mb-0">Comparte experiencias, descubre lugares y conecta con otros piuranos</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <!-- Búsqueda -->
+                <div class="sidebar">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-search me-2"></i>Buscar</h6>
+                    <input type="text" class="form-control search-box" placeholder="Buscar publicaciones..." id="searchInput">
+                </div>
+
+                <!-- Filtros -->
+                <div class="sidebar">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-2"></i>Filtros</h6>
+                    <div>
+                        <span class="filter-chip active" data-filter="all">Todos</span>
+                        <span class="filter-chip" data-filter="popular">Populares</span>
+                        <span class="filter-chip" data-filter="recent">Recientes</span>
+                        <span class="filter-chip" data-filter="mine">Mis Posts</span>
+                    </div>
+                </div>
+
+                <!-- Temas Trending -->
+                <div class="sidebar">
+                    <h6 class="fw-bold mb-3"><i class="bi bi-fire me-2"></i>Temas Populares</h6>
+                    <div class="trending-topic">
+                        <div class="d-flex justify-content-between">
+                            <span>#FestivalLimón</span>
+                            <small class="text-muted">24 posts</small>
+                        </div>
+                    </div>
+                    <div class="trending-topic">
+                        <div class="d-flex justify-content-between">
+                            <span>#GastronomíaPiurana</span>
+                            <small class="text-muted">18 posts</small>
+                        </div>
+                    </div>
+                    <div class="trending-topic">
+                        <div class="d-flex justify-content-between">
+                            <span>#TurismoSullana</span>
+                            <small class="text-muted">12 posts</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feed Principal -->
+            <div class="col-lg-9" id="postsContainer">
+                <!-- Aquí se cargarán dinámicamente las publicaciones -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón flotante para nueva publicación -->
+    <button class="new-post-btn" data-bs-toggle="modal" data-bs-target="#newPostModal" id="newPostBtn">
+        <i class="bi bi-plus"></i>
+    </button>
+
+    <!-- Botón flotante para nuevo evento (solo admin) -->
+    <button class="new-post-btn" id="newEventBtn" style="background-color: #f39c12; display: none;" title="Crear Evento">
+        <i class="bi bi-calendar-event"></i>
+    </button>
+
+    <!-- Modal para nueva publicación -->
+    <div class="modal fade" id="newPostModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background-color: var(--card-bg);">
+                <div class="modal-header" style="border-color: var(--border-color);">
+                    <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Nueva Publicación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newPostForm">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="postTitle" name="titulo" placeholder="Título de tu publicación..." required style="background-color: var(--light-bg); border-color: var(--border-color);">
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" id="postContent" name="contenido" rows="5" placeholder="¿Qué quieres compartir con la comunidad?" required style="background-color: var(--light-bg); border-color: var(--border-color);"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="postImages" class="form-label">Agregar imágenes</label>
+                            <input type="file" class="form-control" id="postImages" name="imagenes" multiple accept="image/*" style="background-color: var(--light-bg); border-color: var(--border-color);">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="postTags" name="etiquetas" placeholder="Agregar etiquetas (separadas por comas)" style="background-color: var(--light-bg); border-color: var(--border-color);">
+                        </div>
+                        <div id="postError" class="text-danger mb-3" style="display:none;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="border-color: var(--border-color);">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn" id="submitPostBtn" style="background-color: var(--primary-color); color: white;">
+                        <i class="bi bi-send me-2"></i>Publicar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar publicación -->
+    <div class="modal fade" id="editPostModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background-color: var(--card-bg);">
+                <div class="modal-header" style="border-color: var(--border-color);">
+                    <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Editar Publicación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editPostForm">
+                        <input type="hidden" id="editPostId">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="editPostTitle" name="titulo" placeholder="Título de tu publicación..." required style="background-color: var(--light-bg); border-color: var(--border-color);">
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" id="editPostContent" name="contenido" rows="5" placeholder="¿Qué quieres compartir con la comunidad?" required style="background-color: var(--light-bg); border-color: var(--border-color);"></textarea>
+                        </div>
+                        <div id="editPostError" class="text-danger mb-3" style="display:none;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="border-color: var(--border-color);">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn" id="submitEditBtn" style="background-color: var(--primary-color); color: white;">
+                        <i class="bi bi-save me-2"></i>Guardar Cambios
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Variables globales
+        let currentPage = 0;
+        const pageSize = 5;
+        let loading = false;
+        let currentFilter = 'all';
+        let currentSearch = '';
+        let currentUser = null;
+
+        // Obtener usuario autenticado y mostrar botón de crear evento si es admin
+        async function loadCurrentUser() {
+            try {
+                const response = await fetch('/api/usuario/autenticado');
+                if (!response.ok) throw new Error('No autenticado');
+                currentUser = await response.json();
+                if (currentUser && currentUser.roles && currentUser.roles.includes('ROLE_ADMIN')) {
+                    document.getElementById('newEventBtn').style.display = 'block';
+                    document.getElementById('newEventBtn').addEventListener('click', () => {
+                        window.location.href = '/admin/eventos';
+                    });
+                }
+            } catch (error) {
+                console.log('Usuario no autenticado o sin permisos admin');
+            }
+        }
+
+        // Función para cargar publicaciones desde el backend
+        async function loadPosts(reset = false) {
+            if (loading) return;
+            loading = true;
+            if (reset) {
+                currentPage = 0;
+                document.getElementById('postsContainer').innerHTML = '';
+            }
+            let url = `/api/publicaciones?page=${currentPage}&size=${pageSize}`;
+            if (currentFilter === 'popular') {
+                url += '&sort=totalLikes,desc';
+            } else if (currentFilter === 'recent') {
+                url += '&sort=fechaCreacion,desc';
+            } else if (currentFilter === 'mine') {
+                url += '&usuarioId=me';
+            }
+            if (currentSearch) {
+                url += `&search=${encodeURIComponent(currentSearch)}`;
+            }
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Error al cargar publicaciones');
+                const data = await response.json();
+                data.content.forEach(post => {
+                    document.getElementById('postsContainer').insertAdjacentHTML('beforeend', renderPost(post));
+                });
+                if (data.last) {
+                    window.removeEventListener('scroll', handleScroll);
+                } else {
+                    currentPage++;
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                loading = false;
+            }
+        }
+
+        // Función para editar publicación
+        function editPost(postId) {
+            const postElement = document.querySelector(`.post-card[data-post-id="${postId}"]`);
+            if (!postElement) return;
+            
+            // Obtener datos actuales del post
+            const titulo = postElement.querySelector('.post-content h5').textContent;
+            const contenido = postElement.querySelector('.post-content p').textContent;
+            
+            // Llenar el formulario de edición
+            document.getElementById('editPostId').value = postId;
+            document.getElementById('editPostTitle').value = titulo;
+            document.getElementById('editPostContent').value = contenido;
+            
+            // Mostrar el modal
+            new bootstrap.Modal(document.getElementById('editPostModal')).show();
+        }
+
+        // Función para eliminar publicación
+        async function deletePost(postId) {
+            if (!confirm('¿Estás seguro de que deseas eliminar esta publicación?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/publicaciones/${postId}`, {
+                    method: 'DELETE'
+                });
+                if (!response.ok) throw new Error('Error al eliminar la publicación');
+                
+                // Eliminar la publicación del DOM
+                const postElement = document.querySelector(`.post-card[data-post-id="${postId}"]`);
+                if (postElement) {
+                    postElement.remove();
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error al eliminar la publicación');
+            }
+        }
+
+        // Función para renderizar una publicación
+        function renderPost(post) {
+            const likedClass = post.usuarioHaDadoLike ? 'liked' : '';
+            const tags = post.etiquetas ? post.etiquetas.split(',').map(tag => `<span class="badge" style="background-color: var(--secondary-color); color: var(--text-dark); margin-right: 0.25rem;">#${tag.trim()}</span>`).join('') : '';
+            return `
+                <div class="post-card" data-post-id="${post.id}">
+                    <div class="post-header">
+                        <div class="d-flex align-items-center">
+                            <div class="user-avatar me-3">${getInitials(post.usuarioNombre)}</div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0 fw-bold">${post.usuarioNombre}</h6>
+                                <small class="text-muted">${post.tiempoTranscurrido}</small>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-sm" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    ${post.puedeEditar ? `<li><a class="dropdown-item edit-post" href="#" data-post-id="${post.id}"><i class="bi bi-pencil-square me-2"></i>Editar</a></li>` : ''}
+                                    ${post.puedeEliminar ? `<li><a class="dropdown-item delete-post" href="#" data-post-id="${post.id}"><i class="bi bi-trash me-2"></i>Eliminar</a></li>` : ''}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>  
+                    <div class="post-content">
+                        <h5 class="mb-3">${post.titulo}</h5>
+                        <p>${post.contenido}</p>
+                        ${post.imagen ? `<img src="${post.imagen}" alt="Imagen de la publicación" class="post-image">` : ''}
+                        <div class="mt-3">${tags}</div>
+                    </div>
+                    <div class="post-actions">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap">
+                            <button class="action-btn ${likedClass}" data-post-id="${post.id}" onclick="toggleLike(this)" title="Me gusta">
+                                <i class="bi bi-heart${post.usuarioHaDadoLike ? '-fill' : ''} me-1"></i>${post.totalLikes}
+                            </button>
+                            <button class="action-btn" onclick="toggleComments(this)" title="Comentarios">
+                                <i class="bi bi-chat me-1"></i>${post.totalComentarios} comentarios
+                            </button>
+                            <button class="action-btn" onclick="reportPost(${post.id}, this)" title="Reportar">
+                                <i class="bi bi-flag"></i>
+                            </button>
+                            <button class="action-btn" onclick="savePost(${post.id}, this)" title="Guardar">
+                                <i class="bi bi-bookmark"></i>
+                            </button>
+                            <button class="action-btn" onclick="sharePost(${post.id}, this)" title="Compartir">
+                                <i class="bi bi-share"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="comment-section" style="display: none;">
+                        <div class="comments-container"></div>
+                        <div class="mt-3">
+                            <textarea class="form-control comment-input" rows="2" placeholder="Escribe un comentario..."></textarea>
+                            <button class="btn btn-sm btn-primary mt-2" onclick="submitComment(this)">Comentar</button>
+                            <div class="text-danger comment-error mt-2" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Función para obtener iniciales del nombre
+        function getInitials(name) {
+            if (!name) return '';
+            const parts = name.trim().split(' ');
+            if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+            return parts[0].charAt(0).toUpperCase() + parts[1].charAt(0).toUpperCase();
+        }
+
+        // Función para alternar like
+        async function toggleLike(button) {
+            const postId = button.getAttribute('data-post-id');
+            const liked = button.classList.contains('liked');
+            try {
+                const response = await fetch(`/api/publicaciones/${postId}/${liked ? 'unlike' : 'like'}`, {
+                    method: 'POST',
+                });
+                if (!response.ok) throw new Error('Error al actualizar like');
+                const data = await response.json();
+                button.classList.toggle('liked');
+                button.innerHTML = `<i class="bi bi-heart${button.classList.contains('liked') ? '-fill' : ''} me-1"></i>${data.totalLikes}`;
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        // Función para reportar publicación
+        async function reportPost(postId, button) {
+            try {
+                const response = await fetch(`/api/publicaciones/${postId}/reportar`, {
+                    method: 'POST',
+                });
+                if (!response.ok) throw new Error('Error al reportar publicación');
+                alert('Publicación reportada correctamente');
+            } catch (error) {
+                console.error(error);
+                alert('Error al reportar publicación');
+            }
+        }
+
+        // Función para guardar publicación
+        async function savePost(postId, button) {
+            try {
+                const response = await fetch(`/api/publicaciones/${postId}/guardar`, {
+                    method: 'POST',
+                });
+                if (!response.ok) throw new Error('Error al guardar publicación');
+                alert('Publicación guardada correctamente');
+            } catch (error) {
+                console.error(error);
+                alert('Error al guardar publicación');
+            }
+        }
+
+        // Función para compartir publicación
+        async function sharePost(postId, button) {
+            try {
+                const response = await fetch(`/api/publicaciones/${postId}/compartir`, {
+                    method: 'POST',
+                });
+                if (!response.ok) throw new Error('Error al compartir publicación');
+                alert('Publicación compartida correctamente');
+            } catch (error) {
+                console.error(error);
+                alert('Error al compartir publicación');
+            }
+        }
+
+        // Función para alternar comentarios
+        function toggleComments(button) {
+            const postCard = button.closest('.post-card');
+            const commentSection = postCard.querySelector('.comment-section');
+            if (commentSection.style.display === 'block') {
+                commentSection.style.display = 'none';
+            } else {
+                commentSection.style.display = 'block';
+                loadComments(postCard.getAttribute('data-post-id'), commentSection.querySelector('.comments-container'));
+            }
+        }
+
+        // Función para cargar comentarios
+        async function loadComments(postId, container) {
+            try {
+                const response = await fetch(`/api/publicaciones/${postId}/comentarios`);
+                if (!response.ok) throw new Error('Error al cargar comentarios');
+                const comentarios = await response.json();
+                container.innerHTML = '';
+                comentarios.forEach(comentario => {
+                    container.insertAdjacentHTML('beforeend', renderComment(comentario));
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        // Función para renderizar un comentario
+        function renderComment(comentario) {
+            return `
+                <div class="comment-item">
+                    <div class="d-flex">
+                        <div class="user-avatar me-2" style="width: 30px; height: 30px; font-size: 0.8rem;">${getInitials(comentario.usuarioNombre)}</div>
+                        <div class="flex-grow-1">
+                            <strong>${comentario.usuarioNombre}</strong>
+                            <p class="mb-1">${comentario.contenido}</p>
+                            <small class="text-muted">${comentario.tiempoTranscurrido}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Función para enviar un comentario
+        async function submitComment(button) {
+            const commentSection = button.closest('.comment-section');
+            const postCard = button.closest('.post-card');
+            const postId = postCard.getAttribute('data-post-id');
+            const textarea = commentSection.querySelector('.comment-input');
+            const errorDiv = commentSection.querySelector('.comment-error');
+            const contenido = textarea.value.trim();
+
+            if (!contenido) {
+                errorDiv.textContent = 'El comentario no puede estar vacío.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/publicaciones/${postId}/comentarios`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ contenido })
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    errorDiv.textContent = errorData.message || 'Error al enviar el comentario.';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+                const nuevoComentario = await response.json();
+                commentSection.querySelector('.comments-container').insertAdjacentHTML('beforeend', renderComment(nuevoComentario));
+                textarea.value = '';
+                errorDiv.style.display = 'none';
+                // Actualizar contador de comentarios
+                const commentBtn = postCard.querySelector('.action-btn[onclick^="toggleComments"]');
+                commentBtn.innerHTML = `<i class="bi bi-chat me-1"></i>${parseInt(commentBtn.textContent) + 1} comentarios`;
+            } catch (error) {
+                console.error(error);
+                errorDiv.textContent = 'Error al enviar el comentario.';
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // Enviar nueva publicación
+        document.getElementById('submitPostBtn').addEventListener('click', async () => {
+            const form = document.getElementById('newPostForm');
+            const titulo = form.titulo.value.trim();
+            const contenido = form.contenido.value.trim();
+            const etiquetas = form.etiquetas.value.trim();
+            const errorDiv = document.getElementById('postError');
+
+            if (!titulo || !contenido) {
+                errorDiv.textContent = 'El título y contenido son obligatorios.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Validación de palabras restringidas (ejemplo simple)
+            const palabrasRestringidas = ['feo', 'xd'];
+            const textoParaValidar = titulo.toLowerCase() + ' ' + contenido.toLowerCase();
+            for (const palabra of palabrasRestringidas) {
+                if (textoParaValidar.includes(palabra)) {
+                    errorDiv.textContent = 'El texto contiene palabras no permitidas.';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+            }
+
+            errorDiv.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/publicaciones', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ titulo, contenido, etiquetas })
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    errorDiv.textContent = errorData.message || 'Error al crear la publicación.';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+                const nuevaPublicacion = await response.json();
+                document.getElementById('postsContainer').insertAdjacentHTML('afterbegin', renderPost(nuevaPublicacion));
+                var modal = bootstrap.Modal.getInstance(document.getElementById('newPostModal'));
+                modal.hide();
+                form.reset();
+            } catch (error) {
+                console.error(error);
+                errorDiv.textContent = 'Error al crear la publicación.';
+                errorDiv.style.display = 'block';
+            }
+        });
+
+        // Filtros
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentFilter = chip.getAttribute('data-filter');
+                loadPosts(true);
+            });
+        });
+
+        // Búsqueda
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            loadPosts(true);
+        });
+
+        // Scroll infinito
+        function handleScroll() {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000 && !loading) {
+                loadPosts();
+            }
+        }
+        window.addEventListener('scroll', handleScroll);
+
+        // Event listener para el formulario de edición
+        document.getElementById('submitEditBtn').addEventListener('click', async () => {
+            const form = document.getElementById('editPostForm');
+            const postId = document.getElementById('editPostId').value;
+            const titulo = form.titulo.value.trim();
+            const contenido = form.contenido.value.trim();
+            const errorDiv = document.getElementById('editPostError');
+
+            if (!titulo || !contenido) {
+                errorDiv.textContent = 'El título y contenido son obligatorios.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            errorDiv.style.display = 'none';
+
+            try {
+                // Obtener el ID del usuario actual
+                const userResponse = await fetch('/api/usuario/autenticado');
+                if (!userResponse.ok) throw new Error('Error al obtener usuario');
+                const userData = await userResponse.json();
+
+                const response = await fetch(`/api/publicaciones/${postId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: postId,
+                        usuarioId: userData.id,
+                        titulo,
+                        contenido
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    errorDiv.textContent = errorData.message || 'Error al actualizar la publicación.';
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+
+                const publicacionActualizada = await response.json();
+                
+                // Actualizar la publicación en el DOM
+                const postElement = document.querySelector(`.post-card[data-post-id="${postId}"]`);
+                if (postElement) {
+                    postElement.outerHTML = renderPost(publicacionActualizada);
+                }
+
+                // Cerrar el modal
+                var modal = bootstrap.Modal.getInstance(document.getElementById('editPostModal'));
+                modal.hide();
+            } catch (error) {
+                console.error(error);
+                errorDiv.textContent = 'Error al actualizar la publicación.';
+                errorDiv.style.display = 'block';
+            }
+        });
+
+        // Event listeners para los botones de editar y eliminar
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('edit-post')) {
+                e.preventDefault();
+                const postId = e.target.getAttribute('data-post-id');
+                editPost(postId);
+            } else if (e.target.classList.contains('delete-post')) {
+                e.preventDefault();
+                const postId = e.target.getAttribute('data-post-id');
+                deletePost(postId);
+            }
+        });
+
+        // Cargar publicaciones iniciales
+        loadPosts();
+    </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Formulario Plato')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container mt-4">
+        <h1 th:text="${plato.id == null} ? 'Nuevo Plato' : 'Editar Plato'">Formulario Plato</h1>
+
+        <form th:action="@{/admin/platos/guardar}" th:object="${plato}" method="post" novalidate>
+            <input type="hidden" th:field="*{id}"/>
+
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" placeholder="Nombre del plato" required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">Error en el nombre</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <textarea id="descripcion" th:field="*{descripcion}" class="form-control" rows="4" placeholder="Descripción del plato" required></textarea>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}">Error en la descripción</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="provincia" class="form-label">Provincia</label>
+                <select id="provincia" th:field="*{provincia}" class="form-select" required>
+                    <option value="" disabled>Seleccione una provincia</option>
+                    <option th:each="prov : ${provincias}" th:value="${prov}" th:text="${prov.nombre}"></option>
+                </select>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('provincia')}" th:errors="*{provincia}">Seleccione una provincia</div>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input type="checkbox" id="activo" th:field="*{activo}" class="form-check-input"/>
+                <label for="activo" class="form-check-label">Activo</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Guardar
+            </button>
+            <a th:href="@{/admin/platos}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+    <script>
+        // Validación básica del formulario
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('form')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+</body>
+</html>

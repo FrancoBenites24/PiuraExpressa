@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gestión de Publicaciones</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        /* Color palette */
+        body {
+            background-color: #FFFDF6;
+            color: #333;
+        }
+
+        .table thead {
+            background-color: #DDEB9D;
+        }
+
+        .table thead th {
+            color: #333;
+        }
+
+        .btn-primary {
+            background-color: #A0C878;
+            border-color: #A0C878;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background-color: #8bb35f;
+            border-color: #8bb35f;
+        }
+
+        .btn-secondary {
+            background-color: #FAF6E9;
+            border-color: #FAF6E9;
+            color: #333;
+        }
+
+        .btn-secondary:hover,
+        .btn-secondary:focus {
+            background-color: #e6dfc7;
+            border-color: #e6dfc7;
+            color: #333;
+        }
+
+        .pagination .page-link {
+            color: #333;
+            background-color: #FAF6E9;
+            border-color: #DDEB9D;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #A0C878;
+            border-color: #A0C878;
+            color: white;
+        }
+
+        .search-bar {
+            background-color: #FAF6E9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .table-responsive {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+        }
+
+        .action-btn {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container my-4">
+        <h1 class="mb-4">Gestión de Publicaciones</h1>
+
+        <div class="search-bar d-flex flex-wrap align-items-center justify-content-between">
+            <form class="d-flex flex-grow-1 me-3" th:action="@{/admin/publicaciones}" method="get">
+                <input type="text" name="search" class="form-control me-2" placeholder="Buscar por título o usuario" />
+                <select name="filtro" class="form-select me-2" style="max-width: 200px;">
+                    <option value="" selected>Todos</option>
+                    <option value="mayores_reportes">Mayores reportes</option>
+                    <option value="mas_likeados">Más likeados</option>
+                    <option value="mas_comentados">Más comentados</option>
+                </select>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                <th>Título y Contenido</th>
+                <th>Usuario</th>
+                <th>Estado</th>
+                <th>Fecha Creación</th>
+                <th>Comentarios</th>
+                <th>Likes</th>
+                <th>Reportes</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="publicacion : ${publicaciones.content}">
+                <td>
+                    <strong th:text="${publicacion.titulo}">Título de la publicación</strong>
+                    <p class="text-truncate" style="max-width: 300px;" th:text="${publicacion.contenidoResumen}">Resumen del contenido de la publicación...</p>
+                </td>
+                <td>
+                    <span th:text="${publicacion.usuarioNombre}">Nombre Usuario</span>
+                    <br />
+                    <small class="text-muted" th:text="${publicacion.usuarioUsername}">@username</small>
+                </td>
+                <td>
+                    <span th:if="${publicacion.activa}" class="badge bg-success">Activa</span>
+                    <span th:if="${!publicacion.activa}" class="badge bg-secondary">Inactiva</span>
+                </td>
+                <td th:text="${#dates.format(publicacion.fechaCreacion, 'dd/MM/yyyy HH:mm')}">01/01/2024 12:00</td>
+                <td th:text="${publicacion.totalComentarios}">0</td>
+                <td th:text="${publicacion.totalLikes}">0</td>
+                <td th:text="${publicacion.totalReportes}">0</td>
+                <td>
+                    <a th:if="${publicacion.puedeEliminar}" th:href="@{'/admin/publicaciones/eliminar/' + ${publicacion.id}}" class="btn btn-sm btn-danger action-btn" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar esta publicación?');">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(publicaciones.content)}">
+                        <td colspan="7" class="text-center text-muted">No se encontraron publicaciones.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <nav aria-label="Paginación">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${publicaciones.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/publicaciones(page=${publicaciones.number - 1}, size=${publicaciones.size})}" aria-label="Anterior">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, publicaciones.totalPages - 1)}" th:classappend="${pageNum == publicaciones.number} ? 'active'">
+                    <a class="page-link" th:href="@{/admin/publicaciones(page=${pageNum}, size=${publicaciones.size})}" th:text="${pageNum + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${publicaciones.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/publicaciones(page=${publicaciones.number + 1}, size=${publicaciones.size})}" aria-label="Siguiente">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

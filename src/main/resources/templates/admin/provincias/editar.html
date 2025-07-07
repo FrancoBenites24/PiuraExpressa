@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Editar Provincia</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/admin-provincias.css}">
+    <style>
+
+        body {
+            background-color: #FFFDF6;
+            color: #333;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container-fluid {
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 1rem 2rem;
+        }
+
+        .card {
+            background-color: #FAF6E9;
+            border: 1px solid #A0C878;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(160, 200, 120, 0.3);
+        }
+
+        .card-header {
+            background-color: #DDEB9D;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.25rem;
+            border-bottom: 1px solid #A0C878;
+            padding: 0.75rem 1.25rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-control {
+            border: 1px solid #A0C878;
+            border-radius: 4px;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .form-control:focus {
+            border-color: #A0C878;
+            box-shadow: 0 0 5px #A0C878;
+            outline: none;
+        }
+
+        .btn-primary {
+            background-color: #A0C878;
+            border-color: #A0C878;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background-color: #8AAE5A;
+            border-color: #8AAE5A;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background-color: #DDEB9D;
+            border-color: #DDEB9D;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .btn-secondary:hover {
+            background-color: #C4D67A;
+            border-color: #C4D67A;
+            color: #222;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 6px;
+            object-fit: contain;
+        }
+
+        .invalid-feedback {
+            color: #b94a48;
+            font-size: 0.875rem;
+        }
+
+        .form-check-input:checked {
+            background-color: #A0C878;
+            border-color: #A0C878;
+        }
+
+        h1 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .btn-toolbar .btn {
+            margin-right: 0.5rem;
+        }
+
+        .border-bottom {
+            border-bottom: 2px solid #A0C878 !important;
+        }
+
+        .text-muted {
+            color: #6c757d !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1>Editar Provincia: <span th:text="${provincia.nombre}" class="text-primary"></span></h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <a class="btn btn-outline-secondary" th:href="@{/admin/provincias}">
+                                <i class="bi bi-arrow-left"></i> Volver al Listado
+                            </a>
+                            <a class="btn btn-outline-primary" th:href="@{'/provincias/' + ${provincia.nombre}}" target="_blank">
+                                <i class="bi bi-eye"></i> Ver en Sitio
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensajes de éxito y error -->
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>
+                    <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <!-- Formulario SIN subida de archivos -->
+                <form th:action="@{/admin/provincias/guardar}" th:object="${provincia}" method="post"
+                      class="form-admin needs-validation" novalidate>
+                    
+                    <input type="hidden" th:field="*{id}"/>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    
+                    <!-- Información Básica -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0"><i class="bi bi-info-circle me-2"></i>Información Básica</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="nombre" class="form-label">
+                                            Nombre <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" id="nombre" th:field="*{nombre}" 
+                                               class="form-control" th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid'"
+                                               placeholder="Nombre de la provincia" required maxlength="50">
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">
+                                            Error en el nombre
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            El nombre es obligatorio y no puede exceder 50 caracteres.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="subtitulo" class="form-label">Subtítulo</label>
+                                        <input type="text" id="subtitulo" th:field="*{subtitulo}" 
+                                               class="form-control" th:classappend="${#fields.hasErrors('subtitulo')} ? 'is-invalid'"
+                                               placeholder="Subtítulo descriptivo" maxlength="255">
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('subtitulo')}" th:errors="*{subtitulo}">
+                                            Error en el subtítulo
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="descripcion" class="form-label">Descripción</label>
+                                <textarea id="descripcion" th:field="*{descripcion}" 
+                                          class="form-control" th:classappend="${#fields.hasErrors('descripcion')} ? 'is-invalid'"
+                                          rows="4" maxlength="5000" placeholder="Descripción detallada de la provincia"></textarea>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}">
+                                    Error en la descripción
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ubicación -->
+                    <div class="card mb-4">
+                        <div class="card-header"><h5 class="card-title mb-0"><i class="bi bi-geo-alt me-2"></i>Ubicación y Geografía</h5></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="latitud" class="form-label">Latitud <span class="text-danger">*</span></label>
+                                        <input type="number" id="latitud" th:field="*{latitud}" class="form-control"
+                                            th:classappend="${#fields.hasErrors('latitud')} ? 'is-invalid'"
+                                            step="0.000001" min="-90" max="90"
+                                            placeholder="-5.194722" required>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('latitud')}" th:errors="*{latitud}">
+                                            Error en la latitud
+                                        </div>
+                                        <div class="invalid-feedback">La latitud es obligatoria. Valor entre -90 y 90.</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="longitud" class="form-label">Longitud <span class="text-danger">*</span></label>
+                                        <input type="number" id="longitud" th:field="*{longitud}" class="form-control"
+                                            th:classappend="${#fields.hasErrors('longitud')} ? 'is-invalid'"
+                                            step="0.000001" min="-180" max="180"
+                                            placeholder="-80.632778" required>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('longitud')}" th:errors="*{longitud}">
+                                            Error en la longitud
+                                        </div>
+                                        <div class="invalid-feedback">La longitud es obligatoria. Valor entre -180 y 180.</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="altitudPromedio" class="form-label">Altitud Promedio (msnm) <span class="text-danger">*</span></label>
+                                        <input type="number" id="altitudPromedio" th:field="*{altitudPromedio}" 
+                                            class="form-control" th:classappend="${#fields.hasErrors('altitudPromedio')} ? 'is-invalid'"
+                                            min="0" placeholder="29" required>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('altitudPromedio')}" th:errors="*{altitudPromedio}">
+                                            Error en la altitud
+                                        </div>
+                                        <div class="invalid-feedback">La altitud es obligatoria y debe ser mayor o igual a 0.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información Climática -->
+                    <div class="card mb-4">
+                        <div class="card-header"><h5 class="card-title mb-0"><i class="bi bi-cloud-sun me-2"></i>Información Climática</h5></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="climaDescripcion" class="form-label">Descripción del Clima</label>
+                                        <textarea id="climaDescripcion" th:field="*{climaDescripcion}" 
+                                                  class="form-control" th:classappend="${#fields.hasErrors('climaDescripcion')} ? 'is-invalid'"
+                                                  rows="3" maxlength="1000" placeholder="Clima cálido y seco durante todo el año..."></textarea>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('climaDescripcion')}" th:errors="*{climaDescripcion}">
+                                            Error en la descripción del clima
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="mejorEpocaVisita" class="form-label">Mejor Época para Visitar</label>
+                                        <textarea id="mejorEpocaVisita" th:field="*{mejorEpocaVisita}" 
+                                                  class="form-control" th:classappend="${#fields.hasErrors('mejorEpocaVisita')} ? 'is-invalid'"
+                                                  rows="3" maxlength="1000" placeholder="Todo el año, especialmente entre mayo y octubre..."></textarea>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('mejorEpocaVisita')}" th:errors="*{mejorEpocaVisita}">
+                                            Error en la mejor época de visita
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Estado -->
+                    <div class="card mb-4">
+                        <div class="card-header"><h5 class="card-title mb-0"><i class="bi bi-toggle-on me-2"></i>Estado</h5></div>
+                        <div class="card-body">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" id="activa" th:field="*{activo}" class="form-check-input" role="switch">
+                                <label for="activa" class="form-check-label">
+                                    <strong>Provincia Activa</strong>
+                                    <small class="text-muted d-block">
+                                        Las provincias activas son visibles para los usuarios en el sitio web
+                                    </small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-between">
+                            <div>
+                                <a th:href="@{/admin/provincias}" class="btn btn-secondary me-2">
+                                    <i class="bi bi-x-circle me-1"></i>Cancelar
+                                </a>
+                                <button type="button" class="btn btn-danger" onclick="confirmarEliminar()">
+                                    <i class="bi bi-trash me-1"></i>Eliminar
+                                </button>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-1"></i>Guardar Cambios
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación de Eliminación -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Está seguro que desea eliminar la provincia <strong th:text="${provincia.nombre}">nombre</strong>?</p>
+                    <p class="text-danger">Esta acción no se puede deshacer.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form th:action="@{'/admin/provincias/eliminar/' + ${provincia.id}}" method="post">
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Solo confirmación de eliminar y validación Bootstrap
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                Array.prototype.forEach.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+        function confirmarEliminar() {
+            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            modal.show();
+        }
+    </script>
+</body>
+</html>

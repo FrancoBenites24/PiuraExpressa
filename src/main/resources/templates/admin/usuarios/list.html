@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gestión de Usuarios</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet"/>
+  <style>
+    body {
+      background-color: #FAF6E9;
+      font-family: "Segoe UI", sans-serif;
+    }
+    .navbar {
+      background-color: #A0C878;
+    }
+    .navbar-brand, .nav-link, .btn-volver {
+      color: #fff;
+      font-weight: bold;
+    }
+    .navbar-brand:hover, .nav-link:hover {
+      color: #e8f1d1;
+    }
+    .container {
+      background-color: #FFFDF6;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 12px rgba(160, 200, 120, 0.2);
+      margin-top: 2rem;
+    }
+    .table thead {
+      background-color: #DDEB9D;
+    }
+    .btn-accion {
+      font-size: 0.9rem;
+      padding: 0.4rem 0.6rem;
+      margin-right: 0.3rem;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Administrador</a>
+    <div class="ms-auto">
+      <a href="/admin/dashboard" class="btn btn-sm btn-light btn-volver">
+        <i class="bi bi-arrow-left-circle"></i> Volver al Dashboard
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <h2 class="mb-4 text-success">Listado de Usuarios</h2>
+
+  <form class="row g-3 mb-4" method="get">
+    <div class="col-md-4">
+      <input type="text" class="form-control" name="filtro" placeholder="Buscar por nombre, email o documento" th:value="${filtro}">
+    </div>
+    <div class="col-md-3">
+      <select name="provincia" class="form-select">
+        <option value="">Todas las provincias</option>
+        <option th:each="prov : ${provincias}"
+                th:value="${prov.id}"
+                th:text="${prov.nombre}"
+                th:selected="${prov.id == provincia}"></option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-success w-100">
+        <i class="bi bi-search"></i> Buscar
+      </button>
+    </div>
+  </form>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Usuario</th>
+          <th>Email</th>
+          <th>Documento</th>
+          <th>Provincia</th>
+          <th>Activo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="usuario : ${usuarios.content}">
+          <td th:text="${usuario.id}">1</td>
+          <td th:text="${usuario.username}">admin</td>
+          <td th:text="${usuario.email}">admin@email.com</td>
+          <td th:text="${usuario.numeroDocumento}">12345678</td>
+          <td th:text="${usuario.provincia}">Piura</td>
+          <td>
+            <span th:classappend="${usuario.activo} ? 'text-success' : 'text-danger'">
+              <i th:class="${usuario.activo} ? 'bi bi-check-circle-fill' : 'bi bi-x-circle-fill'"></i>
+            </span>
+          </td>
+          <td>
+            <a th:href="@{'/admin/usuarios/' + ${usuario.id}}" class="btn btn-outline-primary btn-accion">
+              <i class="bi bi-eye"></i>
+            </a>
+            <form th:action="@{'/admin/usuarios/' + ${usuario.id} + (usuario.activo ? '/desactivar' : '/activar')}"
+                  method="post" th:if="${usuario.activo}" style="display: inline;">
+              <button type="submit" class="btn btn-outline-danger btn-accion" title="Desactivar">
+                <i class="bi bi-person-dash-fill"></i>
+              </button>
+            </form>
+            <form th:action="@{'/admin/usuarios/' + ${usuario.id} + (usuario.activo ? '/desactivar' : '/activar')}"
+                  method="post" th:if="${!usuario.activo}" style="display: inline;">
+              <button type="submit" class="btn btn-outline-success btn-accion" title="Activar">
+                <i class="bi bi-person-check-fill"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav th:if="${usuarios.totalPages > 1}">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" th:classappend="${usuarios.first} ? 'disabled'">
+        <a class="page-link" th:href="@{/admin/usuarios(page=0)}">&laquo;</a>
+      </li>
+      <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, usuarios.totalPages - 1)}"
+          th:classappend="${pageNum == usuarios.number} ? 'active'">
+        <a class="page-link" th:href="@{/admin/usuarios(page=${pageNum})}" th:text="${pageNum + 1}">1</a>
+      </li>
+      <li class="page-item" th:classappend="${usuarios.last} ? 'disabled'">
+        <a class="page-link" th:href="@{/admin/usuarios(page=${usuarios.totalPages - 1})}">&raquo;</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

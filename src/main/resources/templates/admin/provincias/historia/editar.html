@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Editar Evento Histórico</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}" />
+</head>
+<body>
+    <h1>Editar Evento Histórico</h1>
+    <form th:action="@{'/admin/provincias/' + ${provinciaId} + '/historia/actualizar/' + ${historiaProvinciaDTO.id}}" 
+          th:object="${historiaProvinciaDTO}" method="post">
+        <label for="ano">Año:</label>
+        <input type="number" id="ano" th:field="*{ano}" required />
+        <br/>
+        <label for="titulo">Título:</label>
+        <input type="text" id="titulo" th:field="*{titulo}" required />
+        <br/>
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" th:field="*{descripcion}" required></textarea>
+        <br/>
+        <label for="ordenCronologico">Orden Cronológico:</label>
+        <input type="number" id="ordenCronologico" th:field="*{ordenCronologico}" required />
+        <br/>
+        <label for="activo">Activo:</label>
+        <input type="checkbox" id="activo" th:field="*{activo}" />
+        <br/>
+        <button type="submit">Actualizar</button>
+        <a th:href="@{'/admin/provincias/' + ${provinciaId} + '/historia'}">Cancelar</a>
+    </form>
+</body>
+</html>

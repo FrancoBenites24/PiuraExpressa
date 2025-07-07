@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Reseñas')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container mt-4">
+        <h1>Reseñas</h1>
+        <a class="btn btn-primary mb-3" th:href="@{/admin/resenas/nuevo}">
+            <i class="fas fa-plus"></i> Nueva Reseña
+        </a>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Comentario</th>
+                    <th>Evento</th>
+                    <th>Usuario</th>
+                    <th>Activo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="resena : ${resenas.content}">
+                    <td th:text="${resena.comentario}">Comentario</td>
+                    <td th:text="${resena.evento.titulo}">Evento</td>
+                    <td th:text="${resena.usuario.username}">Usuario</td>
+                    <td>
+                        <span th:if="${resena.activo}" class="badge bg-success">Sí</span>
+                        <span th:unless="${resena.activo}" class="badge bg-danger">No</span>
+                    </td>
+                    <td>
+                        <a th:href="@{'/admin/resenas/editar/' + ${resena.id}}" class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <form th:action="@{'/admin/resenas/eliminar/' + ${resena.id}}" method="post" 
+                              style="display:inline" 
+                              onsubmit="return confirm('¿Está seguro de eliminar esta reseña?');">
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Paginación -->
+        <nav th:if="${resenas.totalPages > 1}">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${resenas.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/resenas(page=${resenas.number - 1})}">Anterior</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, resenas.totalPages - 1)}"
+                    th:classappend="${i == resenas.number} ? 'active'">
+                    <a class="page-link" th:href="@{/admin/resenas(page=${i})}" th:text="${i + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${resenas.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/resenas(page=${resenas.number + 1})}">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gestión de Provincia</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .province-info {
+            margin-bottom: 30px;
+        }
+        .province-info p {
+            font-size: 1.1em;
+        }
+        .btn-group-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 300px;
+        }
+        .btn {
+            padding: 10px 15px;
+            font-size: 1em;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+            text-decoration: none;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #565e64;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gestión de Provincia</h1>
+    <div class="province-info">
+        <p><strong>ID:</strong> <span th:text="${provincia.id}">ID</span></p>
+        <p><strong>Nombre:</strong> <span th:text="${provincia.nombre}">Nombre</span></p>
+    </div>
+    <div class="btn-group-vertical">
+        <a th:href="@{'/admin/provincias/' + ${provincia.id} + '/historia'}" class="btn mb-2">Gestionar Historia y Evolución</a>
+        <a th:href="@{'/admin/provincias/' + ${provincia.id} + '/puntos-interes'}" class="btn mb-2">Gestionar Puntos de Interés</a>
+        <a th:href="@{'/admin/provincias/' + ${provincia.id} + '/estadisticas'}" class="btn mb-2">Gestionar Estadísticas</a>
+        <!-- Removed Gestionar Clima as it is in dashboard -->
+        <a th:href="@{/admin/provincias}" class="btn btn-secondary">Volver a Provincias</a>
+    </div>
+</body>
+</html>

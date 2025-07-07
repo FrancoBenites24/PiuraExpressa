@@ -1,0 +1,112 @@
+/* admin-provincias.css */
+
+body {
+    background-color: #FFFDF6;
+    color: #333;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container-fluid {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1rem 2rem;
+}
+
+.card {
+    background-color: #FAF6E9;
+    border: 1px solid #A0C878;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(160, 200, 120, 0.3);
+}
+
+.card-header {
+    background-color: #DDEB9D;
+    color: #333;
+    font-weight: 600;
+    font-size: 1.25rem;
+    border-bottom: 1px solid #A0C878;
+    padding: 0.75rem 1.25rem;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #333;
+}
+
+.form-control {
+    border: 1px solid #A0C878;
+    border-radius: 4px;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    color: #333;
+}
+
+.form-control:focus {
+    border-color: #A0C878;
+    box-shadow: 0 0 5px #A0C878;
+    outline: none;
+}
+
+.btn-primary {
+    background-color: #A0C878;
+    border-color: #A0C878;
+    color: #fff;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background-color: #8AAE5A;
+    border-color: #8AAE5A;
+    color: #fff;
+}
+
+.btn-secondary {
+    background-color: #DDEB9D;
+    border-color: #DDEB9D;
+    color: #333;
+    font-weight: 600;
+}
+
+.btn-secondary:hover {
+    background-color: #C4D67A;
+    border-color: #C4D67A;
+    color: #222;
+}
+
+.image-preview {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 6px;
+    object-fit: contain;
+}
+
+.invalid-feedback {
+    color: #b94a48;
+    font-size: 0.875rem;
+}
+
+.form-check-input:checked {
+    background-color: #A0C878;
+    border-color: #A0C878;
+}
+
+h1 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.btn-toolbar .btn {
+    margin-right: 0.5rem;
+}
+
+.border-bottom {
+    border-bottom: 2px solid #A0C878 !important;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}

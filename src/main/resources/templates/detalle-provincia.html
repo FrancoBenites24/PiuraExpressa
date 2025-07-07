@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${provincia != null ? provincia.nombre : 'Provincia'} + ' | Piura Expressa'">Provincia | Piura Expressa</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Tu CSS custom -->
+  <style>
+:root {
+  --color-primary: #a0c878;
+  --color-secondary: #ddeb9d;
+  --color-light: #faf6e9;
+  --color-lightest: #fffdf6;
+  --color-text: #2d3748;
+  --color-text-light: #4a5568;
+  --color-text-muted: #bfc6cf;
+  --color-accent: #667eea;
+  --color-success: #48bb78;
+  --color-warning: #ed8936;
+  --color-error: #f56565;
+  --gradient-primary: linear-gradient(135deg, #a0c878 0%, #667eea 100%);
+  --gradient-accent: linear-gradient(135deg, #667eea 0%, #ddeb9d 100%);
+  --gradient-secondary: linear-gradient(135deg, #ddeb9d 0%, #faf6e9 100%);
+  --gradient-success: linear-gradient(135deg, #48bb78 0%, #a0c878 100%);
+  --shadow: 0 4px 16px -2px rgba(160,200,120,0.12), 0 2px 8px -1px rgba(102,126,234,0.08);
+  --shadow-lg: 0 16px 44px -8px rgba(102,126,234,0.11);
+  --border-radius: 1.5rem;
+  --transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+  --footer-dot: url('data:image/svg+xml;utf8,<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="2" fill="%2392b979" fill-opacity="0.13"/></svg>');
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  background: var(--color-lightest);
+  color: var(--color-text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* NAVBAR */
+.glass-nav {
+  background: rgba(255,253,246,0.85);
+  backdrop-filter: blur(15px);
+  border-bottom: 1.5px solid rgba(160,200,120,0.13);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+}
+.navbar-brand {
+  font-weight: 800;
+  font-size: 1.65rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+  letter-spacing: -1px;
+  transition: var(--transition);
+}
+.navbar-brand:hover { transform: scale(1.04);}
+.nav-link, .dropdown-item {
+  color: var(--color-text) !important;
+  font-weight: 500;
+  border-radius: 14px;
+  transition: var(--transition);
+  position: relative;
+}
+.nav-link:hover, .nav-link.active { color: var(--color-primary) !important; background: rgba(160,200,120,0.11);}
+.dropdown-menu {
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  border: 0;
+  min-width: 210px;
+}
+.btn-login {
+  background: var(--gradient-primary);
+  color: #fff !important;
+  border: none;
+  border-radius: 13px;
+  font-weight: 600;
+  padding: 0.44rem 1.4rem;
+  transition: var(--transition);
+}
+.btn-login:hover, .btn-login:focus {
+  background: var(--color-accent);
+  color: #fff !important;
+}
+/*HERO SECCION*/
+.hero-parallax {
+  min-height: 68vh;
+  height: 85vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(160, 200, 120, 0.9), rgba(102, 126, 234, 0.8));
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  border-radius: 0 0 2.3rem 2.3rem;
+  box-shadow: 0 16px 44px -8px rgba(102,126,234,0.10);
+}
+
+.hero-content {
+  text-align: center;
+  color: #fff;
+  z-index: 2;
+  position: relative;
+  max-width: 700px;
+  margin: 0 auto;
+  background: rgba(34,41,55,0.12);
+  border-radius: 1.8rem;
+  padding: 3.5rem 2.2rem 2.7rem 2.2rem;
+  box-shadow: 0 6px 32px rgba(102,126,234,0.10);
+  backdrop-filter: blur(1.5px);
+  border: 1.5px solid rgba(160,200,120,0.09);
+}
+
+.hero-title {
+  font-size: clamp(2.8rem, 7vw, 4.5rem);
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 7px 26px rgba(60,80,120,0.23);
+  letter-spacing: -0.05em;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-subtitle {
+  font-size: clamp(1.1rem, 2.3vw, 1.65rem);
+  margin-bottom: 2.6rem;
+  opacity: 0.93;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.12);
+}
+
+.hero-content .btn-lg {
+  font-weight: 600;
+  padding: 0.9rem 2.1rem;
+  font-size: 1.13rem;
+  border-radius: 2rem;
+  box-shadow: 0 1px 9px 0 rgba(102,126,234,0.09);
+  transition: var(--transition);
+}
+.hero-content .btn-light {
+  background: var(--gradient-secondary);
+  color: var(--color-primary);
+  border: none;
+}
+.hero-content .btn-light:hover {
+  background: var(--gradient-primary);
+  color: #fff;
+}
+.hero-content .btn-outline-light {
+  border: 2px solid #fff;
+  color: #fff;
+  background: transparent;
+}
+.hero-content .btn-outline-light:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+.hero-parallax .position-absolute {
+  left: 50%; transform: translateX(-50%);
+  z-index: 10;
+}
+.hero-parallax .bi-chevron-down {
+  text-shadow: 0 2px 16px rgba(0,0,0,0.19);
+  animation: heroChevron 2.3s infinite;
+}
+@keyframes heroChevron {
+  0%, 100% { transform: translateY(0);}
+  50% { transform: translateY(16px);}
+}
+
+/* SECCIÓN ESTADÍSTICAS */
+.stats-section {
+  padding: 3.2rem 0 1.5rem 0;
+  background: #fff;
+  position: relative;
+  z-index: 5;
+}
+.stats-section .row { justify-content: center; }
+.stat-card {
+  background: rgba(255,253,246, 0.96);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 2.1rem 1.1rem 1.3rem 1.1rem;
+  text-align: center;
+  transition: var(--transition);
+  border: 1.5px solid rgba(160,200,120,0.10);
+  min-height: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.stat-card:hover {
+  transform: translateY(-7px) scale(1.035);
+  box-shadow: var(--shadow-lg);
+}
+.stat-icon {
+  width: 62px; height: 62px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center; justify-content: center;
+  margin: 0 auto 1rem auto;
+  font-size: 2.2rem;
+  color: #fff;
+  box-shadow: 0 1px 16px 0 rgba(102,126,234,0.09);
+  animation: pulse 2.2s infinite;
+}
+@keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.07);} }
+.bg-gradient-primary    { background: var(--gradient-primary);}
+.bg-gradient-accent     { background: var(--gradient-accent);}
+.bg-gradient-secondary  { background: var(--gradient-secondary); color: var(--color-primary)!important;}
+.bg-gradient-success    { background: var(--gradient-success);}
+.stat-number {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  letter-spacing: -0.7px;
+  line-height: 1.1;
+}
+.stat-label {
+  color: var(--color-text-muted);
+  font-weight: 600;
+  font-size: 1.07rem;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+}
+
+/* Province Info */
+.province-info {
+  padding: 3rem 0 2.5rem 0;
+  background: var(--color-light);
+}
+.info-card {
+  background: #fff;
+  border-radius: var(--border-radius);
+  padding: 2rem 1.3rem 1.5rem 1.3rem;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  border: 1.5px solid rgba(160,200,120,0.09);
+  height: 100%;
+}
+.info-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+.info-icon {
+  width: 48px; height: 48px;
+  background: var(--gradient-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center; justify-content: center;
+  margin: 0 auto 1rem auto;
+  font-size: 1.55rem;
+  color: #fff;
+  animation: pulse 2.2s infinite;
+}
+.info-title { font-size: 1.11rem; font-weight: 700; color: var(--color-text);}
+.info-value { font-size: 1.36rem; font-weight: 800; color: var(--color-primary); margin:0;}
+.info-description { color: var(--color-text-light); margin: 0; line-height: 1.6; }
+
+/* MAPA */
+.map-section {
+  padding: 3.5rem 0 2rem 0;
+  background: var(--gradient-secondary);
+}
+.map-container {
+  position: relative;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  height: 440px;
+}
+#provinciaMap { height: 100%; width: 100%;}
+.map-controls {
+  position: absolute;
+  top: 16px; right: 16px; z-index: 10;
+  display: flex; flex-direction: column; gap: 9px;
+}
+.map-control-btn {
+  background: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--color-text);
+  font-size: 1.12rem;
+}
+.map-control-btn:hover {
+  background: var(--color-primary);
+  color: #fff;
+  transform: scale(1.07);
+}
+
+/* Timeline */
+.timeline {
+  padding: 3.5rem 0 2.3rem 0;
+  background: #fff;
+}
+.timeline-container {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.timeline-item {
+  padding: 1.4rem 0;
+  position: relative;
+  border-left: 2px solid var(--color-primary);
+  margin-left: 1.3rem;
+  padding-left: 2.8rem;
+}
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -11px; top: 2rem;
+  width: 19px; height: 19px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: var(--shadow);
+}
+.timeline-year {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 0.45rem;
+}
+.timeline-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+}
+.timeline-description {
+  color: var(--color-text-light);
+  line-height: 1.7;
+}
+
+/* POI Section */
+.poi-section {
+  padding: 3.5rem 0 2.2rem 0;
+  background: var(--gradient-secondary);
+}
+.poi-card {
+  background: #fff;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  height: 100%;
+}
+.poi-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg);}
+.poi-image {
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+.poi-category {
+  position: absolute;
+  top: 0.9rem; right: 0.9rem;
+  background: rgba(255,255,255,0.92);
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+.poi-content { padding: 1.3rem 1.3rem 1.1rem 1.3rem;}
+.poi-title { font-size: 1.13rem; font-weight: 700; margin-bottom: 0.6rem;}
+.poi-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.7rem;
+  font-size: 0.98rem;
+  color: var(--color-warning);
+}
+.poi-details {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--color-primary);
+  font-weight: 500;
+  transition: var(--transition);
+}
+.poi-details:hover { color: var(--color-accent); gap: 1rem;}
+
+/* FOOTER */
+.footer {
+  background: #232937 var(--footer-dot) repeat;
+  color: #e9ecef;
+  border-radius: 0 0 2.3rem 2.3rem;
+  margin-top: 5rem;
+  padding-top: 3rem;
+  padding-bottom: 1.5rem;
+}
+.footer h5, .footer .footer-link.active, .footer .footer-link:hover {
+  color: var(--color-primary) !important;
+  border-bottom: 2px solid var(--color-primary);
+}
+.footer-section h5 {
+  font-weight: 700;
+  margin-bottom: 1rem;
+  letter-spacing: 0.02em;
+}
+.footer-link {
+  color: #e9ecef;
+  opacity: 0.91;
+  text-decoration: none;
+  margin-bottom: 0.7rem;
+  transition: color 0.14s, border-bottom 0.14s;
+  border-bottom: 2px solid transparent;
+  font-weight: 500;
+}
+.footer-link:hover {
+  color: var(--color-primary) !important;
+  border-bottom: 2px solid var(--color-primary);
+}
+.footer .text-muted, .footer .footer-bottom, .footer p {
+  color: #a6b2c0 !important;
+  opacity: 0.85;
+}
+.social-link {
+  color: var(--color-primary);
+  background: rgba(255,255,255,0.08);
+  font-size: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem; height: 2.5rem;
+  border-radius: 50%;
+  margin-right: 0.48rem;
+  transition: background 0.18s, color 0.18s;
+}
+.social-link:hover {
+  background: var(--color-primary);
+  color: #fff !important;
+}
+.footer-bottom {
+  border-top: 1px solid #3d464e;
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  font-size: 1rem;
+}
+.footer .bi-envelope {
+  color: var(--color-primary);
+  font-size: 1.2rem;
+}
+
+/* GENERAL & RESPONSIVE */
+@media (max-width: 991.98px) {
+  .stat-card, .info-card { min-height: 120px; padding: 1.5rem 0.6rem;}
+  .map-container { height: 300px;}
+}
+@media (max-width: 767.98px) {
+  .stats-section, .province-info, .map-section, .timeline, .poi-section { padding-left: 0.4rem; padding-right: 0.4rem;}
+  .stat-icon, .info-icon { width: 39px; height: 39px; font-size: 1.1rem;}
+  .poi-image { height: 110px;}
+}
+/* RESPONSIVE HERO */
+@media (max-width: 991.98px) {
+  .hero-parallax { min-height: 43vh; height: 55vh; }
+  .hero-content { padding: 2.3rem 1.3rem 1.4rem 1.3rem;}
+}
+@media (max-width: 575.98px) {
+  .hero-parallax { min-height: 33vh; height: 38vh;}
+  .hero-content { padding: 1.1rem 0.5rem 0.9rem 0.5rem;}
+  .hero-title { font-size: 2rem;}
+}
+::-webkit-scrollbar { width: 9px; background: var(--color-lightest);}
+::-webkit-scrollbar-thumb { background: var(--color-secondary); border-radius: 8px;}
+::-webkit-scrollbar-thumb:hover { background: var(--color-primary);}
+  </style>
+</head>
+<body>
+<!-- ====================== NAVBAR ====================== -->
+<nav class="navbar navbar-expand-lg fixed-top glass-nav shadow-sm py-2">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">
+      <i class="bi bi-compass me-2"></i>Piura Expressa
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-1">
+        <li class="nav-item">
+          <a class="nav-link active" href="/"><i class="bi bi-house me-1"></i>Inicio</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="provinciasDropdown" role="button"
+             data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-map me-1"></i>Provincias
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="provinciasDropdown">
+            <li><a class="dropdown-item" href="/provincias"><i class="bi bi-list-ul me-2"></i>Ver todas las provincias</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <th:block th:if="${not #lists.isEmpty(provinciasNavbar)}">
+              <li th:each="provincia : ${provinciasNavbar}">
+                <a class="dropdown-item" th:href="@{'/provincias/' + ${provincia.nombre.toLowerCase()}}">
+                  <i class="bi bi-geo-alt me-2"></i>
+                  <span th:text="${provincia.nombre}">Nombre Provincia</span>
+                </a>
+              </li>
+            </th:block>
+            <th:block th:if="${#lists.isEmpty(provinciasNavbar)}">
+              <li><span class="dropdown-item-text text-muted"><i class="bi bi-info-circle me-2"></i>No hay provincias disponibles</span></li>
+            </th:block>
+            <th:block sec:authorize="hasRole('ADMIN')">
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-primary" href="/admin/provincias"><i class="bi bi-gear me-2"></i>Administrar provincias</a></li>
+            </th:block>
+          </ul>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="/eventos"><i class="bi bi-calendar-event me-1"></i>Eventos</a></li>
+        <li class="nav-item"><a class="nav-link" href="/foro"><i class="bi bi-chat-dots me-1"></i>Foro</a></li>
+      </ul>
+      <div class="d-flex align-items-center gap-2">
+        <div sec:authorize="isAuthenticated()">
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2" type="button"
+                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle" style="font-size: 1.5rem"></i>
+              <span sec:authentication="name"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li><a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/perfil}"><i class="bi bi-person"></i>Perfil</a></li>
+              <li><a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/mis-publicaciones}"><i class="bi bi-file-text"></i>Mis Publicaciones</a></li>
+              <li><a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/mis-eventos}"><i class="bi bi-calendar-check"></i>Mis Participaciones</a></li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <form action="#" th:action="@{/logout}" method="post" style="margin: 0">
+                  <button type="submit" class="dropdown-item d-flex align-items-center gap-2">
+                    <i class="bi bi-box-arrow-right"></i>Cerrar Sesión
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div sec:authorize="!isAuthenticated()">
+          <a href="/auth/login" class="btn btn-login d-flex align-items-center gap-2"><i class="bi bi-person-circle"></i> Iniciar Sesión</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<div style="height:64px"></div> <!-- Separación por navbar fixed -->
+    <!-- Hero Parallax Section -->
+    <section class="hero-parallax" th:style="'background-image: linear-gradient(135deg, rgba(160, 200, 120, 0.9), rgba(102, 126, 234, 0.8)), url(' + ${provincia.imagenPrincipal ?: 'https://example.com/default-image.jpg'} + '); background-attachment: fixed; background-size: cover; background-position: center;'">
+      <div class="hero-content" data-aos="fade-up" data-aos-duration="1000">
+        <h1 class="hero-title" th:text="${provincia.nombre}">Piura</h1>
+        <p class="hero-subtitle" th:text="${provincia.subtitulo ?: 'Descubre la magia de esta hermosa provincia'}">
+          Capital cultural e histórica de la región
+        </p>
+        <div class="d-flex gap-3 justify-content-center">
+          <button class="btn btn-light btn-lg" onclick="scrollToSection('estadisticas')">
+            <i class="bi bi-bar-chart me-2"></i>Ver Estadísticas
+          </button>
+          <button class="btn btn-outline-light btn-lg" onclick="scrollToSection('mapa')">
+            <i class="bi bi-map me-2"></i>Explorar Mapa
+          </button>
+        </div>
+      </div>
+      <div class="position-absolute bottom-0 start-50 translate-middle-x mb-4">
+        <i class="bi bi-chevron-down text-white fs-2 animate__animated animate__bounce animate__infinite"></i>
+      </div>
+    </section>
+<!-- ====================== ESTADÍSTICAS ====================== -->
+<section id="estadisticas" class="stats-section">
+  <div class="container">
+    <div class="row g-4 justify-content-center">
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="stat-card tilt-card" data-aos="fade-up">
+          <div class="stat-icon bg-gradient-primary"><i class="bi bi-people-fill"></i></div>
+          <span class="stat-number" th:text="${estadisticaActual != null ? estadisticaActual.poblacionTotal : 0}">0</span>
+          <div class="stat-label">Población<br>Total</div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="stat-card tilt-card" data-aos="fade-up" data-aos-delay="50">
+          <div class="stat-icon bg-gradient-accent"><i class="bi bi-graph-up"></i></div>
+          <span class="stat-number" th:text="${estadisticaActual != null ? #numbers.formatDecimal(estadisticaActual.densidadPoblacional, 1, 1) : '0.0'}">0.0</span>
+          <div class="stat-label">Densidad<br>Poblacional</div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="stat-card tilt-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="stat-icon bg-gradient-success"><i class="bi bi-book"></i></div>
+          <span class="stat-number" th:text="${estadisticaActual != null ? #numbers.formatDecimal(estadisticaActual.indiceAlfabetizacion, 1, 1) + '%' : '0.0%'}">0.0%</span>
+          <div class="stat-label">Índice de<br>Alfabetización</div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="stat-card tilt-card" data-aos="fade-up" data-aos-delay="150">
+          <div class="stat-icon bg-gradient-secondary"><i class="bi bi-building-fill"></i></div>
+          <span class="stat-number" th:text="${totalPuntosInteres ?: 0}">0</span>
+          <div class="stat-label">Atractivos<br>Turísticos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Additional Province Information -->
+    <section class="province-info">
+      <div class="container">
+        <div class="row g-4" data-aos="fade-up" data-aos-delay="300">
+          <div class="col-lg-4" th:if="${provincia.altitudPromedio != null}">
+            <div class="info-card tilt-card">
+              <div class="info-icon"><i class="bi bi-mountain"></i></div>
+              <h4 class="info-title">Altitud Promedio</h4>
+              <p class="info-value" th:text="${provincia.altitudPromedio + ' m.s.n.m.'}">0 m.s.n.m.</p>
+            </div>
+          </div>
+          <div class="col-lg-4" th:if="${provincia.climaDescripcion != null}">
+            <div class="info-card tilt-card">
+              <div class="info-icon"><i class="bi bi-thermometer-sun"></i></div>
+              <h4 class="info-title">Clima</h4>
+              <p class="info-description" th:text="${provincia.climaDescripcion}">Descripción del clima</p>
+            </div>
+          </div>
+          <div class="col-lg-4" th:if="${provincia.mejorEpocaVisita != null}">
+            <div class="info-card tilt-card">
+              <div class="info-icon"><i class="bi bi-calendar-check"></i></div>
+              <h4 class="info-title">Mejor Época para Visitar</h4>
+              <p class="info-description" th:text="${provincia.mejorEpocaVisita}">Todo el año</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Map with Points of Interest -->
+    <section id="mapa" class="map-section">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6" data-aos="fade-right">
+            <h2 class="display-5 fw-bold mb-4">Explora Cada Rincón</h2>
+            <p class="lead mb-4"> Descubre restaurantes, hoteles, atractivos turísticos y puntos de interés con nuestro mapa interactivo.
+            </p>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+              <button class="btn btn-outline-primary active" data-filter="all">
+                <i class="bi bi-geo-alt me-1"></i>Todos
+              </button>
+              <button class="btn btn-outline-primary" data-filter="restaurant">
+                <i class="bi bi-egg-fried me-1"></i>Restaurantes
+              </button>
+              <button class="btn btn-outline-primary" data-filter="hotel">
+                <i class="bi bi-building me-1"></i>Hoteles
+              </button>
+              <button class="btn btn-outline-primary" data-filter="tourist">
+                <i class="bi bi-camera me-1"></i>Turismo
+              </button>
+              <button class="btn btn-outline-primary" data-filter="culture">
+                <i class="bi bi-building-add me-1"></i>Cultura
+              </button>
+            </div>
+          </div>
+          <div class="col-lg-6" data-aos="fade-left">
+            <div class="map-container">
+              <div id="provinciaMap"></div>
+              <div class="map-controls">
+                <button class="map-control-btn" onclick="resetMapView()" title="Centrar mapa">
+                  <i class="bi bi-geo-alt"></i>
+                </button>
+                <button class="map-control-btn" onclick="toggleSatellite()" title="Vista satelital">
+                  <i class="bi bi-globe"></i>
+                </button>
+                <button class="map-control-btn" onclick="findMyLocation()" title="Mi ubicación">
+                  <i class="bi bi-crosshair"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Historical Timeline -->
+    <section class="timeline section-spacing">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-5" data-aos="fade-up">
+          <h2 class="display-5 fw-bold">Historia y Evolución</h2>
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#historiaModal">
+            <i class="bi bi-clock-history me-2"></i>Ver Historia Completa
+          </button>
+        </div>
+        <div class="timeline-container" th:if="${provincia.historia != null and !#lists.isEmpty(provincia.historia)}">
+          <div class="timeline-item" th:each="evento, iterStat : ${provincia.historia}" th:if="${iterStat.index < 3}" data-aos="fade-right">
+            <div class="timeline-year" th:text="${evento.ano}">1532</div>
+            <h3 class="timeline-title" th:text="${evento.titulo}">Fundación de la Ciudad</h3>
+            <p class="timeline-description" th:text="${evento.descripcion}">Descripción del evento histórico</p>
+          </div>
+          <div th:if="${#lists.size(provincia.historia) > 3}" class="text-center mt-4">
+            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#historiaModal">
+              <i class="bi bi-plus-circle me-2"></i>Ver más eventos históricos
+            </button>
+          </div>
+        </div>
+        <div th:if="${provincia.historia == null or #lists.isEmpty(provincia.historia)}" class="text-center py-5">
+          <i class="bi bi-info-circle text-muted" style="font-size: 4rem;"></i>
+          <p class="text-muted mt-3 lead">No hay información histórica disponible para esta provincia.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Points of Interest -->
+    <section class="poi-section">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-5" data-aos="fade-up">
+          <h2 class="display-5 fw-bold">Lugares de Interés</h2>
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#lugaresModal">
+            <i class="bi bi-geo-alt me-2"></i>Ver Todos los Lugares
+          </button>
+        </div>
+        <div class="row g-4" id="pointsOfInterest" th:if="${provincia.puntosInteres} != null">
+          <div class="col-lg-4 col-md-6" th:each="lugar, iterStat : ${provincia.puntosInteres}" th:if="${iterStat.index < 6}" data-aos="fade-up">
+            <div class="poi-card">
+              <div class="poi-image" th:style="'background-image: url(' + ${lugar.imagenUrl} + ');'">
+              <div class="poi-category" th:text="${lugar.categoriaNombre}">
+                Restaurante
+              </div>
+              </div>
+              <div class="poi-content">
+                <h3 class="poi-title" th:text="${lugar.nombre}">
+                  Nombre del lugar
+                </h3>
+                <div class="poi-rating">
+                  <span th:text="${lugar.calificacion}">★★★★★</span>
+                </div>
+                <p class="card-text text-muted small" th:text="${lugar.descripcion}">Descripción</p>
+                <a th:href="@{'/lugar/' + ${lugar.id}}" class="poi-details">
+                  Ver detalles <i class="bi bi-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div th:if="${#lists.size(provincia.puntosInteres) > 6}" class="col-12 text-center mt-4">
+            <button class="btn btn-outline-primary btn-lg" data-bs-toggle="modal" data-bs-target="#lugaresModal">
+              <i class="bi bi-plus-circle me-2"></i>Ver más lugares de interés
+            </button>
+          </div>
+        </div>
+        <div th:if="${provincia.puntosInteres == null or #lists.isEmpty(provincia.puntosInteres)}" class="text-center py-5">
+          <i class="bi bi-geo text-muted" style="font-size: 4rem;"></i>
+          <p class="text-muted mt-3 lead">No hay lugares de interés registrados para esta provincia.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal Historia y Evolución -->
+    <div class="modal fade" id="historiaModal" tabindex="-1" aria-labelledby="historiaModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="historiaModalLabel">
+              <i class="bi bi-clock-history me-2"></i>Historia y Evolución
+            </h5>
+            <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div th:if="${provincia.historia != null and !#lists.isEmpty(provincia.historia)}">
+              <div class="timeline-container">
+                <div class="timeline-item" th:each="evento, iterStat : ${provincia.historia}" th:if="${iterStat.index < 3}" data-aos="fade-right">
+                  <div class="timeline-year" th:text="${evento.ano}">1532</div>
+                  <h4 class="timeline-title" th:text="${evento.titulo}">Fundación de la Ciudad</h4>
+                  <p class="timeline-description" th:text="${evento.descripcion}">Descripción del evento histórico</p>
+                </div>
+              </div>
+            </div>
+            <div th:if="${provincia.historia == null or #lists.isEmpty(provincia.historia)}" class="text-center py-4">
+              <i class="bi bi-info-circle text-muted" style="font-size: 3rem;"></i>
+              <p class="text-muted mt-3">No hay información histórica disponible para esta provincia.</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Lugares de Interés -->
+    <div class="modal fade" id="lugaresModal" tabindex="-1" aria-labelledby="lugaresModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="lugaresModalLabel">
+              <i class="bi bi-geo-alt me-2"></i>Lugares de Interés
+            </h5>
+            <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div th:if="${provincia.puntosInteres != null and !#lists.isEmpty(provincia.puntosInteres)}">
+              <div class="row g-4">
+                <div class="col-md-6 col-lg-4" th:each="lugar, iterStat : ${provincia.puntosInteres}" th:if="${iterStat.index < 6}" data-aos="fade-up">
+                  <div class="card h-100">
+                    <div th:if="${lugar.imagenUrl}" class="card-img-top" style="height: 200px; background-size: cover; background-position: center;" th:style="'background-image: url(' + ${lugar.imagenUrl} + ');'"></div>
+                    <div th:unless="${lugar.imagenUrl}" class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                      <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                    </div>
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="card-title" th:text="${lugar.nombre}">Nombre del lugar</h6>
+                        <span class="badge bg-primary" th:text="${lugar.categoriaNombre}">Tipo</span>
+                      </div>
+                      <p class="card-text text-muted small" th:text="${lugar.descripcion}">Descripción</p>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="rating">
+                          <span class="text-warning">
+                            <i class="bi bi-star-fill" th:each="i : ${#numbers.sequence(1, lugar.calificacion ?: 0)}"></i>
+                            <i class="bi bi-star" th:each="i : ${#numbers.sequence((lugar.calificacion ?: 0) + 1, 5)}"></i>
+                          </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div th:if="${provincia.puntosInteres == null or #lists.isEmpty(provincia.puntosInteres)}" class="text-center py-4">
+              <i class="bi bi-geo text-muted" style="font-size: 4rem;"></i>
+              <p class="text-muted mt-3 lead">No hay lugares de interés registrados para esta provincia.</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="btn btn-primary position-fixed d-none" style="bottom: 2rem; right: 2rem; z-index: 1000; border-radius: 50%; width: 60px; height: 60px;">
+      <i class="bi bi-arrow-up"></i>
+    </button>
+<!-- ====================== FOOTER ====================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+        <h5><i class="bi bi-compass me-2"></i>Piura Expressa</h5>
+        <p class="text-muted">
+          Tu puerta de entrada a la riqueza cultural y gastronómica de
+          Piura. Conectamos tradiciones, sabores y experiencias únicas.
+        </p>
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="social-link" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="social-link" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+          <a href="#" class="social-link" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="footer-section">
+          <h5>Explorar</h5>
+          <div class="d-flex flex-column">
+            <a href="/provincias" class="footer-link">Provincias</a>
+            <a href="/eventos" class="footer-link">Eventos</a>
+            <a href="/cultura" class="footer-link">Cultura</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="footer-section">
+          <h5>Comunidad</h5>
+          <div class="d-flex flex-column">
+            <a href="/foro" class="footer-link">Foro</a>
+            <a href="/blog" class="footer-link">Blog</a>
+            <a href="/testimonios" class="footer-link">Testimonios</a>
+            <a href="/galeria" class="footer-link">Galería</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-6" data-aos="fade-up" data-aos-delay="400">
+        <div class="footer-section">
+          <h5>Soporte</h5>
+          <div class="d-flex flex-column">
+            <a href="/ayuda" class="footer-link">Centro de Ayuda</a>
+            <a href="/contacto" class="footer-link">Contacto</a>
+            <a href="/sugerencias" class="footer-link">Sugerencias</a>
+            <a href="/reportes" class="footer-link">Reportar Problema</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-6" data-aos="fade-up" data-aos-delay="500">
+        <div class="footer-section">
+          <h5>Legal</h5>
+          <div class="d-flex flex-column">
+            <a href="/terminos" class="footer-link">Términos de Uso</a>
+            <a href="/privacidad" class="footer-link">Privacidad</a>
+            <a href="/cookies" class="footer-link">Cookies</a>
+            <a href="/accesibilidad" class="footer-link">Accesibilidad</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom" data-aos="fade-up" data-aos-delay="600">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <p>&copy; 2025 Piura Expressa. Todos los derechos reservados.</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <p>
+            <i class="bi bi-envelope me-2"></i>
+            <a href="mailto:contacto@piuraexpressa.com" class="text-muted">contacto@piuraexpressa.com</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- JS SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script th:inline="javascript">
+// Inicializa animaciones AOS
+    AOS.init({
+      duration: 900,
+      easing: 'ease-in-out',
+      once: true
+    });
+
+    // Tilt en cards (VanillaTilt)
+    if (window.VanillaTilt) {
+      VanillaTilt.init(document.querySelectorAll(".tilt-card"), {
+        max: 13,
+        speed: 350,
+        glare: true,
+        "max-glare": 0.12
+      });
+    }
+
+    // Botón back to top
+    const backToTop = document.getElementById("backToTop");
+    window.addEventListener("scroll", () => {
+      if(backToTop) backToTop.classList.toggle("d-none", window.scrollY < 300);
+    });
+    if (backToTop) {
+      backToTop.addEventListener("click", () =>
+        window.scrollTo({ top: 0, behavior: "smooth" })
+      );
+    }
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        const navHeight = document.querySelector(".navbar").offsetHeight;
+        const top = el.getBoundingClientRect().top + window.scrollY - navHeight - 8;
+        window.scrollTo({ top, behavior: "smooth" });
+      }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+  // 1. DATOS de la provincia y los puntos de interés (reemplazados por Thymeleaf en server)
+  const provinciaData = {
+    nombre: /*[[${provincia.nombre}]]*/ 'Piura',
+    latitud: /*[[${provincia.latitud != null ? provincia.latitud : -5.1945}]]*/ -5.1945,
+    longitud: /*[[${provincia.longitud != null ? provincia.longitud : -80.6328}]]*/ -80.6328,
+    puntosInteres: /*[[${provincia.puntosInteres}]]*/ []
+    // puntosInteres debe ser una lista JS de objetos: {nombre, latitud, longitud, categoria, descripcion, etc}
+  };
+
+  let map, markers = [];
+  let streetLayer, satelliteLayer;
+  let currentLayer = 'street';
+
+  function createCustomIcon(color = '#A0C878') {
+    return L.divIcon({
+      html: `<div style="width:18px;height:18px;background:${color};border-radius:50%;border:2px solid #fff;box-shadow:0 2px 8px rgba(160,200,120,0.22);"></div>`,
+      iconSize: [18, 18],
+      className: "custom-div-icon",
+    });
+  }
+
+  function initMap() {
+    // 2. Inicializar el mapa centrado en la provincia
+    map = L.map('provinciaMap', { zoomControl: true }).setView([provinciaData.latitud, provinciaData.longitud], 12);
+
+    streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    });
+    satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: '© Esri'
+    });
+
+    streetLayer.addTo(map);
+
+    // 3. Marcador principal provincia
+    L.marker([provinciaData.latitud, provinciaData.longitud], {icon: createCustomIcon('#A0C878')})
+      .addTo(map)
+      .bindPopup(`<b>${provinciaData.nombre}</b><br/>Capital de la provincia`);
+
+    // 4. Cargar puntos de interés
+    updatePOIMarkers(provinciaData.puntosInteres || []);
+  }
+
+  function updatePOIMarkers(puntos) {
+    // Elimina los existentes
+    markers.forEach(m => map.removeLayer(m));
+    markers = [];
+    // Agrega los nuevos
+    puntos.forEach(punto => {
+      if(punto.latitud && punto.longitud) {
+        const marker = L.marker([punto.latitud, punto.longitud], {
+          icon: createCustomIcon('#DDEB9D')
+        }).addTo(map)
+          .bindPopup(`<div style="font-weight:600;color:#a0c878">${punto.nombre}</div>
+            <div style="color:#4a5568;font-size:0.95em">${punto.categoria || ''}</div>
+            <div style="color:#2d3748;font-size:0.93em;margin-top:3px">${punto.descripcion || ''}</div>`);
+        markers.push(marker);
+      }
+    });
+  }
+
+  // ---- MAP CONTROLS ----
+  window.resetMapView = function() {
+    if (map) map.setView([provinciaData.latitud, provinciaData.longitud], 12);
+  }
+  window.toggleSatellite = function() {
+    if (map) {
+      if (currentLayer === 'street') {
+        map.removeLayer(streetLayer);
+        map.addLayer(satelliteLayer);
+        currentLayer = 'satellite';
+      } else {
+        map.removeLayer(satelliteLayer);
+        map.addLayer(streetLayer);
+        currentLayer = 'street';
+      }
+    }
+  }
+  window.findMyLocation = function() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        const lat = pos.coords.latitude, lng = pos.coords.longitude;
+        map.setView([lat, lng], 14);
+        const userMarker = L.marker([lat, lng], {icon: createCustomIcon('#667eea')})
+          .addTo(map).bindPopup('¡Estás aquí!').openPopup();
+        setTimeout(()=>map.removeLayer(userMarker), 3500);
+      }, (error) => {
+        alert('No se pudo obtener tu ubicación: ' + error.message);
+      });
+    } else {
+      alert('Tu navegador no soporta geolocalización');
+    }
+  }
+
+  // ---- FILTRO CATEGORÍAS (si implementas en puntosInteres) ----
+  const filterButtons = document.querySelectorAll('[data-filter]');
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const filtro = this.getAttribute('data-filter');
+      filterButtons.forEach(b=>b.classList.remove('active'));
+      this.classList.add('active');
+      if (filtro === 'all') {
+        updatePOIMarkers(provinciaData.puntosInteres || []);
+      } else {
+        // Solo los puntos que coincidan con categoría
+        const filtrados = (provinciaData.puntosInteres || []).filter(
+          p => (p.categoria && p.categoria.toLowerCase().includes(filtro))
+             || (p.tipo && p.tipo.toLowerCase().includes(filtro))
+        );
+        updatePOIMarkers(filtrados);
+      }
+    });
+  });
+
+  // ---- Inicializa el mapa al cargar ----
+  setTimeout(initMap, 500); // Timeout por si acaso por layout
+
+  // ----------- Scroll a secciones ----------- 
+  window.scrollToSection = function(id) {
+    const el = document.getElementById(id);
+    if (el) {
+      const navHeight = document.querySelector(".navbar").offsetHeight || 0;
+      const top = el.getBoundingClientRect().top + window.scrollY - navHeight - 8;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+  }
+});
+
+</script>
+</body>
+</html>

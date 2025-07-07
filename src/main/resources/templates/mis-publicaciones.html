@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Mis Publicaciones - Piura Expressa</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+    <div th:replace="fragments/layout :: header"></div>
+
+    <main>
+        <h1>Mis Publicaciones</h1>
+        <div>
+            <ul>
+                <li th:each="publicacion : ${misPublicaciones}">
+                    <h2 th:text="${publicacion.titulo}">Título de la publicación</h2>
+                    <p th:text="${publicacion.descripcion}">Descripción de la publicación</p>
+                    <p>Fecha: <span th:text="${#dates.format(publicacion.fechaCreacion, 'dd/MM/yyyy')}">Fecha</span></p>
+                    <a th:href="@{'/publicaciones/' + ${publicacion.id}}">Ver detalles</a>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <div th:replace="fragments/layout :: footer"></div>
+</body>
+</html>

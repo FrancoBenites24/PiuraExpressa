@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Puntos de Interés - Provincia</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #FFFDF6;
+            color: #333;
+        }
+        .btn-primary {
+            background-color: #A0C878;
+            border-color: #A0C878;
+        }
+        .btn-primary:hover {
+            background-color: #DDEB9D;
+            border-color: #DDEB9D;
+        }
+        .btn-danger {
+            background-color: #FAF6E9;
+            color: #A0C878;
+            border-color: #FAF6E9;
+        }
+        .btn-danger:hover {
+            background-color: #DDEB9D;
+            color: #333;
+            border-color: #DDEB9D;
+        }
+        table {
+            background-color: #FAF6E9;
+        }
+        thead {
+            background-color: #DDEB9D;
+        }
+        tbody tr:hover {
+            background-color: #A0C878;
+            color: #FFFDF6;
+        }
+        img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="container">
+        <h1 class="mb-4">Puntos de Interés de la Provincia</h1>
+        <a class="btn btn-primary mb-3" th:href="@{'/admin/provincias/' + ${provinciaId} + '/puntos-interes/nuevo'}">Nuevo Punto de Interés</a>
+        <table class="table table-bordered table-hover align-middle text-center">
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>categoria</th>
+                    <th>Latitud</th>
+                    <th>Longitud</th>
+                    <th>Dirección</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th>Sitio Web</th>
+                    <th>Horario Atención</th>
+                    <th>Calificación</th>
+                    <th>Activo</th>
+                    <th>Fecha Creación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="punto : ${puntosInteres}">
+                    <td>
+                        <img th:if="${punto.imagenUrl != null}" th:src="@{${punto.imagenUrl}}" alt="Imagen" />
+                    </td>
+                    <td th:text="${punto.nombre}">Nombre</td>
+                    <td th:text="${punto.descripcion}">Descripción</td>
+                    <td th:text="${punto.categoriaNombre}">categoria</td>
+                    <td th:text="${punto.latitud}">Latitud</td>
+                    <td th:text="${punto.longitud}">Longitud</td>
+                    <td th:text="${punto.direccion}">Dirección</td>
+                    <td th:text="${punto.telefono}">Teléfono</td>
+                    <td th:text="${punto.email}">Email</td>
+                    <td><a th:href="${punto.sitioWeb}" th:text="${punto.sitioWeb}" target="_blank">Sitio Web</a></td>
+                    <td th:text="${punto.horarioAtencion}">Horario</td>
+                    <td th:text="${punto.calificacion}">Calificación</td>
+                    <td>
+                        <i class="bi" th:classappend="${punto.activo} ? 'bi-unlock-fill text-success' : 'bi-lock-fill text-danger'"></i>
+                    </td>
+<td th:text="${#temporals.format(punto.fechaCreacion, 'dd/MM/yyyy')}">Fecha Creación</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm me-1" th:href="@{'/admin/provincias/' + ${provinciaId} + '/puntos-interes/editar/' + ${punto.id}}">Editar</a>
+                        <form th:action="@{'/admin/provincias/' + ${provinciaId} + '/puntos-interes/eliminar/' + ${punto.id}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Está seguro de eliminar este punto de interés?');">Eliminar</button>
+                        </form>
+                        <form th:if="${punto.activo}" th:action="@{'/admin/provincias/' + ${provinciaId} + '/puntos-interes/desactivar/' + ${punto.id}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-warning btn-sm">Desactivar</button>
+                        </form>
+                        <form th:if="${!punto.activo}" th:action="@{'/admin/provincias/' + ${provinciaId} + '/puntos-interes/activar/' + ${punto.id}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-success btn-sm">Activar</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <nav aria-label="Page navigation example" th:if="${currentPage != null and totalPages != null}">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{'/admin/provincias/' + ${provinciaId} + '/puntos-interes?page=' + (${currentPage} - 1)}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{'/admin/provincias/' + ${provinciaId} + '/puntos-interes?page=' + i}" th:text="${i + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{'/admin/provincias/' + ${provinciaId} + '/puntos-interes?page=' + (${currentPage} + 1)}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <a class="btn btn-secondary mt-3" th:href="@{/admin/provincias}">Volver a Provincias</a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

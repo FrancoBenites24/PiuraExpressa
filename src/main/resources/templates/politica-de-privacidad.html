@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Política de Privacidad - Piura Expressa</title>
+
+  <!-- Bootstrap CSS and Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <!-- Custom CSS -->
+<style>
+/* Import Bootstrap CSS */
+@import url('https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css');
+
+/* Project color palette variables */
+:root {
+  --color-primary: #a0c878;
+  --color-secondary: #ddeb9d;
+  --color-light: #faf6e9;
+  --color-lightest: #fffdf6;
+  --color-text: #2d3748;
+  --color-text-light: #4a5568;
+  --color-text-muted: #718096;
+  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, #8bb564 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);
+}
+
+/* Body and typography */
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--color-lightest);
+  color: var(--color-text);
+  line-height: 1.7;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  padding-top: 80px; /* space for fixed header */
+}
+
+/* Header styles */
+.navbar-custom {
+  background: rgba(255, 253, 246, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(160, 200, 120, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1030;
+}
+
+.navbar-brand-custom {
+  font-weight: 700;
+  font-size: 1.5rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navbar-brand-custom:hover {
+  transform: scale(1.05);
+}
+
+.nav-link-custom {
+  color: var(--color-text);
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link-custom::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-secondary);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: -1;
+  opacity: 0.1;
+}
+
+.nav-link-custom:hover::before {
+  left: 0;
+}
+
+.nav-link-custom:hover,
+.nav-link-custom:focus {
+  color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.nav-link-custom.active {
+  color: var(--color-primary);
+  background: rgba(160, 200, 120, 0.15);
+}
+
+/* Footer styles */
+.footer-custom {
+  background: linear-gradient(135deg, var(--color-text) 0%, #1a202c 100%);
+  color: white;
+  padding: 4rem 0 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-custom::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="footerPattern" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="%23A0C878" opacity="0.1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23footerPattern)"/></svg>');
+}
+
+.footer-section-custom {
+  position: relative;
+  z-index: 2;
+}
+
+.footer-section-custom h5 {
+  color: var(--color-secondary);
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.footer-section-custom h5::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background: var(--gradient-primary);
+  border-radius: 1px;
+}
+
+.footer-link-custom {
+  color: #cbd5e0;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+  padding: 0.25rem 0;
+  position: relative;
+}
+
+.footer-link-custom::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-primary);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer-link-custom:hover::before {
+  width: 100%;
+}
+
+.footer-link-custom:hover {
+  color: var(--color-secondary);
+  transform: translateX(5px);
+}
+
+.social-links-custom {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.social-link-custom {
+  width: 45px;
+  height: 45px;
+  background: rgba(160, 200, 120, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-secondary);
+  font-size: 1.25rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.social-link-custom::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-primary);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: -1;
+}
+
+.social-link-custom:hover::before {
+  left: 0;
+}
+
+.social-link-custom:hover {
+  color: white;
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 0 0 20px rgba(160, 200, 120, 0.3);
+}
+
+/* Main content styles */
+.main-content {
+  max-width: 900px;
+  margin: 3rem auto 5rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 15px -3px rgba(160, 200, 120, 0.1),
+    0 4px 6px -2px rgba(160, 200, 120, 0.05);
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: transform 0.4s ease;
+}
+
+.main-content:hover {
+  transform: rotateX(5deg) rotateY(5deg);
+}
+
+.main-content h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--color-text) 0%, var(--color-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1.5rem;
+}
+
+.main-content p {
+  font-size: 1.1rem;
+  color: var(--color-text-light);
+  line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main-content {
+    margin: 2rem 1rem 4rem;
+    padding: 1.5rem;
+  }
+}
+
+</style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+      <div class="container">
+        <a class="navbar-brand navbar-brand-custom" href="/">
+          <i class="bi bi-compass me-2"></i>Piura Expressa
+        </a>
+
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <i class="bi bi-list"></i>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+              <a class="nav-link nav-link-custom active" href="#inicio">
+                <i class="bi bi-house me-1"></i>Inicio
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link nav-link-custom dropdown-toggle" href="#" id="provinciasDropdown" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-map me-1"></i>Provincias
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="provinciasDropdown">
+                <li>
+                  <a class="dropdown-item" href="/provincias">
+                    <i class="bi bi-list-ul me-2"></i>Ver todas las provincias
+                  </a>
+                </li>
+                <li>
+                  <hr class="dropdown-divider" />
+                </li>
+                <th:block th:if="${not #lists.isEmpty(provinciasNavbar)}">
+                  <li th:each="provincia : ${provinciasNavbar}">
+                    <a class="dropdown-item" th:href="@{'/provincias/' + ${provincia.nombre.toLowerCase()}}">
+                      <i class="bi bi-geo-alt me-2"></i>
+                      <span th:text="${provincia.nombre}">Nombre Provincia</span>
+                    </a>
+                  </li>
+                </th:block>
+                <th:block th:if="${#lists.isEmpty(provinciasNavbar)}">
+                  <li>
+                    <span class="dropdown-item-text text-muted">
+                      <i class="bi bi-info-circle me-2"></i>No hay provincias disponibles
+                    </span>
+                  </li>
+                </th:block>
+                <th:block sec:authorize="hasRole('ADMIN')">
+                  <li>
+                    <hr class="dropdown-divider" />
+                  </li>
+                  <li>
+                    <a class="dropdown-item text-primary" href="/admin/provincias">
+                      <i class="bi bi-gear me-2"></i>Administrar provincias
+                    </a>
+                  </li>
+                </th:block>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-link-custom" href="/eventos">
+                <i class="bi bi-calendar-event me-1"></i>Eventos
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-link-custom" href="/foro">
+                <i class="bi bi-chat-dots me-1"></i>Foro
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-link-custom" href="/platos">
+                <i class="bi bi-egg-fried me-1"></i>Gastronomía
+              </a>
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center">
+            <div sec:authorize="isAuthenticated()">
+              <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2" type="button"
+                  id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-person-circle" style="font-size: 1.5rem"></i>
+                  <span sec:authentication="name"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/perfil}">
+                      <i class="bi bi-person"></i> Perfil
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/mis-publicaciones}">
+                      <i class="bi bi-file-text"></i> Mis Publicaciones
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/mis-eventos}">
+                      <i class="bi bi-calendar-check"></i> Mis Participaciones
+                    </a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider" />
+                  </li>
+                  <li>
+                    <form action="#" th:action="@{/logout}" method="post" style="margin: 0">
+                      <button type="submit" class="dropdown-item d-flex align-items-center gap-2">
+                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                      </button>
+                    </form>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+              <a href="/auth/login" class="btn btn-login d-flex align-items-center gap-2">
+                <i class="bi bi-person-circle"></i> Iniciar Sesión
+              </a>
+            </div>
+          </div>
+        </div>
+        <div sec:authorize="!isAuthenticated()">
+          <a href="/auth/login" class="btn btn-login">
+            <i class="bi bi-person-circle me-1"></i>Iniciar Sesión
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content" tabindex="0">
+    <h1>Política de Privacidad</h1>
+    <p>En Piura Expressa, valoramos y respetamos tu privacidad. Esta política describe cómo recopilamos, usamos y protegemos tu información personal cuando utilizas nuestros servicios.</p>
+
+    <section>
+      <h2>1. Información que recopilamos</h2>
+      <p>Recopilamos información que nos proporcionas directamente, como tu nombre, correo electrónico, y cualquier otro dato que decidas compartir al registrarte o interactuar con nuestra plataforma.</p>
+      <ul>
+        <li>Datos de contacto (nombre, correo electrónico, teléfono)</li>
+        <li>Información de uso y navegación en nuestro sitio web</li>
+        <li>Datos de ubicación para mejorar la experiencia personalizada</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>2. Uso de la información</h2>
+      <p>Utilizamos tu información para:</p>
+      <ul>
+        <li>Proporcionar y mejorar nuestros servicios</li>
+        <li>Personalizar tu experiencia en Piura Expressa</li>
+        <li>Enviar comunicaciones relevantes y promociones</li>
+        <li>Garantizar la seguridad y prevención de fraudes</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>3. Protección de datos</h2>
+      <p>Implementamos medidas técnicas y organizativas para proteger tu información contra accesos no autorizados, alteraciones o divulgaciones indebidas.</p>
+      <p>Solo el personal autorizado tiene acceso a tus datos, y están comprometidos a mantener la confidencialidad.</p>
+    </section>
+
+    <section>
+      <h2>4. Compartir información</h2>
+      <p>No vendemos ni alquilamos tu información personal a terceros. Podemos compartir datos con proveedores de servicios confiables que nos ayudan a operar la plataforma, siempre bajo estrictas condiciones de confidencialidad.</p>
+    </section>
+
+    <section>
+      <h2>5. Tus derechos</h2>
+      <p>Tienes derecho a acceder, corregir o eliminar tus datos personales. También puedes oponerte al tratamiento de tus datos o solicitar su portabilidad.</p>
+      <p>Para ejercer estos derechos, contáctanos a través de <a href="mailto:contacto@piuraexpressa.com">contacto@piuraexpressa.com</a>.</p>
+    </section>
+
+    <section>
+      <h2>6. Cookies y tecnologías similares</h2>
+      <p>Utilizamos cookies para mejorar la funcionalidad del sitio y analizar el tráfico. Puedes configurar tu navegador para rechazar cookies, aunque esto puede afectar la experiencia de usuario.</p>
+    </section>
+
+    <section>
+      <h2>7. Cambios en la política de privacidad</h2>
+      <p>Nos reservamos el derecho de actualizar esta política en cualquier momento. Te recomendamos revisarla periódicamente para estar informado sobre cómo protegemos tu información.</p>
+    </section>
+
+    <section>
+      <h2>8. Contacto</h2>
+      <p>Si tienes preguntas o inquietudes sobre nuestra política de privacidad, no dudes en contactarnos en <a href="mailto:contacto@piuraexpressa.com">contacto@piuraexpressa.com</a>.</p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-custom">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <h5><i class="bi bi-compass me-2"></i>Piura Expressa</h5>
+          <p class="text-muted">
+            Tu puerta de entrada a la riqueza cultural y gastronómica de
+            Piura. Conectamos tradiciones, sabores y experiencias únicas.
+          </p>
+          <div class="social-links-custom">
+            <a href="#" class="social-link-custom" aria-label="Facebook">
+              <i class="bi bi-facebook"></i>
+            </a>
+            <a href="#" class="social-link-custom" aria-label="Instagram">
+              <i class="bi bi-instagram"></i>
+            </a>
+            <a href="#" class="social-link-custom" aria-label="Twitter">
+              <i class="bi bi-twitter"></i>
+            </a>
+            <a href="#" class="social-link-custom" aria-label="YouTube">
+              <i class="bi bi-youtube"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-6">
+          <h5>Explorar</h5>
+          <div class="d-flex flex-column">
+            <a href="/provincias" class="footer-link-custom">Provincias</a>
+            <a href="/eventos" class="footer-link-custom">Eventos</a>
+            <a href="/platos" class="footer-link-custom">Gastronomía</a>
+            <a href="/cultura" class="footer-link-custom">Cultura</a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-6">
+          <h5>Comunidad</h5>
+          <div class="d-flex flex-column">
+            <a href="/foro" class="footer-link-custom">Foro</a>
+            <a href="/blog" class="footer-link-custom">Blog</a>
+            <a href="/testimonios" class="footer-link-custom">Testimonios</a>
+            <a href="/galeria" class="footer-link-custom">Galería</a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-6">
+          <h5>Soporte</h5>
+          <div class="d-flex flex-column">
+            <a href="/ayuda" class="footer-link-custom">Centro de Ayuda</a>
+            <a href="/contacto" class="footer-link-custom">Contacto</a>
+            <a href="/sugerencias" class="footer-link-custom">Sugerencias</a>
+            <a href="/reportes" class="footer-link-custom">Reportar Problema</a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-6">
+          <h5>Legal</h5>
+          <div class="d-flex flex-column">
+            <a href="/terminos" class="footer-link-custom">Términos de Uso</a>
+            <a href="/privacidad" class="footer-link-custom">Privacidad</a>
+            <a href="/cookies" class="footer-link-custom">Cookies</a>
+            <a href="/accesibilidad" class="footer-link-custom">Accesibilidad</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom text-center mt-4">
+        <p>&copy; 2025 Piura Expressa. Todos los derechos reservados.</p>
+        <p>
+          <i class="bi bi-envelope me-2"></i>
+          <a href="mailto:contacto@piuraexpressa.com" class="text-muted">contacto@piuraexpressa.com</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JS -->
+  <script th:src="@{/js/politica-de-privacidad.js}"></script>
+</body>
+
