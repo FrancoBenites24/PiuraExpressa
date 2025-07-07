@@ -24,4 +24,6 @@ public interface PuntoInteresRepositorio extends JpaRepository<PuntoInteres, Lon
 
     long countByProvincia(Provincia provincia);
 
+    void deleteByIdAndProvinciaId(Long id, Long provinciaId);
+
 }
