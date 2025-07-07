@@ -23,7 +23,7 @@ public class ReportePublicacion {
     @Column(nullable = false)
     private String motivo;
 
-    @Column(nullable = false)
+    @Column(name = "fecha_reporte",nullable = false)
     private LocalDateTime fechaReporte;
 
     @Builder.Default

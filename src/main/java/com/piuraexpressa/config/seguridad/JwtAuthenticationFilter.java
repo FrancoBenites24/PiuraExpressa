@@ -51,4 +51,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
+    @Override
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+
+        // Excluye vistas Thymeleaf públicas y rutas del frontend
+        return path.equals("/") ||
+               path.startsWith("/auth") ||
+               path.startsWith("/css") ||
+               path.startsWith("/js") ||
+               path.startsWith("/images") ||
+               path.startsWith("/eventos") ||
+               path.startsWith("/foro") ||
+               path.startsWith("/provincias") ||
+               path.startsWith("/webjars") || 
+               path.endsWith(".html");
+    }
 }

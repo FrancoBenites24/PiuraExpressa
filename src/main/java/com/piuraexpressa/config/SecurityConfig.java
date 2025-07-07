@@ -27,10 +27,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
-                    .ignoringRequestMatchers("/admin/provincias/guardar")
+                    .ignoringRequestMatchers("/api/**","/admin/provincias/guardar")
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**", "/css/**", "/js/**", "/images/**").permitAll()
+
                         .requestMatchers("/admin/usuarios/**").hasAuthority("ADMINISTRAR_USUARIOS")
                         .requestMatchers("/admin/**").hasAuthority("MOSTRAR_PANEL_ADMIN")
                         .anyRequest().authenticated())

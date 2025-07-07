@@ -8,7 +8,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "publicacion")
+@Table(name = "publicaciones")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -33,20 +33,20 @@ public class Publicacion {
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDateTime fechaCreacion;
 
+    @Column(name = "fecha_actualizacion", nullable = false)
+    private LocalDateTime fechaActualizacion;
+
     @Builder.Default
-    @Column(nullable = false)
+    @Column(name = "activa",nullable = false)
     private boolean activo = true;
-
-    @Column(name = "fecha_baja")
-    private LocalDateTime fechaBaja;
-
-    @Size(max = 500)
-    @Column(name = "motivo_baja")
-    private String motivoBaja;
 
     @Column(name = "usuario_id", nullable = false)
     private Long autor;
 
+    @Column(nullable = false)
+    private String slug;
+
+    //realaciones
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "provincia_id")
     private Provincia provincia;

@@ -20,4 +20,13 @@ public interface ProvinciaRepositorio extends JpaRepository<Provincia, Long> {
     })
     Optional<Provincia> findByNombreIgnoreCase(String nombre);
 
+    @EntityGraph(attributePaths = {
+        "historia",
+        "puntosInteres",
+        "puntosInteres.categoria"
+    })
+    Optional<Provincia> findConDetallesById(Long id);
+
+    boolean existsByNombre(String nombre);
+
 }

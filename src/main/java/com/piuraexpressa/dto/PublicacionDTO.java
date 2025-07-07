@@ -33,4 +33,8 @@ public class PublicacionDTO {
 
     @Size(max = 255, message = "El motivo de baja no debe exceder los 255 caracteres")
     private String motivoBaja;
+
+    private Long provinciaId;
+    private String nombreUsuario;
+    private String avatarUsuario;
 }

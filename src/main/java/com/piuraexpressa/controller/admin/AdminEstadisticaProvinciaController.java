@@ -38,17 +38,19 @@ public class AdminEstadisticaProvinciaController {
         dto.setProvinciaId(provinciaId);
         model.addAttribute("estadisticaProvinciaDTO", dto);
         model.addAttribute("provinciaId", provinciaId);
+        model.addAttribute("modo", "nuevo");
         return "admin/provincias/estadisticas/formulario";
     }
 
     @PostMapping("/guardar")
     public String guardar(@PathVariable Long provinciaId,
-                          @Valid @ModelAttribute("estadisticaProvinciaDTO") EstadisticaProvinciaDTO dto,
-                          BindingResult bindingResult, Model model, RedirectAttributes redirectAttrs) {
+            @Valid @ModelAttribute("estadisticaProvinciaDTO") EstadisticaProvinciaDTO dto,
+            BindingResult bindingResult, Model model, RedirectAttributes redirectAttrs) {
         dto.setProvinciaId(provinciaId);
 
         if (estadisticaServicio.anioExisteEnProvincia(dto.getAnoActualizacion(), provinciaId, dto.getId())) {
-            bindingResult.rejectValue("anoActualizacion", "error.anoActualizacion", "Ya existe una estadística para ese año en la provincia.");
+            bindingResult.rejectValue("anoActualizacion", "error.anoActualizacion",
+                    "Ya existe una estadística para ese año en la provincia.");
         }
 
         if (bindingResult.hasErrors()) {
@@ -62,7 +64,8 @@ public class AdminEstadisticaProvinciaController {
     }
 
     @GetMapping("/editar/{id}")
-    public String mostrarFormularioEditar(@PathVariable Long provinciaId, @PathVariable Long id, Model model, RedirectAttributes redirectAttrs) {
+    public String mostrarFormularioEditar(@PathVariable Long provinciaId, @PathVariable Long id, Model model,
+            RedirectAttributes redirectAttrs) {
         EstadisticaProvinciaDTO dto = estadisticaServicio.buscarPorIdYProvincia(id, provinciaId);
         if (dto == null) {
             redirectAttrs.addFlashAttribute("error", "Estadística no encontrada.");
@@ -70,7 +73,34 @@ public class AdminEstadisticaProvinciaController {
         }
         model.addAttribute("estadisticaProvinciaDTO", dto);
         model.addAttribute("provinciaId", provinciaId);
+        model.addAttribute("modo", "editar");
         return "admin/provincias/estadisticas/formulario";
+    }
+
+    @PostMapping("/actualizar/{id}")
+    public String actualizar(@PathVariable Long provinciaId,
+            @PathVariable Long id,
+            @Valid @ModelAttribute("estadisticaProvinciaDTO") EstadisticaProvinciaDTO dto,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttrs,
+            Model model) {
+        dto.setId(id);
+        dto.setProvinciaId(provinciaId);
+
+        if (estadisticaServicio.anioExisteEnProvincia(dto.getAnoActualizacion(), provinciaId, id)) {
+            bindingResult.rejectValue("anoActualizacion", "error.anoActualizacion",
+                    "Ya existe una estadística para ese año en la provincia.");
+        }
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("provinciaId", provinciaId);
+            model.addAttribute("modo", "editar");
+            return "admin/provincias/estadisticas/formulario";
+        }
+
+        estadisticaServicio.guardar(dto);
+        redirectAttrs.addFlashAttribute("success", "Estadística actualizada correctamente.");
+        return "redirect:/admin/provincias/" + provinciaId + "/estadisticas";
     }
 
     @PostMapping("/eliminar/{id}")

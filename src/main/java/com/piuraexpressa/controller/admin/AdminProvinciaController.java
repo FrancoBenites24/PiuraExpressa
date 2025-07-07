@@ -2,11 +2,11 @@ package com.piuraexpressa.controller.admin;
 
 import com.piuraexpressa.dto.ProvinciaDTO;
 import com.piuraexpressa.model.dominio.Provincia;
-import com.piuraexpressa.mapper.ProvinciaMapper;
 import com.piuraexpressa.servicio.ProvinciaServicio;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +21,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AdminProvinciaController {
 
     private final ProvinciaServicio provinciaServicio;
-    private final ProvinciaMapper provinciaMapper;
 
     // Listado de provincias (para la tabla)
     @GetMapping
@@ -42,45 +41,78 @@ public class AdminProvinciaController {
         return "admin/provincias/list";
     }
 
-
     // Mostrar formulario para crear una nueva provincia
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevaProvincia(Model modelo) {
         modelo.addAttribute("provincia", new ProvinciaDTO());
+        modelo.addAttribute("modo", "nuevo");
         return "admin/provincias/formulario";
     }
 
-    // Guardar provincia (nuevo o editar)
+    // POST: Crear nueva provincia
     @PostMapping("/guardar")
     public String guardarProvincia(@Valid @ModelAttribute("provincia") ProvinciaDTO provinciaDTO,
-                                   org.springframework.validation.BindingResult bindingResult,
-                                   RedirectAttributes redirectAttributes,
-                                   Model modelo) {
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes,
+            Model modelo) {
+        if (provinciaDTO.getId() != null) {
+            return "redirect:/admin/provincias/actualizar/" + provinciaDTO.getId(); // Seguridad defensiva
+        }
+
         if (bindingResult.hasErrors()) {
             modelo.addAttribute("error", "Por favor corrige los errores del formulario.");
+            modelo.addAttribute("modo", "nuevo");
             return "admin/provincias/formulario";
         }
+
         try {
-            Provincia provincia = provinciaMapper.toEntidad(provinciaDTO);
-            provinciaServicio.guardarProvincia(provincia);
-            redirectAttributes.addFlashAttribute("success", "Provincia guardada exitosamente.");
+            provinciaServicio.guardar(provinciaDTO);
+            redirectAttributes.addFlashAttribute("success", "Provincia registrada exitosamente.");
             return "redirect:/admin/provincias";
         } catch (Exception e) {
             modelo.addAttribute("error", "Error al guardar: " + e.getMessage());
+            modelo.addAttribute("modo", "nuevo");
             return "admin/provincias/formulario";
         }
     }
 
     // Mostrar formulario para editar
     @GetMapping("/editar/{id}")
-    public String mostrarFormularioEditar(@PathVariable("id") Long id, Model modelo, RedirectAttributes redirectAttributes) {
+    public String mostrarFormularioEditar(@PathVariable("id") Long id, Model modelo,
+            RedirectAttributes redirectAttributes) {
         ProvinciaDTO provincia = provinciaServicio.buscarPorId(id);
         if (provincia == null) {
             redirectAttributes.addFlashAttribute("error", "Provincia no encontrada.");
             return "redirect:/admin/provincias";
         }
-        modelo.addAttribute("provincia", provincia); // Ya es DTO, directo
-        return "admin/provincias/editar"; // <--- archivo editar.html
+        modelo.addAttribute("provincia", provincia);
+        modelo.addAttribute("modo", "editar");
+        return "admin/provincias/formulario";
+    }
+
+    // POST: Actualizar provincia existente
+    @PostMapping("/actualizar/{id}")
+    public String actualizarProvincia(@PathVariable Long id,
+            @Valid @ModelAttribute("provincia") ProvinciaDTO provinciaDTO,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes,
+            Model modelo) {
+        if (bindingResult.hasErrors()) {
+            modelo.addAttribute("error", "Por favor corrige los errores del formulario.");
+            modelo.addAttribute("modo", "editar");
+            return "admin/provincias/formulario";
+        }
+
+        try {
+            provinciaDTO.setId(id); // aseguramos consistencia
+            provinciaServicio.actualizar(provinciaDTO);
+            redirectAttributes.addFlashAttribute("success", "Provincia actualizada exitosamente.");
+            return "redirect:/admin/provincias";
+        } catch (Exception e) {
+            modelo.addAttribute("error", "Error al actualizar: " + e.getMessage());
+            modelo.addAttribute("modo", "editar");
+            return "admin/provincias/formulario";
+        }
     }
 
     // Activar provincia
@@ -113,8 +145,10 @@ public class AdminProvinciaController {
         try {
             provinciaServicio.eliminarProvincia(id);
             redirectAttributes.addFlashAttribute("success", "Provincia eliminada correctamente.");
+        } catch (IllegalStateException ex) {
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error al eliminar: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error inesperado al eliminar la provincia.");
         }
         return "redirect:/admin/provincias";
     }

@@ -1,45 +1,35 @@
 package com.piuraexpressa.dto;
 
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class EstadisticaProvinciaDTO {
 
     private Long id;
 
-    @NotNull(message = "La provincia es obligatoria")
+    @NotNull
     private Long provinciaId;
 
-    @NotNull(message = "El año de actualización es obligatorio")
+    @NotNull
+    @Min(1900)
     private Integer anoActualizacion;
 
-    @Min(value = 0, message = "La población debe ser un número positivo")
-    private Long poblacion;
+    @Min(1)
+    private Integer poblacionTotal;
 
-    @DecimalMin(value = "0.0", inclusive = true, message = "El PIB debe ser un número positivo")
-    private Double pib;
+    @DecimalMin(value = "0.0", inclusive = true)
+    private BigDecimal densidadPoblacional;
 
-    @Min(value = 0, message = "La cantidad de hoteles debe ser positiva")
-    private Integer hotelesRegistrados;
+    @DecimalMin(value = "0.0", inclusive = true)
+    @DecimalMax(value = "100.0", inclusive = true)
+    private BigDecimal indiceAlfabetizacion;
 
-    @Min(value = 0, message = "La cantidad de restaurantes debe ser positiva")
-    private Integer restaurantesRegistrados;
-
-    @Min(value = 0, message = "La cantidad de atractivos turísticos debe ser positiva")
-    private Integer atractivosTuristicos;
-
-    @Min(value = 0, message = "La cantidad de festivales anuales debe ser positiva")
-    private Integer festivalesAnuales;
-
-    private boolean activo = true;
-
-    private LocalDate fechaBaja;
-
-    @Size(max = 255, message = "El motivo de baja no debe exceder los 255 caracteres")
-    private String motivoBaja;
+    private LocalDateTime fechaCreacion;
 }

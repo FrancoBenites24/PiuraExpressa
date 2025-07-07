@@ -7,6 +7,9 @@ import com.piuraexpressa.repositorio.seguridad.PermisoRepositorio;
 import com.piuraexpressa.servicio.PermisoServicio;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,5 +59,11 @@ public class PermisoServicioImpl implements PermisoServicio {
     @Override
     public boolean existePorNombre(String nombre) {
         return permisoRepositorio.existsByNombreIgnoreCase(nombre);
+    }
+
+    @Override
+    public Page<PermisoDTO> listarPaginado(Pageable pageable) {
+        return permisoRepositorio.findAll(pageable)
+                .map(permisoMapper::toDto);
     }
 }

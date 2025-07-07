@@ -11,6 +11,10 @@ import java.time.LocalDate;
 public class PermisoDTO {
 
     private Long id;
+    
+    @NotBlank(message = "El nombre del permiso es obligatorio")
+    @Size(max = 100, message = "El nombre no debe exceder los 100 caracteres")
+    private String nombre;
 
     @NotBlank(message = "El recurso es obligatorio")
     @Size(max = 100, message = "El recurso no debe exceder los 100 caracteres")

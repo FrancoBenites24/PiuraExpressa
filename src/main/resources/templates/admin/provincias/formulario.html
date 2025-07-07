@@ -128,7 +128,7 @@ h1 {
         <div class="row">
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1>Nueva Provincia</h1>
+                    <h1 th:text="${modo == 'editar'} ? 'Editar Provincia: ' + ${provincia.nombre} : 'Nueva Provincia'">Provincia</h1>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <a class="btn btn-secondary" th:href="@{/admin/provincias}">
                             <i class="bi bi-arrow-left"></i> Volver al Listado
@@ -149,9 +149,11 @@ h1 {
                 </div>
 
                 <!-- Form -->
-                <form th:action="@{/admin/provincias/guardar}" th:object="${provincia}" method="post" 
-                      class="form-admin needs-validation" novalidate>
-                    
+                <form th:action="${modo == 'editar'} ?
+                                @{'/admin/provincias/actualizar/' + ${provincia.id}} :
+                                @{/admin/provincias/guardar}"
+                    th:object="${provincia}" method="post" class="form-admin needs-validation" novalidate>
+
                     <input type="hidden" th:field="*{id}"/>
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 

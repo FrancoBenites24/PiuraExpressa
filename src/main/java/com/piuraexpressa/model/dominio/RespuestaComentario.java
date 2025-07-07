@@ -9,8 +9,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "respuesta_comentario")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class RespuestaComentario {
 
@@ -23,8 +25,11 @@ public class RespuestaComentario {
     @Column(nullable = false)
     private String contenido;
 
-    @Column(nullable = false)
+    @Column(name = "fecha_creacion",nullable = false)
     private LocalDateTime fechaCreacion;
+
+    @Column(name = "fecha_actualizacion",nullable = false)
+    private LocalDateTime fechaActualizacion;
 
     @Builder.Default
     @Column(nullable = false)

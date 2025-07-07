@@ -9,7 +9,6 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-
 public interface ProvinciaServicio {
     // Listado paginado
     Page<Provincia> listarPaginado(Pageable pageable);
@@ -21,6 +20,10 @@ public interface ProvinciaServicio {
 
     void guardarProvincia(Provincia provincia);
 
+    void guardar(ProvinciaDTO dto);
+
+    void actualizar(ProvinciaDTO dto);
+
     void activarProvincia(Long id);
 
     void desactivarProvincia(Long id);
@@ -28,5 +31,6 @@ public interface ProvinciaServicio {
     void eliminarProvincia(Long id);
 
     List<Provincia> listarTodas();
+
     Optional<Provincia> encontrarPorNombreIgnoreCase(String nombre);
 }

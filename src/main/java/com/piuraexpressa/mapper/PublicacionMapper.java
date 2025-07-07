@@ -2,21 +2,39 @@ package com.piuraexpressa.mapper;
 
 import com.piuraexpressa.dto.PublicacionDTO;
 import com.piuraexpressa.model.dominio.Publicacion;
+import com.piuraexpressa.repositorio.seguridad.UsuarioRepositorio;
+
 import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface PublicacionMapper {
+public abstract class PublicacionMapper {
 
-    PublicacionDTO toDto(Publicacion entidad);
+    @Autowired
+    protected UsuarioRepositorio usuarioRepositorio;
 
-    Publicacion toEntidad(PublicacionDTO dto);
+    public abstract PublicacionDTO toDto(Publicacion entidad);
 
-    List<PublicacionDTO> toDtoLista(List<Publicacion> entidades);
+    public abstract Publicacion toEntidad(PublicacionDTO dto);
 
-    List<Publicacion> toEntidadLista(List<PublicacionDTO> dtos);
+    public abstract List<PublicacionDTO> toDtoLista(List<Publicacion> entidades);
+
+    public abstract List<Publicacion> toEntidadLista(List<PublicacionDTO> dtos);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void actualizarEntidadDesdeDto(PublicacionDTO dto, @MappingTarget Publicacion entidad);
+    public abstract void actualizarEntidadDesdeDto(PublicacionDTO dto, @MappingTarget Publicacion entidad);
+
+    // ------ Agrega este método para mapear los datos del usuario
+    @AfterMapping
+    protected void completarDatosUsuario(Publicacion entidad, @MappingTarget PublicacionDTO dto) {
+        if (entidad.getAutor() != null) {
+            usuarioRepositorio.findById(entidad.getAutor()).ifPresent(usuario -> {
+                dto.setUsuarioId(usuario.getId());
+                dto.setNombreUsuario(usuario.getNombres() + " " + usuario.getApellidos());
+                dto.setAvatarUsuario("/img/default-profile.png");
+            });
+        }
+    }
 }

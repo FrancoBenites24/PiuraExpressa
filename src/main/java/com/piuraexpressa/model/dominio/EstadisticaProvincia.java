@@ -28,7 +28,7 @@ public class EstadisticaProvincia {
 
     @Min(1900)
     @Column(nullable = false)
-    private int ano;
+    private Integer ano;
 
     @Min(1)
     @Column(name = "poblacion_total")
@@ -41,17 +41,6 @@ public class EstadisticaProvincia {
     @DecimalMin("0.0") @DecimalMax("100.0")
     @Column(name = "indice_alfabetizacion")
     private BigDecimal indiceAlfabetizacion;
-
-    @DecimalMin("0.0") @DecimalMax("100.0")
-    @Column(name = "tasa_desempleo")
-    private BigDecimal tasaDesempleo;
-
-    @DecimalMin("0.0") @DecimalMax("100.0")
-    @Column(name = "porcentaje_urbano")
-    private BigDecimal porcentajeUrbano;
-
-    @Column
-    private String fuente;
 
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion = LocalDateTime.now();

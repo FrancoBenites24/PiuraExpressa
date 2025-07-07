@@ -56,4 +56,8 @@ public interface ProvinciaMapper {
             return null;
         return DSL.point(CoordinateReferenceSystems.WGS84, new G2D(longitud, latitud));
     }
+
+    // Método para actualizar campos de una entidad existente desde el DTO
+    @Mapping(target = "id", ignore = true)
+    void actualizarEntidadDesdeDto(ProvinciaDTO dto, @MappingTarget Provincia entidad);
 }

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -50,6 +51,7 @@ public class EstadisticaProvinciaServicioImpl implements EstadisticaProvinciaSer
                 .orElse(null);
     }
 
+    @Transactional(transactionManager = "dominioTransactionManager")
     @Override
     public void eliminarPorIdYProvincia(Long id, Long provinciaId) {
         estadisticaRepo.deleteByIdAndProvinciaId(id, provinciaId);

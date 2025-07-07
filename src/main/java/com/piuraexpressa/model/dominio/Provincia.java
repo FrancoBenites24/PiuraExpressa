@@ -80,10 +80,10 @@ public class Provincia {
 
     // relaciones
     @Builder.Default
-    @OneToMany(mappedBy = "provincia", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "provincia", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<HistoriaProvincia> historia = new ArrayList<>();
 
-    @OneToMany(mappedBy = "provincia", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "provincia", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Builder.Default
     private Set<PuntoInteres> puntosInteres = new HashSet<>();
 
