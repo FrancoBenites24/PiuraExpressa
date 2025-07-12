@@ -38,7 +38,8 @@ public class ProvinciaServicioImpl implements ProvinciaServicio {
     @Autowired
     private HistoriaProvinciaMapper historiaProvinciaMapper;
 
-    @Autowired PuntoInteresMapper puntoInteresMapper;
+    @Autowired
+    PuntoInteresMapper puntoInteresMapper;
 
     @Override
     public Page<Provincia> listarPaginado(Pageable pageable) {
@@ -83,8 +84,6 @@ public class ProvinciaServicioImpl implements ProvinciaServicio {
                 provinciaRepositorio.existsByNombre(dto.getNombre())) {
             throw new RuntimeException("Ya existe otra provincia con ese nombre.");
         }
-
-        // Actualiza los campos simples
         mapper.actualizarEntidadDesdeDto(dto, existente);
 
         // No reemplaces directamente las listas. Limpia y añade.
@@ -108,8 +107,6 @@ public class ProvinciaServicioImpl implements ProvinciaServicio {
                     }).toList());
         }
 
-        // Similar para estadisticas si decides incluirlo luego
-
         provinciaRepositorio.save(existente);
     }
 
@@ -127,21 +124,22 @@ public class ProvinciaServicioImpl implements ProvinciaServicio {
         provinciaRepositorio.save(provincia);
     }
 
-@Override
-public void eliminarProvincia(Long id) {
-    Provincia provincia = buscarEntidadPorId(id);
+    @Transactional(transactionManager = "dominioTransactionManager")
+    @Override
+    public void eliminarProvincia(Long id) {
+        Provincia provincia = buscarEntidadPorId(id);
 
-    long tieneHistoria = provincia.getHistoria().size();
-    long tienePuntos = provincia.getPuntosInteres().size();
-    long tieneEstadisticas = estadisticaRepo.countByProvincia(provincia);
+        long tieneHistoria = provincia.getHistoria().size();
+        long tienePuntos = provincia.getPuntosInteres().size();
+        long tieneEstadisticas = estadisticaRepo.countByProvincia(provincia);
 
-    if (tieneHistoria > 0 || tienePuntos > 0 || tieneEstadisticas > 0) {
-        throw new IllegalStateException("No se puede eliminar: existen historias, puntos de interés o estadísticas vinculadas.");
+        if (tieneHistoria > 0 || tienePuntos > 0 || tieneEstadisticas > 0) {
+            throw new IllegalStateException(
+                    "No se puede eliminar: existen historias, puntos de interés o estadísticas vinculadas.");
+        }
+
+        provinciaRepositorio.deleteById(id);
     }
-
-    provinciaRepositorio.deleteById(id);
-}
-
 
     @Override
     public List<Provincia> listarTodas() {
@@ -156,6 +154,15 @@ public void eliminarProvincia(Long id) {
     @Override
     public void guardarProvincia(Provincia provincia) {
         provinciaRepositorio.save(provincia);
+    }
+
+    // filtro api
+    @Override
+    public List<ProvinciaDTO> listarActivas() {
+        return provinciaRepositorio.findByActivoTrueOrderByNombreAsc()
+                .stream()
+                .map(provinciaMapper::toDto)
+                .toList();
     }
 
 }

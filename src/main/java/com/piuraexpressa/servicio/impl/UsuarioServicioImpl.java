@@ -117,8 +117,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
     @Override
     public void registrarDesdeDTO(RegistroDTO dto) {
         logger.info("🔍 Iniciando registro de usuario: {}", dto.getUsername());
-        
-        // Primero obtenemos el nombre de la provincia (base de datos de dominio)
+
         String nombreProvincia = "Desconocido";
         if (dto.getProvinciaId() != null) {
             try {
@@ -131,16 +130,16 @@ public class UsuarioServicioImpl implements UsuarioServicio {
                 nombreProvincia = "Desconocido";
             }
         }
-        
+
         // Ahora guardamos el usuario en la base de datos de seguridad
         guardarUsuarioEnBaseDatos(dto, nombreProvincia);
     }
-    
+
     @Transactional(transactionManager = "seguridadTransactionManager")
     private void guardarUsuarioEnBaseDatos(RegistroDTO dto, String nombreProvincia) {
         try {
             logger.info("💾 Iniciando transacción de seguridad para usuario: {}", dto.getUsername());
-            
+
             Usuario nuevo = new Usuario();
             nuevo.setUsername(dto.getUsername());
             nuevo.setEmail(dto.getEmail());
@@ -165,7 +164,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
             logger.info("💾 Guardando usuario en base de datos...");
             Usuario guardado = usuarioRepositorio.save(nuevo);
             logger.info("✅ Usuario guardado exitosamente con ID: {}", guardado.getId());
-            
+
         } catch (Exception e) {
             logger.error("❌ Error al guardar usuario: {}", e.getMessage(), e);
             throw new RuntimeException("Error al registrar usuario: " + e.getMessage(), e);
@@ -176,10 +175,23 @@ public class UsuarioServicioImpl implements UsuarioServicio {
     public Long obtenerRolPrincipalId(Long usuarioId) {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
-        
+
         return usuario.getRoles().stream()
                 .findFirst()
                 .map(Rol::getId)
                 .orElse(null);
     }
+
+    @Override
+    public Optional<Long> obtenerIdPorUsername(String username) {
+        return usuarioRepositorio.findByUsername(username)
+                .map(Usuario::getId);
+    }
+
+    @Override
+    public Optional<String> obtenerNombreCompletoPorId(Long usuarioId) {
+        return usuarioRepositorio.findById(usuarioId)
+                .map(usuario -> usuario.getNombres() + " " + usuario.getApellidos());
+    }
+
 }

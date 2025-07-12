@@ -1,22 +1,26 @@
 package com.piuraexpressa.dto;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UsuarioEventoDTO {
 
-    @NotNull(message = "El usuario es obligatorio")
+    @NotNull
     private Long usuarioId;
 
-    @NotNull(message = "El evento es obligatorio")
+    @NotNull
     private Long eventoId;
 
-    private boolean asistira;
     private LocalDateTime fechaRegistro;
-    private boolean activo = true;
+
+    private boolean confirmado;
+
+    private String observaciones;
 }

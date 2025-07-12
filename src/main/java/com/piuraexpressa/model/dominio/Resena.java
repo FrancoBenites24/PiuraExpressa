@@ -8,9 +8,11 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "resena")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Table(name = "resenas")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Resena {
 
@@ -31,12 +33,12 @@ public class Resena {
 
     @Builder.Default
     @Column(nullable = false)
-    private boolean activo = true;
+    private boolean activa = true;
 
     @Column(name = "usuario_id", nullable = false)
     private Long usuarioId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "publicacion_id", nullable = false)
-    private Publicacion publicacion;
+    @ManyToOne
+    @JoinColumn(name = "evento_id")
+    private Evento evento;
 }

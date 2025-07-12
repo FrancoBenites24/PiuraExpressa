@@ -47,7 +47,7 @@ public class PuntoInteresServicioImpl implements PuntoInteresServicio {
 
     @Override
     public void eliminarPorIdYProvincia(Long id, Long provinciaId) {
-        puntoRepo.deleteById(id);
+        puntoRepo. deleteByIdAndProvinciaId(id, provinciaId);
     }
 
     @Override

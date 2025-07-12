@@ -29,4 +29,8 @@ public class ComentarioDTO {
     private String motivoBaja;
 
     private String fechaBaja;
+
+    // Campos adicionales para UI
+    private String nombreUsuario;
+    private String tiempoTranscurrido;
 }

@@ -514,9 +514,9 @@
                 <div class="post-card" data-post-id="${post.id}">
                     <div class="post-header">
                         <div class="d-flex align-items-center">
-                            <div class="user-avatar me-3">${getInitials(post.usuarioNombre)}</div>
+                            <div class="user-avatar me-3">${getInitials(post.nombreUsuario)}</div>
                             <div class="flex-grow-1">
-                                <h6 class="mb-0 fw-bold">${post.usuarioNombre}</h6>
+                                <h6 class="mb-0 fw-bold">${post.nombreUsuario}</h6>
                                 <small class="text-muted">${post.tiempoTranscurrido}</small>
                             </div>
                             <div class="dropdown">
@@ -666,9 +666,9 @@
             return `
                 <div class="comment-item">
                     <div class="d-flex">
-                        <div class="user-avatar me-2" style="width: 30px; height: 30px; font-size: 0.8rem;">${getInitials(comentario.usuarioNombre)}</div>
+                        <div class="user-avatar me-2" style="width: 30px; height: 30px; font-size: 0.8rem;">${getInitials(comentario.nombreUsuario)}</div>
                         <div class="flex-grow-1">
-                            <strong>${comentario.usuarioNombre}</strong>
+                            <strong>${comentario.nombreUsuario}</strong>
                             <p class="mb-1">${comentario.contenido}</p>
                             <small class="text-muted">${comentario.tiempoTranscurrido}</small>
                         </div>

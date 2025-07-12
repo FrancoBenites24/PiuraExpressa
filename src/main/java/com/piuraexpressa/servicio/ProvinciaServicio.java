@@ -33,4 +33,8 @@ public interface ProvinciaServicio {
     List<Provincia> listarTodas();
 
     Optional<Provincia> encontrarPorNombreIgnoreCase(String nombre);
+
+    //filtro api
+    List<ProvinciaDTO> listarActivas();
+
 }

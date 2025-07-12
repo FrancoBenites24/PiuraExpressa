@@ -1,70 +1,192 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{fragments/layout :: head('Eventos')}"></head>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Gestión de Eventos')}">
+    <title>Gestión de Eventos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet"/>
+    <style>
+        body {
+            background-color: #FAF6E9;
+            font-family: "Segoe UI", sans-serif;
+        }
+        .navbar {
+            background-color: #A0C878;
+        }
+        .navbar-brand, .nav-link, .btn-volver {
+            color: #fff;
+            font-weight: bold;
+        }
+        .navbar-brand:hover, .nav-link:hover {
+            color: #e8f1d1;
+        }
+        .container {
+            background-color: #FFFDF6;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 0 12px rgba(160, 200, 120, 0.2);
+            margin-top: 2rem;
+        }
+        .table thead {
+            background-color: #DDEB9D;
+        }
+        .btn-accion {
+            font-size: 0.9rem;
+            padding: 0.4rem 0.6rem;
+            margin-right: 0.3rem;
+        }
+        .img-thumb {
+            max-width: 50px;
+            max-height: 50px;
+            object-fit: cover;
+        }
+    </style>
+</head>
 <body>
-    <nav th:replace="~{fragments/layout :: navbar}"></nav>
 
-    <div class="container mt-4">
-        <h1>Eventos</h1>
-        <a class="btn btn-primary mb-3" th:href="@{/admin/eventos/nuevo}">
-            <i class="fas fa-plus"></i> Nuevo Evento
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Administrador</a>
+        <div class="ms-auto">
+            <a href="/admin/dashboard" class="btn btn-sm btn-light btn-volver">
+                <i class="bi bi-arrow-left-circle"></i> Volver al Dashboard
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h2 class="mb-4 text-success d-flex justify-content-between align-items-center">
+        Listado de Eventos
+        <a th:href="@{/admin/eventos/nuevo}" class="btn btn-success d-flex align-items-center"
+           style="background-color: #DDEB9D; border-color: #A0C878; color: #FFFDF6;">
+            <i class="bi bi-plus-circle me-2"></i> Crear Evento
         </a>
+    </h2>
 
-        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <form class="row g-3 mb-4" method="get" th:action="@{/admin/eventos}">
+        <div class="col-md-4">
+            <input type="text" class="form-control" name="search" placeholder="Buscar por título..."
+                   th:value="${search}">
+        </div>
+        <div class="col-md-3">
+            <select name="estado" class="form-select">
+                <option value="">Todos los estados</option>
+                <option value="true" th:selected="${estado == 'true'}">Activos</option>
+                <option value="false" th:selected="${estado == 'false'}">Inactivos</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-success w-100">
+                <i class="bi bi-search"></i> Buscar
+            </button>
+        </div>
+        <div class="col-md-2">
+            <a th:href="@{/admin/eventos}" class="btn btn-secondary w-100">
+                <i class="bi bi-x-circle"></i> Limpiar
+            </a>
+        </div>
+    </form>
 
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Provincia</th>
-                    <th>Fecha Inicio</th>
-                    <th>Activo</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="evento : ${eventos.content}">
-                    <td th:text="${evento.titulo}">Título</td>
-                    <td th:text="${evento.provincia.nombre}">Provincia</td>
-                    <td th:text="${#temporals.format(evento.fechaInicio, 'dd/MM/yyyy')}">01/01/2024</td>
-                    <td>
-                        <span th:if="${evento.activo}" class="badge bg-success">Sí</span>
-                        <span th:unless="${evento.activo}" class="badge bg-danger">No</span>
-                    </td>
-                    <td>
-                        <a th:href="@{'/admin/eventos/editar/' + ${evento.id}}" class="btn btn-sm btn-warning">
-                            <i class="fas fa-edit"></i> Editar
-                        </a>
-                        <form th:action="@{'/admin/eventos/eliminar/' + ${evento.id}}" method="post" 
-                              style="display:inline" 
-                              onsubmit="return confirm('¿Está seguro de eliminar este evento?');">
-                            <button type="submit" class="btn btn-sm btn-danger">
-                                <i class="fas fa-trash"></i> Eliminar
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- Paginación -->
-        <nav th:if="${eventos.totalPages > 1}">
-            <ul class="pagination">
-                <li class="page-item" th:classappend="${eventos.first} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/eventos(page=${eventos.number - 1})}">Anterior</a>
-                </li>
-                <li class="page-item" th:each="i : ${#numbers.sequence(0, eventos.totalPages - 1)}"
-                    th:classappend="${i == eventos.number} ? 'active'">
-                    <a class="page-link" th:href="@{/admin/eventos(page=${i})}" th:text="${i + 1}">1</a>
-                </li>
-                <li class="page-item" th:classappend="${eventos.last} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/eventos(page=${eventos.number + 1})}">Siguiente</a>
-                </li>
-            </ul>
-        </nav>
+    <!-- Alertas -->
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
     </div>
 
-    <th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i>
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-responsive-sm">
+        <table class="table table-sm table-bordered table-hover align-middle">
+            <thead>
+            <tr>
+                <th>Imagen</th>
+                <th>Título</th>
+                <th>Provincia</th>
+                <th>Fecha</th>
+                <th>Precio</th>
+                <th>Estado</th>
+                <th>Activo</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="evento : ${eventos.content}">
+                <td>
+                    <img th:if="${evento.imagenUrl}" th:src="${evento.imagenUrl}" class="img-thumbnail img-thumb"
+                         onerror="this.onerror=null; this.src='/img/default-evento.jpg'" alt="Imagen del evento"/>
+                    <span th:unless="${evento.imagenUrl}" class="badge bg-secondary">
+                        <i class="bi bi-image"></i> Sin imagen
+                    </span>
+                </td>
+                <td th:text="${evento.titulo}">Título</td>
+                <td th:text="${evento.provincia}">Provincia</td>
+                <td th:text="${evento.rangoFechas}">Fecha</td>
+                <td th:text="${evento.precioTexto}">Precio</td>
+                <td>
+<span th:classappend="
+                        ${evento.estado} == 'proximo' ? 'badge bg-primary' :
+                        (${evento.estado} == 'en_curso' ? 'badge bg-info text-dark' :
+                        'badge bg-secondary')"
+                          th:text="|evento.estado.${evento.estado}|">
+                    </span>
+                </td>
+                <td>
+                    <span th:if="${evento.activo}" class="badge bg-success"><i class="bi bi-check-circle"></i> Activo</span>
+                    <span th:unless="${evento.activo}" class="badge bg-danger"><i class="bi bi-x-circle"></i> Inactivo</span>
+                </td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a th:href="@{'/admin/eventos/editar/' + ${evento.id}}"
+                           class="btn btn-outline-warning btn-accion" title="Editar evento">
+                            <i class="bi bi-pencil" title="Editar evento"></i>
+                        </a>
+
+                        <form th:action="@{'/admin/eventos/' + ${evento.id} + (evento.activo ? '/desactivar' : '/activar')}"
+                              method="post" style="display:inline;" onsubmit="return confirm('¿Deseas realmente cambiar el estado de este evento?')">
+                            <button type="submit" class="btn btn-accion"
+                                    th:classappend="${evento.activo} ? 'btn-outline-warning' : 'btn-outline-success'"
+                                    th:title="${evento.activo} ? 'Desactivar' : 'Activar'">
+                                <i th:class="${evento.activo} ? 'bi bi-toggle-on' : 'bi bi-toggle-off'"></i>
+                            </button>
+                        </form>
+
+                        <form th:action="@{'/admin/eventos/eliminar/' + ${evento.id}}" method="post" style="display:inline;"
+                              onsubmit="return confirm('¿Estás seguro de eliminar este evento?')">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit" class="btn btn-outline-danger btn-accion" title="Eliminar evento">
+                                <i class="bi bi-trash" title="Eliminar evento"></i>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    <nav th:if="${eventos.totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${eventos.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/eventos(page=0)}" title="Primera página">&laquo;</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, eventos.totalPages - 1)}"
+                th:classappend="${i == eventos.number} ? 'active'">
+                <a class="page-link" th:href="@{/admin/eventos(page=${i})}" th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${eventos.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/eventos(page=${eventos.number + 1})}" title="Página siguiente">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

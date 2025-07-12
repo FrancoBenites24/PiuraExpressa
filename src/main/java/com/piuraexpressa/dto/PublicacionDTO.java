@@ -37,4 +37,8 @@ public class PublicacionDTO {
     private Long provinciaId;
     private String nombreUsuario;
     private String avatarUsuario;
+
+    private Long totalLikes;
+    private String tiempoTranscurrido;
+    private Long totalComentarios;
 }

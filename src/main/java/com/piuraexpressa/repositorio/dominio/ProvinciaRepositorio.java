@@ -5,6 +5,7 @@ import com.piuraexpressa.model.dominio.Provincia;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -14,19 +15,26 @@ public interface ProvinciaRepositorio extends JpaRepository<Provincia, Long> {
     Page<Provincia> findByNombreContainingIgnoreCase(String nombre, Pageable pageable);
 
     @EntityGraph(attributePaths = {
-        "historia",
-        "puntosInteres",
-        "puntosInteres.categoria"
+            "historia",
+            "puntosInteres",
+            "puntosInteres.categoria"
     })
     Optional<Provincia> findByNombreIgnoreCase(String nombre);
 
     @EntityGraph(attributePaths = {
-        "historia",
-        "puntosInteres",
-        "puntosInteres.categoria"
+            "historia",
+            "puntosInteres",
+            "puntosInteres.categoria"
     })
     Optional<Provincia> findConDetallesById(Long id);
 
     boolean existsByNombre(String nombre);
+
+    @EntityGraph(attributePaths = {
+            "historia",
+            "puntosInteres",
+            "puntosInteres.categoria"
+    })
+    List<Provincia> findByActivoTrueOrderByNombreAsc();
 
 }

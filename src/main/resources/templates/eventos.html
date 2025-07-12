@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
     <title>Eventos - Piura Expressa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="evento.css">
     <style>
         :root {
     --color-primary: #A0C878;
@@ -478,6 +480,13 @@ body {
     transform: translateY(-1px);
 }
 
+.btn-review[disabled] {
+    background-color: var(--color-warning);
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 /* Reviews Section */
 .reviews-section {
     margin-top: 1.5rem;
@@ -806,103 +815,95 @@ body {
     font-size: 1.1rem;
     margin-bottom: 2rem;
 }
+
+.estado-proximo { background-color: #DDEB9D; }
+.estado-en-curso { background-color: #A0C878; }
+.estado-finalizado { background-color: #cccccc; }
+
     </style>
 </head>
 <body>
-    <script src="/js/main.js"></script>
-    <script src="/js/validators.js"></script>
-    <script src="/js/eventos.js"></script>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="bi bi-compass me-2"></i>Piura Expressa
-            </a>
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <i class="bi bi-compass me-2"></i>Piura Expressa
+        </a>
 
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="bi bi-list"></i>
-            </button>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <i class="bi bi-list"></i>
+        </button>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/" aria-label="Ir a inicio">
-                            <i class="bi bi-house me-1"></i>Inicio
-                        </a>
-                    </li>
-                    <!-- Dropdown de Provincias -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="provinciasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menú de provincias">
-                            <i class="bi bi-map me-1"></i>Provincias
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="provinciasDropdown">
-                            <li>
-                                <a class="dropdown-item" href="/provincias">
-                                    <i class="bi bi-list-ul me-2"></i>Ver todas las provincias
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/provincias/piura"><i class="bi bi-geo-alt me-2"></i>Piura</a></li>
-                            <li><a class="dropdown-item" href="/provincias/sullana"><i class="bi bi-geo-alt me-2"></i>Sullana</a></li>
-                            <li><a class="dropdown-item" href="/provincias/talara"><i class="bi bi-geo-alt me-2"></i>Talara</a></li>
-                            <li><a class="dropdown-item" href="/provincias/paita"><i class="bi bi-geo-alt me-2"></i>Paita</a></li>
-                            <li><a class="dropdown-item" href="/provincias/sechura"><i class="bi bi-geo-alt me-2"></i>Sechura</a></li>
-                            <li><a class="dropdown-item" href="/provincias/morropon"><i class="bi bi-geo-alt me-2"></i>Morropón</a></li>
-                            <li><a class="dropdown-item" href="/provincias/huancabamba"><i class="bi bi-geo-alt me-2"></i>Huancabamba</a></li>
-                            <li><a class="dropdown-item" href="/provincias/ayabaca"><i class="bi bi-geo-alt me-2"></i>Ayabaca</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/eventos" aria-current="page">
-                            <i class="bi bi-calendar-event me-1"></i>Eventos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/foro">
-                            <i class="bi bi-chat-dots me-1"></i>Foro
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/platos">
-                            <i class="bi bi-egg-fried me-1"></i>Gastronomía
-                        </a>
-                    </li>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="#inicio">
+                <i class="bi bi-house me-1"></i>Inicio
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#provincias">
+                <i class="bi bi-map me-1"></i>Provincias
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/eventos">
+                <i class="bi bi-calendar-event me-1"></i>Eventos
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/foro">
+                <i class="bi bi-chat-dots me-1"></i>Foro
+              </a>
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center">
+            <div sec:authorize="isAuthenticated()">
+              <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-person-circle" style="font-size: 1.5rem"></i>
+                  <span sec:authentication="name"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/perfil}">
+                      <i class="bi bi-person"></i> Perfil
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/mis-publicaciones}">
+                      <i class="bi bi-file-text"></i> Mis Publicaciones
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/mis-eventos}">
+                      <i class="bi bi-calendar-check"></i> Mis Participaciones
+                    </a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider" />
+                  </li>
+                  <li>
+                    <form action="#" th:action="@{/logout}" method="post" style="margin: 0">
+                      <button type="submit" class="dropdown-item d-flex align-items-center gap-2">
+                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                      </button>
+                    </form>
+                  </li>
                 </ul>
-
-                <div class="d-flex align-items-center">
-                    <div class="dropdown">
-                        <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menú de usuario">
-                            <i class="bi bi-person-circle" style="font-size: 1.5rem"></i>
-                            <span>Usuario Demo</span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center gap-2" href="/perfil">
-                                    <i class="bi bi-person"></i> Perfil
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center gap-2" href="/mis-publicaciones">
-                                    <i class="bi bi-file-text"></i> Mis Publicaciones
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center gap-2" href="/mis-eventos">
-                                    <i class="bi bi-calendar-check"></i> Mis Participaciones
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider" /></li>
-                            <li>
-                                <button type="button" class="dropdown-item d-flex align-items-center gap-2">
-                                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+              </div>
             </div>
+            <div sec:authorize="!isAuthenticated()">
+              <a href="/auth/login" class="btn btn-login d-flex align-items-center gap-2">
+                <i class="bi bi-person-circle"></i> Iniciar Sesión
+              </a>
+            </div>
+          </div>
         </div>
+      </div>
     </nav>
+
 
     <!-- Main Content -->
     <main class="main-content">
@@ -915,528 +916,178 @@ body {
         </section>
 
         <div class="container">
-            <!-- Filters Section -->
-            <section class="filters-section" data-aos="fade-up" data-aos-delay="100">
-                <h2 class="h4 mb-4"><i class="bi bi-funnel me-2"></i>Filtrar Eventos</h2>
-                <form id="filtersForm" novalidate>
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <div class="filter-group">
-                                <label for="searchInput" class="filter-label">
-                                    <i class="bi bi-search me-1"></i>Buscar eventos
-                                </label>
-                                <input type="text" id="searchInput" class="form-control" placeholder="Título, descripción..." aria-describedby="searchHelp">
-                                <div id="searchHelp" class="form-text">Busca por título o descripción del evento</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="filter-group">
-                                <label for="provinciaSelect" class="filter-label">
-                                    <i class="bi bi-geo-alt me-1"></i>Provincia
-                                </label>
-                                <select id="provinciaSelect" class="form-select" aria-describedby="provinciaHelp">
-                                    <option value="">Todas las provincias</option>
-                                    <option value="piura">Piura</option>
-                                    <option value="sullana">Sullana</option>
-                                    <option value="talara">Talara</option>
-                                    <option value="paita">Paita</option>
-                                    <option value="sechura">Sechura</option>
-                                    <option value="morropon">Morropón</option>
-                                    <option value="huancabamba">Huancabamba</option>
-                                    <option value="ayabaca">Ayabaca</option>
-                                </select>
-                                <div id="provinciaHelp" class="form-text">Filtra eventos por provincia específica</div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="filter-group">
-                                <label for="fechaSelect" class="filter-label">
-                                    <i class="bi bi-calendar me-1"></i>Fecha
-                                </label>
-                                <select id="fechaSelect" class="form-select" aria-describedby="fechaHelp">
-                                    <option value="">Todas las fechas</option>
-                                    <option value="hoy">Hoy</option>
-                                    <option value="manana">Mañana</option>
-                                    <option value="esta-semana">Esta semana</option>
-                                    <option value="este-mes">Este mes</option>
-                                    <option value="proximos">Próximos eventos</option>
-                                </select>
-                                <div id="fechaHelp" class="form-text">Filtra por rango de fechas</div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="filter-group">
-                                <label for="precioSelect" class="filter-label">
-                                    <i class="bi bi-currency-dollar me-1"></i>Precio
-                                </label>
-                                <select id="precioSelect" class="form-select" aria-describedby="precioHelp">
-                                    <option value="">Todos los precios</option>
-                                    <option value="gratuito">Gratuito</option>
-                                    <option value="0-20">S/ 0 - S/ 20</option>
-                                    <option value="20-50">S/ 20 - S/ 50</option>
-                                    <option value="50-100">S/ 50 - S/ 100</option>
-                                    <option value="100+">S/ 100+</option>
-                                </select>
-                                <div id="precioHelp" class="form-text">Filtra por rango de precios</div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="filter-group">
-                                <label class="filter-label">&nbsp;</label>
-                                <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-filter">
-                                        <i class="bi bi-search me-1"></i>Filtrar
-                                    </button>
-                                    <button type="button" class="btn btn-clear" onclick="clearFilters()">
-                                        <i class="bi bi-x-circle me-1"></i>Limpiar
-                                    </button>
-                                </div>
-                            </div>
+        <!-- Filters Section -->
+        <section class="filters-section" data-aos="fade-up" data-aos-delay="100">
+            <h2 class="h4 mb-4"><i class="bi bi-funnel me-2"></i>Filtrar Eventos</h2>
+            <form id="filtersForm" novalidate>
+                <div class="row g-3">
+                    <!-- Texto -->
+                    <div class="col-md-3">
+                        <div class="filter-group">
+                            <label for="searchInput" class="filter-label">
+                                <i class="bi bi-search me-1"></i>Buscar eventos
+                            </label>
+                            <input type="text" id="searchInput" name="texto" class="form-control"
+                                  placeholder="Título, descripción..." maxlength="100" />
+                            <div id="searchHelp" class="form-text">Busca por título o descripción del evento</div>
                         </div>
                     </div>
-                </form>
-            </section>
 
-            <!-- Events Grid -->
-            <section class="events-grid" data-aos="fade-up" data-aos-delay="200" id="eventsGrid">
-                <!-- Event Card 1 - Upcoming Event -->
-                <article class="event-card fade-in">
-                    <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=220&fit=crop" alt="Festival de la Marinera en Sullana" class="event-image">
-                        <div class="event-status status-upcoming">Próximo</div>
-                        <div class="event-price price-free">Gratuito</div>
-                    </div>
-                    <div class="event-content">
-                        <h3 class="event-title">Festival de la Marinera Norteña</h3>
-                        <p class="event-description">
-                            Celebra la danza más representativa del norte peruano con presentaciones de las mejores parejas de marinera de la región. Un evento cultural imperdible que resalta nuestras tradiciones.
-                        </p>
-                        <div class="event-meta">
-                            <div class="meta-item">
-                                <i class="bi bi-calendar-event meta-icon"></i>
-                                <span>15 de Marzo, 2024 - 7:00 PM</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="bi bi-geo-alt meta-icon"></i>
-                                <span>Plaza de Armas de Sullana</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="bi bi-person meta-icon"></i>
-                                <span>Organizado por Municipalidad de Sullana</span>
-                            </div>
-                        </div>
-                        <div class="event-capacity">
-                            <div class="capacity-info">
-                                <strong>245 participantes</strong> de 500 disponibles
-                            </div>
-                            <div class="capacity-bar">
-                                <div class="capacity-fill" style="width: 49%"></div>
-                            </div>
-                        </div>
-                        <div class="event-rating">
-                            <div class="stars">
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star star empty"></i>
-                            </div>
-                            <span class="rating-text">4.2 (18 reseñas)</span>
-                        </div>
-                        <div class="event-actions">
-                            <button class="btn-participate" onclick="showParticipationModal('Festival de la Marinera Norteña')">
-                                <i class="bi bi-calendar-plus"></i>
-                                Participar
-                            </button>
-                            <button class="btn-secondary-action" onclick="shareEvent('Festival de la Marinera Norteña')" aria-label="Compartir evento">
-                                <i class="bi bi-share"></i>
-                            </button>
-                            <button class="btn-secondary-action" onclick="toggleFavorite(this)" aria-label="Agregar a favoritos">
-                                <i class="bi bi-heart"></i>
-                            </button>
-                            <button class="btn-secondary-action" onclick="showEventDetails('Festival de la Marinera Norteña')" aria-label="Ver detalles">
-                                <i class="bi bi-eye"></i>
-                            </button>
+                    <!-- Provincia -->
+                    <div class="col-md-3">
+                        <div class="filter-group">
+                            <label for="provinciaSelect" class="filter-label">
+                                <i class="bi bi-geo-alt me-1"></i>Provincia
+                            </label>
+                            <select id="provinciaSelect" name="provincia" class="form-select">
+                                <option value="">Todas las provincias</option>
+                                <!-- Opciones se llenan por JavaScript -->
+                            </select>
+                            <div id="provinciaHelp" class="form-text">Filtra eventos por provincia específica</div>
                         </div>
                     </div>
-                </article>
 
-                <!-- Event Card 2 - Ongoing Event -->
-                <article class="event-card fade-in">
-                    <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=220&fit=crop" alt="Feria Gastronómica de Piura" class="event-image">
-                        <div class="event-status status-ongoing">En curso</div>
-                        <div class="event-price">S/ 25</div>
-                    </div>
-                    <div class="event-content">
-                        <h3 class="event-title">Feria Gastronómica de Piura</h3>
-                        <p class="event-description">
-                            Disfruta de los sabores únicos de la gastronomía piurana. Más de 30 stands con platos típicos, postres tradicionales y bebidas refrescantes de la región.
-                        </p>
-                        <div class="event-meta">
-                            <div class="meta-item">
-                                <i class="bi bi-calendar-event meta-icon"></i>
-                                <span>10-12 de Marzo, 2024 - 6:00 PM</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="bi bi-geo-alt meta-icon"></i>
-                                <span>Parque Kurt Beer, Piura</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="bi bi-person meta-icon"></i>
-                                <span>Organizado por Cámara de Comercio</span>
-                            </div>
-                        </div>
-                        <div class="event-capacity">
-                            <div class="capacity-info">
-                                <strong>892 participantes</strong> de 1000 disponibles
-                            </div>
-                            <div class="capacity-bar">
-                                <div class="capacity-fill" style="width: 89%"></div>
-                            </div>
-                        </div>
-                        <div class="event-rating">
-                            <div class="stars">
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                            </div>
-                            <span class="rating-text">4.8 (67 reseñas)</span>
-                        </div>
-                        <div class="event-actions">
-                            <button class="btn-participate" onclick="showParticipationModal('Feria Gastronómica de Piura')">
-                                <i class="bi bi-calendar-plus"></i>
-                                Participar
-                            </button>
-                            <button class="btn-secondary-action" onclick="shareEvent('Feria Gastronómica de Piura')" aria-label="Compartir evento">
-                                <i class="bi bi-share"></i>
-                            </button>
-                            <button class="btn-secondary-action" onclick="toggleFavorite(this)" aria-label="Agregar a favoritos">
-                                <i class="bi bi-heart"></i>
-                            </button>
-                            <button class="btn-secondary-action" onclick="showEventDetails('Feria Gastronómica de Piura')" aria-label="Ver detalles">
-                                <i class="bi bi-eye"></i>
-                            </button>
+                    <!-- Fecha -->
+                    <div class="col-md-2">
+                        <div class="filter-group">
+                            <label for="fechaSelect" class="filter-label">
+                                <i class="bi bi-calendar me-1"></i>Fecha
+                            </label>
+                            <select id="fechaSelect" name="fecha" class="form-select">
+                                <option value="">Todas las fechas</option>
+                                <option value="hoy">Hoy</option>
+                                <option value="manana">Mañana</option>
+                                <option value="esta-semana">Esta semana</option>
+                                <option value="este-mes">Este mes</option>
+                                <option value="proximos">Próximos eventos</option>
+                            </select>
+                            <div id="fechaHelp" class="form-text">Filtra por rango de fechas</div>
                         </div>
                     </div>
-                </article>
 
-                <!-- Event Card 3 - Finished Event with Reviews -->
-                <article class="event-card fade-in">
-                    <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=220&fit=crop" alt="Concurso de Artesanías de Catacaos" class="event-image">
-                        <div class="event-status status-finished">Finalizado</div>
-                        <div class="event-price price-free">Gratuito</div>
-                    </div>
-                    <div class="event-content">
-                        <h3 class="event-title">Concurso de Artesanías de Catacaos</h3>
-                        <p class="event-description">
-                            Exhibición y concurso de las mejores artesanías en filigrana, cerámica y tejidos tradicionales de Catacaos. Premiación a los mejores artesanos de la región.
-                        </p>
-                        <div class="event-meta">
-                            <div class="meta-item">
-                                <i class="bi bi-calendar-event meta-icon"></i>
-                                <span>5 de Marzo, 2024 - 9:00 AM</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="bi bi-geo-alt meta-icon"></i>
-                                <span>Centro Artesanal de Catacaos</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="bi bi-person meta-icon"></i>
-                                <span>Organizado por Asociación de Artesanos</span>
-                            </div>
-                        </div>
-                        <div class="event-capacity">
-                            <div class="capacity-info">
-                                <strong>156 participantes</strong> asistieron
-                            </div>
-                        </div>
-                        <div class="event-rating">
-                            <div class="stars">
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-half star"></i>
-                            </div>
-                            <span class="rating-text">4.5 (23 reseñas)</span>
-                        </div>
-                        <div class="event-actions">
-                            <button class="btn-review" onclick="showReviewModal('Concurso de Artesanías de Catacaos')">
-                                <i class="bi bi-star"></i>
-                                Escribir Reseña
-                            </button>
-                            <button class="btn-secondary-action" onclick="shareEvent('Concurso de Artesanías de Catacaos')" aria-label="Compartir evento">
-                                <i class="bi bi-share"></i>
-                            </button>
-                            <button class="btn-secondary-action" onclick="showEventDetails('Concurso de Artesanías de Catacaos')" aria-label="Ver detalles">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                        </div>
-                        
-                        <!-- Reviews Section -->
-                        <div class="reviews-section">
-                            <div class="reviews-header">
-                                <h4 class="reviews-title">Reseñas de participantes</h4>
-                                <span class="reviews-count">23 reseñas</span>
-                            </div>
-                            
-                            <div class="review-item">
-                                <div class="review-header">
-                                    <div class="reviewer-info">
-                                        <div class="reviewer-avatar">MR</div>
-                                        <div>
-                                            <div class="reviewer-name">María Rodríguez</div>
-                                            <div class="stars">
-                                                <i class="bi bi-star-fill star"></i>
-                                                <i class="bi bi-star-fill star"></i>
-                                                <i class="bi bi-star-fill star"></i>
-                                                <i class="bi bi-star-fill star"></i>
-                                                <i class="bi bi-star-fill star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="review-date">Hace 2 días</div>
-                                </div>
-                                <div class="review-content">
-                                    Excelente evento! La calidad de las artesanías fue impresionante. Me encantó ver el trabajo de los maestros artesanos de Catacaos. Definitivamente volveré el próximo año.
-                                </div>
-                                <div class="review-images">
-                                    <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=60&h=60&fit=crop" alt="Artesanía 1" class="review-image" onclick="showImageModal(this.src)">
-                                    <img src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=60&h=60&fit=crop" alt="Artesanía 2" class="review-image" onclick="showImageModal(this.src)">
-                                </div>
-                            </div>
-                            
-                            <div class="review-item">
-                                <div class="review-header">
-                                    <div class="reviewer-info">
-                                        <div class="reviewer-avatar">JL</div>
-                                        <div>
-                                            <div class="reviewer-name">José López</div>
-                                            <div class="stars">
-                                                <i class="bi bi-star-fill star"></i>
-                                                <i class="bi bi-star-fill star"></i>
-                                                <i class="bi bi-star-fill star"></i>
-                                                <i class="bi bi-star-fill star"></i>
-                                                <i class="bi bi-star star empty"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="review-date">Hace 3 días</div>
-                                </div>
-                                <div class="review-content">
-                                    Muy buena organización y variedad de artesanías. Los precios fueron justos y la atención excelente. Solo sugiero más espacios de sombra para futuras ediciones.
-                                </div>
-                            </div>
+                    <!-- Precio -->
+                    <div class="col-md-2">
+                        <div class="filter-group">
+                            <label for="precioSelect" class="filter-label">
+                                <i class="bi bi-currency-dollar me-1"></i>Precio
+                            </label>
+                            <select id="precioSelect" name="precio" class="form-select">
+                                <option value="">Todos los precios</option>
+                                <option value="gratuito">Gratuito</option>
+                                <option value="0-20">S/ 0 - S/ 20</option>
+                                <option value="20-50">S/ 20 - S/ 50</option>
+                                <option value="50-100">S/ 50 - S/ 100</option>
+                                <option value="100+">S/ 100+</option>
+                            </select>
+                            <div id="precioHelp" class="form-text">Filtra por rango de precios</div>
                         </div>
                     </div>
-                </article>
 
-                <!-- Event Card 4 - Full Capacity -->
-                <article class="event-card fade-in">
-                    <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=220&fit=crop" alt="Concierto de Música Criolla" class="event-image">
-                        <div class="event-status status-upcoming">Próximo</div>
-                        <div class="event-price">S/ 45</div>
-                    </div>
-                    <div class="event-content">
-                        <h3 class="event-title">Concierto de Música Criolla</h3>
-                        <p class="event-description">
-                            Una noche mágica con los mejores exponentes de la música criolla peruana. Artistas reconocidos interpretarán valses, polkas y marineras en un ambiente íntimo y acogedor.
-                        </p>
-                        <div class="event-meta">
-                            <div class="meta-item">
-                                <i class="bi bi-calendar-event meta-icon"></i>
-                                <span>20 de Marzo, 2024 - 8:00 PM</span>
+                    <!-- Botones -->
+                    <div class="col-md-2">
+                        <div class="filter-group">
+                            <label class="filter-label">&nbsp;</label>
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-filter w-100">
+                                    <i class="bi bi-search me-1"></i>Filtrar
+                                </button>
+                                <button type="button" class="btn btn-clear" onclick="clearFilters()">
+                                    <i class="bi bi-x-circle me-1"></i>Limpiar
+                                </button>
                             </div>
-                            <div class="meta-item">
-                                <i class="bi bi-geo-alt meta-icon"></i>
-                                <span>Teatro Municipal de Piura</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="bi bi-person meta-icon"></i>
-                                <span>Organizado por Centro Cultural Piura</span>
-                            </div>
-                        </div>
-                        <div class="event-capacity">
-                            <div class="capacity-info">
-                                <strong>300 participantes</strong> de 300 disponibles
-                            </div>
-                            <div class="capacity-bar">
-                                <div class="capacity-fill" style="width: 100%"></div>
-                            </div>
-                        </div>
-                        <div class="event-rating">
-                            <div class="stars">
-                                <i class="bi bi-star star empty"></i>
-                                <i class="bi bi-star star empty"></i>
-                                <i class="bi bi-star star empty"></i>
-                                <i class="bi bi-star star empty"></i>
-                                <i class="bi bi-star star empty"></i>
-                            </div>
-                            <span class="rating-text">Sin reseñas aún</span>
-                        </div>
-                        <div class="event-actions">
-                            <button class="btn-participate" disabled>
-                                <i class="bi bi-x-circle"></i>
-                                Agotado
-                            </button>
-                            <button class="btn-secondary-action" onclick="shareEvent('Concierto de Música Criolla')" aria-label="Compartir evento">
-                                <i class="bi bi-share"></i>
-                            </button>
-                            <button class="btn-secondary-action" onclick="toggleFavorite(this)" aria-label="Agregar a favoritos">
-                                <i class="bi bi-heart"></i>
-                            </button>
-                            <button class="btn-secondary-action" onclick="showEventDetails('Concierto de Música Criolla')" aria-label="Ver detalles">
-                                <i class="bi bi-eye"></i>
-                            </button>
                         </div>
                     </div>
-                </article>
+                </div>
+            </form>
+        </section>
 
-                <!-- Event Card 5 - Free Event -->
-                <article class="event-card fade-in">
-                    <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=220&fit=crop" alt="Taller de Cocina Tradicional" class="event-image">
-                        <div class="event-status status-upcoming">Próximo</div>
-                        <div class="event-price price-free">Gratuito</div>
-                    </div>
-                    <div class="event-content">
-                        <h3 class="event-title">Taller de Cocina Tradicional Piurana</h3>
-                        <p class="event-description">
-                            Aprende a preparar los platos más emblemáticos de Piura de la mano de chefs expertos. Incluye degustación y recetario digital para llevar a casa.
-                        </p>
-                        <div class="event-meta">
-                            <div class="meta-item">
-                                <i class="bi bi-calendar-event meta-icon"></i>
-                                <span>18 de Marzo, 2024 - 10:00 AM</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="bi bi-geo-alt meta-icon"></i>
-                                <span>Instituto Gastronómico de Piura</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="bi bi-person meta-icon"></i>
-                                <span>Organizado por Chef María Gonzales</span>
-                            </div>
-                        </div>
-                        <div class="event-capacity">
-                            <div class="capacity-info">
-                                <strong>12 participantes</strong> de 25 disponibles
-                            </div>
-                            <div class="capacity-bar">
-                                <div class="capacity-fill" style="width: 48%"></div>
-                            </div>
-                        </div>
-                        <div class="event-rating">
-                            <div class="stars">
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-half star"></i>
-                            </div>
-                            <span class="rating-text">4.7 (8 reseñas)</span>
-                        </div>
-                        <div class="event-actions">
-                            <button class="btn-participate" onclick="showParticipationModal('Taller de Cocina Tradicional Piurana')">
-                                <i class="bi bi-calendar-plus"></i>
-                                Participar
-                            </button>
-                            <button class="btn-secondary-action" onclick="shareEvent('Taller de Cocina Tradicional Piurana')" aria-label="Compartir evento">
-                                <i class="bi bi-share"></i>
-                            </button>
-                            <button class="btn-secondary-action" onclick="toggleFavorite(this)" aria-label="Agregar a favoritos">
-                                <i class="bi bi-heart"></i>
-                            </button>
-                            <button class="btn-secondary-action" onclick="showEventDetails('Taller de Cocina Tradicional Piurana')" aria-label="Ver detalles">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                </article>
+            <!-- Sección de tarjetas de eventos generada dinámicamente -->
+            <section class="events-grid" id="eventsGrid">
+            <div th:each="evento : ${eventos}" class="event-card fade-in">
+                <div class="position-relative">
+                <img th:src="${evento.imagenUrl}" th:alt="${evento.titulo}" class="event-image">
+                <div class="event-status" th:classappend="${evento.estadoCss}">
+                    <span th:text="${evento.estado}"></span>
+                </div>
+                <div class="event-price" th:classappend="${evento.precio == 0 ? ' price-free' : ''}" th:text="${evento.precioTexto}"></div>
+                </div>
+                <div class="event-content">
+                <h3 class="event-title" th:text="${evento.titulo}"></h3>
+                <p class="event-description" th:text="${evento.descripcionCorta}"></p>
 
-                <!-- Event Card 6 - Premium Event -->
-                <article class="event-card fade-in">
-                    <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=220&fit=crop" alt="Tour Arqueológico Huancabamba" class="event-image">
-                        <div class="event-status status-upcoming">Próximo</div>
-                        <div class="event-price">S/ 120</div>
+                <div class="event-meta">
+                    <div class="meta-item">
+                    <i class="bi bi-calendar-event meta-icon"></i>
+                    <span th:text="${evento.rangoFechas}"></span>
                     </div>
-                    <div class="event-content">
-                        <h3 class="event-title">Tour Arqueológico por Huancabamba</h3>
-                        <p class="event-description">
-                            Descubre los misterios arqueológicos de Huancabamba en un tour guiado de día completo. Incluye transporte, almuerzo típico y guía especializado en historia precolombina.
-                        </p>
-                        <div class="event-meta">
-                            <div class="meta-item">
-                                <i class="bi bi-calendar-event meta-icon"></i>
-                                <span>25 de Marzo, 2024 - 7:00 AM</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="bi bi-geo-alt meta-icon"></i>
-                                <span>Sitios Arqueológicos de Huancabamba</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="bi bi-person meta-icon"></i>
-                                <span>Organizado por Turismo Aventura Piura</span>
-                            </div>
-                        </div>
-                        <div class="event-capacity">
-                            <div class="capacity-info">
-                                <strong>8 participantes</strong> de 15 disponibles
-                            </div>
-                            <div class="capacity-bar">
-                                <div class="capacity-fill" style="width: 53%"></div>
-                            </div>
-                        </div>
-                        <div class="event-rating">
-                            <div class="stars">
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                                <i class="bi bi-star-fill star"></i>
-                            </div>
-                            <span class="rating-text">5.0 (12 reseñas)</span>
-                        </div>
-                        <div class="event-actions">
-                            <button class="btn-participate" onclick="showParticipationModal('Tour Arqueológico por Huancabamba')">
-                                <i class="bi bi-calendar-plus"></i>
-                                Participar
-                            </button>
-                            <button class="btn-secondary-action" onclick="shareEvent('Tour Arqueológico por Huancabamba')" aria-label="Compartir evento">
-                                <i class="bi bi-share"></i>
-                            </button>
-                            <button class="btn-secondary-action" onclick="toggleFavorite(this)" aria-label="Agregar a favoritos">
-                                <i class="bi bi-heart"></i>
-                            </button>
-                            <button class="btn-secondary-action" onclick="showEventDetails('Tour Arqueológico por Huancabamba')" aria-label="Ver detalles">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                        </div>
+                    <div class="meta-item">
+                    <i class="bi bi-geo-alt meta-icon"></i>
+                    <span th:text="${evento.ubicacion}"></span>
                     </div>
-                </article>
+                    <div class="meta-item">
+                    <i class="bi bi-person meta-icon"></i>
+                    <span th:text="${evento.organizador}"></span>
+                    </div>
+                </div>
+
+                <div class="event-capacity">
+                    <div class="capacity-info">
+                    <strong th:text="${evento.participantesActuales}"></strong>
+                    <span th:text="' de ' + ${evento.capacidad} + ' disponibles'"></span>
+                    </div>
+                    <div class="capacity-bar">
+                    <div class="capacity-fill" th:style="'width:' + ${evento.porcentajeOcupado} + '%'"> </div>
+                    </div>
+                </div>
+
+                <div class="event-rating">
+                    <div class="stars">
+                    <i th:each="i : ${#numbers.sequence(1, 5)}"
+                        th:class="${i <= evento.promedioCalificacion} ? 'bi bi-star-fill star' : 'bi bi-star star empty'">
+                    </i>
+                    </div>
+                    <span class="rating-text" th:text="${evento.promedioCalificacionTexto}"></span>
+                </div>
+
+                <div class="event-actions">
+                    <button class="btn-participate"
+                            th:if="${#authorization.expression('isAuthenticated()') and evento.puedeParticipar}"
+                            th:onclick="'participarEnEvento(' + ${evento.id} + ')'"><i class="bi bi-calendar-plus"></i> Participar</button>
+
+                    <button class="btn-participate btn-warning" disabled
+                            th:if="${#authorization.expression('isAuthenticated()') and evento.yaParticipa}"
+                            th:onclick="'cancelarParticipacion(' + ${evento.id} + ')'">
+                    <i class="bi bi-calendar-x"></i> Cancelar participación
+                    </button>
+
+                    <button class="btn-review"
+                            th:if="${evento.finalizado != null and evento.yaParticipa != null and evento.yaResenado != null and evento.finalizado and evento.yaParticipa and not evento.yaResenado}"
+                            th:onclick="'abrirModalResena(' + ${evento.id} + ')'">
+                    <i class="bi bi-star"></i> Escribir Reseña
+                    </button>
+
+                    <button class="btn-review" disabled
+                            th:if="${evento.finalizado != null and evento.yaResenado != null and evento.finalizado and evento.yaResenado}"
+                            title="Ya has enviado una reseña para este evento">
+                    <i class="bi bi-star-fill"></i> Ya reseñado
+                    </button>
+
+                    <button class="btn-secondary-action" th:onclick="'compartirEvento(' + ${evento.id} + ')'">
+                    <i class="bi bi-share"></i>
+                    </button>
+                    <button class="btn-secondary-action" th:onclick="'verDetallesEvento(' + ${evento.id} + ')'">
+                    <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+
+                <!-- Reseñas visibles solo en el modal de detalles -->
+                </div>
+            </div>
             </section>
 
             <!-- Pagination -->
             <nav class="pagination-wrapper" aria-label="Navegación de páginas de eventos">
-                <div class="pagination">
-                    <button class="page-btn" disabled aria-label="Página anterior">
-                        <i class="bi bi-chevron-left"></i>
-                    </button>
-                    <button class="page-btn active" aria-label="Página 1, página actual">1</button>
-                    <button class="page-btn" aria-label="Ir a página 2">2</button>
-                    <button class="page-btn" aria-label="Ir a página 3">3</button>
-                    <span class="page-btn">...</span>
-                    <button class="page-btn" aria-label="Ir a página 8">8</button>
-                    <button class="page-btn" aria-label="Página siguiente">
-                        <i class="bi bi-chevron-right"></i>
-                    </button>
-                </div>
+                <ul class="pagination"></ul>
             </nav>
         </div>
     </main>
@@ -1476,196 +1127,452 @@ body {
         </div>
     </div>
 
+    <!-- Review Modal -->
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="reviewModalLabel">
+              <i class="bi bi-star me-2"></i>Escribir Reseña
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <form id="reviewForm" novalidate>
+              <div class="mb-3">
+                <label for="reviewText" class="form-label">Reseña</label>
+                <textarea class="form-control" id="reviewText" rows="4" placeholder="Escribe tu reseña aquí..." required></textarea>
+                <div class="invalid-feedback">La reseña es obligatoria.</div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Calificación</label>
+                <select class="form-select" id="reviewRating" required>
+                  <option value="" disabled selected>Selecciona una calificación</option>
+                  <option value="1">1 estrella</option>
+                  <option value="2">2 estrellas</option>
+                  <option value="3">3 estrellas</option>
+                  <option value="4">4 estrellas</option>
+                  <option value="5">5 estrellas</option>
+                </select>
+                <div class="invalid-feedback">La calificación es obligatoria.</div>
+              </div>
+              <input type="hidden" id="reviewEventId" />
+              <button type="submit" class="btn btn-primary w-100">Enviar Reseña</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // JavaScript for Eventos page interactive features
+    <script th:inline="javascript">
+    const token = /*[[${_csrf.token}]]*/ 'default';
+    const header = /*[[${_csrf.headerName}]]*/ 'X-CSRF-TOKEN';
 
-// Show participation modal and populate event details
-function showParticipationModal(eventName) {
-    const participationModal = new bootstrap.Modal(document.getElementById('participationModal'));
-    const eventDetailsDiv = document.getElementById('eventDetails');
-    eventDetailsDiv.innerHTML = `<p><strong>Evento:</strong> ${eventName}</p>`;
-    participationModal.show();
-}
+      const form = document.getElementById('filtersForm');
+      const grid = document.getElementById('eventsGrid');
 
-// Clear all filters in the filter form
-function clearFilters() {
-    document.getElementById('searchInput').value = '';
-    document.getElementById('provinciaSelect').value = '';
-    document.getElementById('fechaSelect').value = '';
-    document.getElementById('precioSelect').value = '';
-    filterEvents();
-}
+      window.participarEnEvento = function(eventoId) {
+          fetch('/eventos/' + eventoId + '/participar', {
+              method: 'POST',
+              cache: 'no-store',
+              headers: {
+                  [header]: token
+              }
+          })
+          .then(response => {
+              if (response.ok) {
+                  location.reload();
+              } else {
+                  alert("No se pudo registrar tu participación.");
+              }
+          })
+          .catch(error => {
+              console.error("Error al participar:", error);
+              alert("Hubo un problema.");
+          });
+      }
 
-// Filter events based on filter inputs (basic client-side filtering)
-function filterEvents() {
-    const searchText = document.getElementById('searchInput').value.toLowerCase();
-    const provincia = document.getElementById('provinciaSelect').value.toLowerCase();
-    const fecha = document.getElementById('fechaSelect').value.toLowerCase();
-    const precio = document.getElementById('precioSelect').value.toLowerCase();
+      document.addEventListener('DOMContentLoaded', () => {
+          form.addEventListener('submit', async (e) => {
+              e.preventDefault();
+              await cargarEventos();
+          });
 
-    const eventsGrid = document.getElementById('eventsGrid');
-    const eventCards = eventsGrid.getElementsByClassName('event-card');
+      async function cargarEventos() {
+          const filtros = {
+              texto: document.getElementById('searchInput').value,
+              provincia: document.getElementById('provinciaSelect').value,
+              fecha: document.getElementById('fechaSelect').value,
+              precio: document.getElementById('precioSelect').value,
+              pagina: 0,
+              tamanio: 10
+          };
 
-    for (let card of eventCards) {
-        const title = card.querySelector('.event-title').textContent.toLowerCase();
-        const description = card.querySelector('.event-description').textContent.toLowerCase();
-        const provinciaMatch = provincia === '' || card.innerHTML.toLowerCase().includes(provincia);
-        const fechaMatch = fecha === '' || card.innerHTML.toLowerCase().includes(fecha);
-        const precioMatch = precio === '' || card.innerHTML.toLowerCase().includes(precio);
-        const searchMatch = title.includes(searchText) || description.includes(searchText);
+          const response = await fetch('/api/eventos/buscar', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(filtros)
+          });
 
-        if (provinciaMatch && fechaMatch && precioMatch && searchMatch) {
-            card.style.display = '';
-        } else {
-            card.style.display = 'none';
+          const data = await response.json();
+          grid.innerHTML = '';
+
+          if (!data.content || data.content.length === 0) {
+              grid.innerHTML = `
+                  <div class="empty-state">
+                      <div class="empty-state-icon"><i class="bi bi-calendar-x"></i></div>
+                      <h3>No se encontraron eventos</h3>
+                      <p>Intenta con otros filtros o vuelve más tarde.</p>
+                  </div>
+              `;
+              return;
+          }
+
+          data.content.forEach(evento => {
+              const statusClass = evento.estado === 'EN_CURSO' ? 'status-ongoing' :
+                                  evento.estado === 'FINALIZADO' ? 'status-finished' : 'status-upcoming';
+
+              const precioLabel = evento.precio && evento.precio > 0 ? `S/ ${evento.precio}` : 'Gratuito';
+              const precioClass = evento.precio && evento.precio > 0 ? '' : 'price-free';
+
+              const calificacion = evento.calificacionPromedio || 0;
+              const estrellas = Array.from({ length: 5 }).map((_, i) => {
+                  const icon = i < Math.floor(calificacion) ? 'star-fill'
+                              : (i < calificacion ? 'star-half' : 'star');
+                  return `<i class="bi bi-${icon} star${icon === 'star' ? ' empty' : ''}"></i>`;
+              }).join('');
+
+              const puedeParticipar = evento.puedeParticipar === true;
+              const yaParticipa = evento.yaParticipa === true;
+
+              const btnParticipar = puedeParticipar
+                ? `<button class="btn-participate" ${evento.finalizado ? 'disabled' : ''} onclick="participarEnEvento('${evento.id}')"><i class="bi bi-calendar-plus"></i> Participar</button>`
+                : '';
+              const btnCancelar = yaParticipa
+                ? `<button class="btn-participate btn-warning" onclick="cancelarParticipacion('${evento.id}')"><i class="bi bi-calendar-x"></i> Cancelar participación</button>`
+                : '';
+
+              const card = `
+              <article class="event-card fade-in" data-evento-id="${evento.id}">
+                  <div class="position-relative">
+                      <img src="${evento.imagenUrl || '/img/evento-default.jpg'}" alt="${evento.titulo}" class="event-image">
+                      <div class="event-status ${statusClass}">${formatearEstado(evento.estado)}</div>
+                      <div class="event-price ${precioClass}">${precioLabel}</div>
+                  </div>
+                  <div class="event-content">
+                      <h3 class="event-title">${evento.titulo}</h3>
+                      <p class="event-description">${evento.descripcion || ''}</p>
+                      <div class="event-meta">
+                          <div class="meta-item"><i class="bi bi-calendar-event meta-icon"></i> ${formatearFecha(evento.fechaInicio)}</div>
+                          <div class="meta-item"><i class="bi bi-geo-alt meta-icon"></i> ${evento.ubicacion || evento.provincia}</div>
+                      </div>
+                      <div class="event-capacity">
+                          <div class="capacity-info">
+                              <strong>${evento.cantidadParticipantes || 0} participantes</strong>
+                              ${evento.capacidad ? ` de ${evento.capacidad} disponibles` : ''}
+                          </div>
+                          ${evento.capacidad ? `
+                          <div class="capacity-bar">
+                              <div class="capacity-fill" style="width: ${evento.porcentajeOcupado || 0}%"></div>
+                          </div>` : ''}
+                      </div>
+                      <div class="event-rating">
+                          <div class="stars">${estrellas}</div>
+                          <span class="rating-text">${calificacion.toFixed(1)} (${evento.cantidadResenas || 0} reseñas)</span>
+                      </div>
+                      <div class="event-actions">
+${btnParticipar}
+${btnCancelar}
+                          <button class="btn-secondary-action" onclick="shareEvent('${evento.titulo}')" aria-label="Compartir evento">
+                              <i class="bi bi-share"></i>
+                          </button>
+                          <button class="btn-secondary-action" onclick="toggleFavorite(this)" aria-label="Agregar a favoritos">
+                              <i class="bi bi-heart"></i>
+                          </button>
+                          <button class="btn-secondary-action" onclick="showEventDetails('${evento.titulo}')" aria-label="Ver detalles">
+                              <i class="bi bi-eye"></i>
+                          </button>
+                      </div>
+                  </div>
+              </article>`;
+
+              grid.insertAdjacentHTML('beforeend', card);
+          });
+      }
+
+      function formatearEstado(estado) {
+          switch (estado) {
+              case 'EN_CURSO': return 'En curso';
+              case 'FINALIZADO': return 'Finalizado';
+              case 'PROXIMO': return 'Próximo';
+              default: return '';
+          }
+      }
+
+      function formatearFecha(fechaISO) {
+          const fecha = new Date(fechaISO);
+          return fecha.toLocaleDateString('es-PE', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+          });
+      }
+
+      
+    function participarEnEvento(id) {
+        fetch('/eventos/' + id + '/participar', {
+        method: 'POST',
+        headers: {'X-CSRF-TOKEN': /*[[${_csrf.token}]]*/ ''}
+        })
+        .then(res => {
+            if (res.ok) {
+                actualizarEventoUI(id);
+            } else {
+                alert('Error al participar');
+            }
+        })
+        .catch(() => alert('Error al participar'));
+    }
+
+      window.cancelarParticipacion = function(id) {
+          fetch('/eventos/' + id + '/cancelar', {
+              method: 'POST',
+              cache: 'no-store',
+              headers: {'X-CSRF-TOKEN': /*[[${_csrf.token}]]*/ ''}
+          })
+        .then(res => {
+            if (res.ok) {
+                actualizarEventoUI(id);
+            } else {
+                alert('Error al cancelar participación');
+            }
+        })
+        .catch(() => alert('Error al cancelar participación'));
+      }
+
+function actualizarEventoUI(id) {
+          fetch('/api/eventos/' + id, {cache: 'no-store'})
+              .then(response => response.json())
+              .then(evento => {
+                const card = document.querySelector(`.event-card[data-evento-id="${id}"]`);
+                if (!card) return;
+
+                // Actualizar botones
+                const btnParticipar = card.querySelector('.btn-participate');
+                const btnCancelar = card.querySelector('.btn-participate.btn-warning');
+                const btnEscribirResena = card.querySelector('.btn-review:not([disabled])');
+                const btnYaResenado = card.querySelector('.btn-review[disabled]');
+
+                if (evento.finalizado) {
+                    if (evento.yaParticipa && !evento.yaResenado) {
+                        if (btnParticipar) btnParticipar.style.display = 'none';
+                        if (btnCancelar) btnCancelar.style.display = 'none';
+                        if (btnEscribirResena) btnEscribirResena.style.display = 'inline-block';
+                        if (btnYaResenado) btnYaResenado.style.display = 'none';
+                    } else if (evento.yaResenado) {
+                        if (btnParticipar) btnParticipar.style.display = 'none';
+                        if (btnCancelar) btnCancelar.style.display = 'none';
+                        if (btnEscribirResena) btnEscribirResena.style.display = 'none';
+                        if (btnYaResenado) btnYaResenado.style.display = 'inline-block';
+                    } else {
+                        if (btnParticipar) btnParticipar.style.display = 'inline-block';
+                        if (btnCancelar) btnCancelar.style.display = 'none';
+                        if (btnEscribirResena) btnEscribirResena.style.display = 'none';
+                        if (btnYaResenado) btnYaResenado.style.display = 'none';
+                    }
+                } else {
+                    if (evento.yaParticipa) {
+                        if (btnParticipar) btnParticipar.style.display = 'none';
+                        if (btnCancelar) btnCancelar.style.display = 'inline-block';
+                        if (btnEscribirResena) btnEscribirResena.style.display = 'none';
+                        if (btnYaResenado) btnYaResenado.style.display = 'none';
+                    } else {
+                        if (btnParticipar) btnParticipar.style.display = 'inline-block';
+                        if (btnCancelar) btnCancelar.style.display = 'none';
+                        if (btnEscribirResena) btnEscribirResena.style.display = 'none';
+                        if (btnYaResenado) btnYaResenado.style.display = 'none';
+                    }
+                }
+
+                // Actualizar participantes y barra
+                const participantesInfo = card.querySelector('.capacity-info strong');
+                if (participantesInfo) {
+                    participantesInfo.textContent = evento.participantesActuales != null ? evento.participantesActuales : 0;
+                }
+                const capacidadTotal = evento.capacidad || 0;
+                const capacidadTexto = card.querySelector('.capacity-info span');
+                if (capacidadTexto) {
+                    capacidadTexto.textContent = ` de ${capacidadTotal} disponibles`;
+                }
+                const capacityFill = card.querySelector('.capacity-fill');
+                if (capacityFill) {
+                    capacityFill.style.width = evento.porcentajeOcupado + '%';
+                }
+            })
+            .catch(error => {
+                console.error('Error al actualizar UI del evento:', error);
+            });
+    }
+
+    function abrirModalResena(id) {
+        window.location.href = '/eventos/' + id + '/resena';
+    }
+
+    function compartirEvento(id) {
+        navigator.clipboard.writeText('https://piuraexpressa.com/eventos/' + id).then(() => {
+        alert('Enlace copiado al portapapeles.');
+        });
+    }
+
+    function verDetallesEvento(id) {
+        // puedes reemplazarlo con un modal cargado por AJAX o navegación
+        window.location.href = '/eventos/' + id;
+    }
+    async function cargarProvincias() {
+        try {
+            const response = await fetch('/api/provincias/todas');
+            const provincias = await response.json();
+            const select = document.getElementById('provinciaSelect');
+
+            provincias.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.nombre.toLowerCase();
+                option.textContent = p.nombre;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error al cargar provincias:', error);
         }
     }
-}
+        function renderizarPaginacion(data) {
+        const paginationContainer = document.querySelector('.pagination');
+        if (!paginationContainer) return;
 
-// Share event (copy event name to clipboard as example)
-function shareEvent(eventName) {
-    const shareText = `Mira este evento: ${eventName} en Piura Expressa!`;
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(shareText).then(() => {
-            alert('Texto del evento copiado al portapapeles para compartir.');
-        }, () => {
-            alert('No se pudo copiar el texto al portapapeles.');
-        });
-    } else {
-        alert('La función de compartir no está soportada en este navegador.');
-    }
-}
+        paginationContainer.innerHTML = '';
 
-// Toggle favorite state on the button
-function toggleFavorite(button) {
-    const icon = button.querySelector('i');
-    if (icon.classList.contains('bi-heart')) {
-        icon.classList.remove('bi-heart');
-        icon.classList.add('bi-heart-fill');
-        button.setAttribute('aria-label', 'Quitar de favoritos');
-    } else {
-        icon.classList.remove('bi-heart-fill');
-        icon.classList.add('bi-heart');
-        button.setAttribute('aria-label', 'Agregar a favoritos');
-    }
-}
+        const { totalPages, number, first, last } = data;
 
-// Show event details (placeholder)
-function showEventDetails(eventName) {
-    alert(`Mostrar detalles para el evento: ${eventName}`);
-}
+        if (totalPages <= 1) return;
 
-// Handle filter form submission
-document.getElementById('filtersForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    filterEvents();
-});
+        const crearItem = (text, disabled, page, active = false) => `
+            <li class="page-item ${disabled ? 'disabled' : ''} ${active ? 'active' : ''}">
+                <a class="page-link" href="#" onclick="cargarEventos(${page}); return false;">${text}</a>
+            </li>`;
 
-// Handle participation form submission
-document.getElementById('participationForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const observaciones = document.getElementById('observaciones').value;
-    alert('Participación confirmada. Observaciones: ' + (observaciones || 'Ninguna'));
-    const participationModal = bootstrap.Modal.getInstance(document.getElementById('participationModal'));
-    participationModal.hide();
-    document.getElementById('participationForm').reset();
-});
+        paginationContainer.innerHTML += crearItem('Anterior', first, number - 1);
 
-// JavaScript for Eventos page interactive features
-
-// Show participation modal and populate event details
-function showParticipationModal(eventName) {
-    const participationModal = new bootstrap.Modal(document.getElementById('participationModal'));
-    const eventDetailsDiv = document.getElementById('eventDetails');
-    eventDetailsDiv.innerHTML = `<p><strong>Evento:</strong> ${eventName}</p>`;
-    participationModal.show();
-}
-
-// Clear all filters in the filter form
-function clearFilters() {
-    document.getElementById('searchInput').value = '';
-    document.getElementById('provinciaSelect').value = '';
-    document.getElementById('fechaSelect').value = '';
-    document.getElementById('precioSelect').value = '';
-    filterEvents();
-}
-
-// Filter events based on filter inputs (basic client-side filtering)
-function filterEvents() {
-    const searchText = document.getElementById('searchInput').value.toLowerCase();
-    const provincia = document.getElementById('provinciaSelect').value.toLowerCase();
-    const fecha = document.getElementById('fechaSelect').value.toLowerCase();
-    const precio = document.getElementById('precioSelect').value.toLowerCase();
-
-    const eventsGrid = document.getElementById('eventsGrid');
-    const eventCards = eventsGrid.getElementsByClassName('event-card');
-
-    for (let card of eventCards) {
-        const title = card.querySelector('.event-title').textContent.toLowerCase();
-        const description = card.querySelector('.event-description').textContent.toLowerCase();
-        const provinciaMatch = provincia === '' || card.innerHTML.toLowerCase().includes(provincia);
-        const fechaMatch = fecha === '' || card.innerHTML.toLowerCase().includes(fecha);
-        const precioMatch = precio === '' || card.innerHTML.toLowerCase().includes(precio);
-        const searchMatch = title.includes(searchText) || description.includes(searchText);
-
-        if (provinciaMatch && fechaMatch && precioMatch && searchMatch) {
-            card.style.display = '';
-        } else {
-            card.style.display = 'none';
+        for (let i = 0; i < totalPages; i++) {
+            paginationContainer.innerHTML += crearItem(i + 1, false, i, i === number);
         }
+
+        paginationContainer.innerHTML += crearItem('Siguiente', last, number + 1);
     }
-}
 
-// Share event (copy event name to clipboard as example)
-function shareEvent(eventName) {
-    const shareText = `Mira este evento: ${eventName} en Piura Expressa!`;
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(shareText).then(() => {
-            alert('Texto del evento copiado al portapapeles para compartir.');
-        }, () => {
-            alert('No se pudo copiar el texto al portapapeles.');
-        });
-    } else {
-        alert('La función de compartir no está soportada en este navegador.');
-    }
-}
+      // Cargar inicial
+      cargarEventos();
+      cargarProvincias();
+  })
 
-// Toggle favorite state on the button
-function toggleFavorite(button) {
-    const icon = button.querySelector('i');
-    if (icon.classList.contains('bi-heart')) {
-        icon.classList.remove('bi-heart');
-        icon.classList.add('bi-heart-fill');
-        button.setAttribute('aria-label', 'Quitar de favoritos');
-    } else {
-        icon.classList.remove('bi-heart-fill');
-        icon.classList.add('bi-heart');
-        button.setAttribute('aria-label', 'Agregar a favoritos');
-    }
-}
 
-// Show event details (placeholder)
-function showEventDetails(eventName) {
-    alert(`Mostrar detalles para el evento: ${eventName}`);
-}
-
-// Handle filter form submission
-document.getElementById('filtersForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    filterEvents();
-});
-
-// Handle participation form submission
-document.getElementById('participationForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const observaciones = document.getElementById('observaciones').value;
-    alert('Participación confirmada. Observaciones: ' + (observaciones || 'Ninguna'));
-    const participationModal = bootstrap.Modal.getInstance(document.getElementById('participationModal'));
-    participationModal.hide();
-    document.getElementById('participationForm').reset();
-});
     </script>
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form id="reviewForm" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title" id="reviewModalLabel">Escribir Reseña</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="reviewRating" class="form-label">Calificación</label>
+            <select id="reviewRating" class="form-select" required>
+              <option value="" selected disabled>Seleccione una calificación</option>
+              <option value="1">1 estrella</option>
+              <option value="2">2 estrellas</option>
+              <option value="3">3 estrellas</option>
+              <option value="4">4 estrellas</option>
+              <option value="5">5 estrellas</option>
+            </select>
+            <div class="invalid-feedback">Por favor seleccione una calificación.</div>
+          </div>
+          <div class="mb-3">
+            <label for="reviewComment" class="form-label">Comentario</label>
+            <textarea id="reviewComment" class="form-control" rows="3" maxlength="1000" placeholder="Escribe tu reseña aquí..."></textarea>
+          </div>
+          <div id="reviewError" class="text-danger mb-2" style="display:none;"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Enviar Reseña</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  let currentReviewEventId = null;
+
+  function abrirModalResena(id) {
+    currentReviewEventId = id;
+    const reviewModal = new bootstrap.Modal(document.getElementById('reviewModal'));
+    document.getElementById('reviewRating').value = '';
+    document.getElementById('reviewComment').value = '';
+    document.getElementById('reviewError').style.display = 'none';
+    reviewModal.show();
+  }
+
+  document.getElementById('reviewForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const rating = document.getElementById('reviewRating').value;
+    const comment = document.getElementById('reviewComment').value.trim();
+
+    if (!rating) {
+      document.getElementById('reviewError').textContent = 'Por favor seleccione una calificación.';
+      document.getElementById('reviewError').style.display = 'block';
+      return;
+    }
+
+    const comentarioDTO = {
+      calificacion: parseInt(rating),
+      comentario: comment
+    };
+
+    fetch('/api/eventos/' + currentReviewEventId + '/resena', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': /*[[${_csrf.token}]]*/ ''
+      },
+      body: JSON.stringify(comentarioDTO)
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else if (response.status === 401) {
+        alert('Debe iniciar sesión para enviar una reseña.');
+        throw new Error('Unauthorized');
+      } else {
+        throw new Error('Error al enviar la reseña.');
+      }
+    })
+    .then(data => {
+      const reviewModal = bootstrap.Modal.getInstance(document.getElementById('reviewModal'));
+      reviewModal.hide();
+      alert('Reseña enviada correctamente.');
+      actualizarEventoUI(currentReviewEventId);
+    })
+    .catch(error => {
+      document.getElementById('reviewError').textContent = error.message;
+      document.getElementById('reviewError').style.display = 'block';
+    });
+  });
+</script>
+
 </body>
 </html>

@@ -1,6 +1,8 @@
 package com.piuraexpressa.dto;
 
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class UsuarioEventoIdDTO {
     private Long usuarioId;
     private Long eventoId;

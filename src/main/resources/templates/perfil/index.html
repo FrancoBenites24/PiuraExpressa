@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title
-      th:text="'Perfil de ' + ${usuario.nombreCompleto} + ' - Piura Expressa'"
+      th:text="'Perfil de ' + ${usuario.nombre + ' ' + usuario.apellido} + ' - Piura Expressa'"
     >
       Perfil de Usuario - Piura Expressa
     </title>
@@ -23,7 +23,6 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="footer.css" />
     <style>
       :root {
         --color-primary: #a0c878;
@@ -606,12 +605,9 @@
         aria-label="Menú de perfil de usuario"
       >
         <div class="avatar">
-          <img
-            th:src="@{${usuario.imagenPerfil}}"
-            alt="Avatar de [[${usuario.nombreCompleto}]]"
-          />
+<img th:src="@{/img/default-profile.png}" alt="Foto de perfil por defecto" />
         </div>
-        <h2 th:text="${usuario.nombreCompleto}">Nombre Apellido</h2>
+        <h2 th:text="${usuario.nombre + ' ' + usuario.apellido}">Nombre Apellido</h2>
         <div class="username" th:text="'@' + ${usuario.username}">@usuario</div>
 
         <ul
