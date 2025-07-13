@@ -19,6 +19,7 @@
         body {
             background-color: var(--light-bg);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 70px; /* Para evitar superposición con navbar fija */
         }
 
         .navbar {
@@ -251,17 +252,116 @@
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">
-                <i class="bi bi-chat-dots-fill me-2"></i>Piura Expressa Foro
-            </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="#"><i class="bi bi-bell"></i></a>
-                <a class="nav-link" href="#"><i class="bi bi-person-circle"></i></a>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <i class="bi bi-compass me-2"></i>Piura Expressa
+        </a>
+
+        <button
+          class="navbar-toggler border-0"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <i class="bi bi-list"></i>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="#inicio">
+                <i class="bi bi-house me-1"></i>Inicio
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#provincias">
+                <i class="bi bi-map me-1"></i>Provincias
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/eventos">
+                <i class="bi bi-calendar-event me-1"></i>Eventos
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/foro">
+                <i class="bi bi-chat-dots me-1"></i>Foro
+              </a>
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center">
+            <div sec:authorize="isAuthenticated()">
+              <div class="dropdown">
+                <button
+                  class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i class="bi bi-person-circle" style="font-size: 1.5rem"></i>
+                  <span sec:authentication="name"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <li>
+                    <a
+                      class="dropdown-item d-flex align-items-center gap-2"
+                      th:href="@{/perfil}"
+                    >
+                      <i class="bi bi-person"></i> Perfil
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item d-flex align-items-center gap-2"
+                      th:href="@{/mis-publicaciones}"
+                    >
+                      <i class="bi bi-file-text"></i> Mis Publicaciones
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item d-flex align-items-center gap-2"
+                      th:href="@{/mis-eventos}"
+                    >
+                      <i class="bi bi-calendar-check"></i> Mis Participaciones
+                    </a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider" />
+                  </li>
+                  <li>
+                    <form
+                      action="#"
+                      th:action="@{/logout}"
+                      method="post"
+                      style="margin: 0"
+                    >
+                      <button
+                        type="submit"
+                        class="dropdown-item d-flex align-items-center gap-2"
+                      >
+                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                      </button>
+                    </form>
+                  </li>
+                </ul>
+              </div>
             </div>
+            <div sec:authorize="!isAuthenticated()">
+              <a
+                href="/auth/login"
+                class="btn btn-login d-flex align-items-center gap-2"
+              >
+                <i class="bi bi-person-circle"></i> Iniciar Sesión
+              </a>
+            </div>
+          </div>
         </div>
+      </div>
     </nav>
 
     <!-- Header del Foro -->
@@ -272,7 +372,7 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" style="padding-top: 120px;">
         <div class="row">
             <!-- Sidebar -->
             <div class="col-lg-3">
@@ -415,8 +515,8 @@
             try {
                 const response = await fetch('/api/usuario/autenticado');
                 if (!response.ok) throw new Error('No autenticado');
-                currentUser = await response.json();
-                if (currentUser && currentUser.roles && currentUser.roles.includes('ROLE_ADMIN')) {
+                window.currentUser = await response.json();
+                if (window.currentUser && window.currentUser.roles && window.currentUser.roles.includes('ROLE_ADMIN')) {
                     document.getElementById('newEventBtn').style.display = 'block';
                     document.getElementById('newEventBtn').addEventListener('click', () => {
                         window.location.href = '/admin/eventos';
@@ -436,12 +536,15 @@
                 document.getElementById('postsContainer').innerHTML = '';
             }
             let url = `/api/publicaciones?page=${currentPage}&size=${pageSize}`;
+            if (window.currentUser && window.currentUser.id) {
+                url += `&usuarioId=${window.currentUser.id}`;
+            }
             if (currentFilter === 'popular') {
                 url += '&sort=totalLikes,desc';
             } else if (currentFilter === 'recent') {
                 url += '&sort=fechaCreacion,desc';
             } else if (currentFilter === 'mine') {
-                url += '&usuarioId=me';
+                // ya se envía usuarioId arriba
             }
             if (currentSearch) {
                 url += `&search=${encodeURIComponent(currentSearch)}`;
@@ -508,7 +611,9 @@
 
         // Función para renderizar una publicación
         function renderPost(post) {
-            const likedClass = post.usuarioHaDadoLike ? 'liked' : '';
+            console.log('Render post:', post.id, 'usuarioHaDadoLike:', post.usuarioHaDadoLike, 'totalLikes:', post.totalLikes);
+            const likedClass = post.usuarioHaDadoLike === true ? 'liked' : '';
+            const totalLikes = post.totalLikes !== undefined && post.totalLikes !== null ? post.totalLikes : 0;
             const tags = post.etiquetas ? post.etiquetas.split(',').map(tag => `<span class="badge" style="background-color: var(--secondary-color); color: var(--text-dark); margin-right: 0.25rem;">#${tag.trim()}</span>`).join('') : '';
             return `
                 <div class="post-card" data-post-id="${post.id}">
@@ -539,7 +644,7 @@
                     <div class="post-actions">
                         <div class="d-flex align-items-center justify-content-between flex-wrap">
                             <button class="action-btn ${likedClass}" data-post-id="${post.id}" onclick="toggleLike(this)" title="Me gusta">
-                                <i class="bi bi-heart${post.usuarioHaDadoLike ? '-fill' : ''} me-1"></i>${post.totalLikes}
+                                <i class="bi bi-heart${post.usuarioHaDadoLike ? '-fill' : ''} me-1"></i>${totalLikes}
                             </button>
                             <button class="action-btn" onclick="toggleComments(this)" title="Comentarios">
                                 <i class="bi bi-chat me-1"></i>${post.totalComentarios} comentarios
@@ -579,8 +684,14 @@
         async function toggleLike(button) {
             const postId = button.getAttribute('data-post-id');
             const liked = button.classList.contains('liked');
+            // Obtener usuarioId del usuario autenticado (simulado aquí, debe obtenerse dinámicamente)
+            const usuarioId = window.currentUser ? window.currentUser.id : null;
+            if (!usuarioId) {
+                alert('Debes iniciar sesión para dar like.');
+                return;
+            }
             try {
-                const response = await fetch(`/api/publicaciones/${postId}/${liked ? 'unlike' : 'like'}`, {
+                const response = await fetch(`/api/publicaciones/${postId}/${liked ? 'unlike' : 'like'}?usuarioId=${usuarioId}`, {
                     method: 'POST',
                 });
                 if (!response.ok) throw new Error('Error al actualizar like');
@@ -870,7 +981,8 @@
             }
         });
 
-        // Cargar publicaciones iniciales
+        // Cargar usuario autenticado y publicaciones iniciales
+        loadCurrentUser();
         loadPosts();
     </script>
 </body>

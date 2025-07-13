@@ -41,4 +41,7 @@ public class PublicacionDTO {
     private Long totalLikes;
     private String tiempoTranscurrido;
     private Long totalComentarios;
+
+    private Boolean puedeEditar;
+    private Boolean puedeEliminar;
 }

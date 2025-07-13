@@ -3,6 +3,7 @@ package com.piuraexpressa.controller;
 import com.piuraexpressa.dto.PublicacionDTO;
 import com.piuraexpressa.dto.UsuarioLikePublicacionDTO;
 import com.piuraexpressa.servicio.PublicacionServicio;
+import com.piuraexpressa.servicio.ReportePublicacionServicio;
 import com.piuraexpressa.servicio.UsuarioLikePublicacionServicio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,10 +20,16 @@ public class PublicacionController {
 
     private final PublicacionServicio publicacionServicio;
     private final UsuarioLikePublicacionServicio UsuarioLikePublicacionServicio;
+    private final ReportePublicacionServicio reportePublicacionServicio;
 
     @PostMapping
     public PublicacionDTO crearPublicacion(@RequestBody PublicacionDTO dto, Principal principal) {
         return publicacionServicio.crearPublicacion(dto, principal.getName());
+    }
+
+    @PutMapping("/{id}")
+    public PublicacionDTO actualizarPublicacion(@PathVariable Long id, @RequestBody PublicacionDTO dto, Principal principal) {
+        return publicacionServicio.actualizarPublicacion(id, dto, principal.getName());
     }
 
     /**
@@ -34,9 +41,22 @@ public class PublicacionController {
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(required = false) String sort,
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) Long usuarioId) {
+            @RequestParam(required = false) Long usuarioId,
+            Principal principal) {
+        // Obtener id del usuario autenticado
+        Long idUsuarioAutenticado = null;
+        if (principal != null) {
+            // Aquí se debe obtener el id del usuario autenticado desde el servicio de usuario
+            // Por simplicidad, se asume que el username es el nombre principal
+            // y se busca el usuario para obtener su id
+            try {
+                idUsuarioAutenticado = publicacionServicio.obtenerIdUsuarioPorUsername(principal.getName());
+            } catch (Exception e) {
+                idUsuarioAutenticado = null;
+            }
+        }
         // Ajusta los filtros según tu servicio
-        Page<PublicacionDTO> publicaciones = publicacionServicio.buscarPublicaciones(page, size, sort, search, usuarioId);
+        Page<PublicacionDTO> publicaciones = publicacionServicio.buscarPublicaciones(page, size, sort, search, usuarioId, idUsuarioAutenticado);
         return ResponseEntity.ok(publicaciones);
     }
 
@@ -88,4 +108,34 @@ public class PublicacionController {
 
     // Otros endpoints como crear, editar, eliminar publicaciones, comentarios, etc.
     // Los agregas según lo necesites.
+
+    @PostMapping("/{publicacionId}/reportar")
+    public ResponseEntity<?> reportarPublicacion(@PathVariable Long publicacionId, Principal principal) {
+        try {
+            Long usuarioId = obtenerIdUsuarioPorPrincipal(principal);
+            reportePublicacionServicio.reportarPublicacion(publicacionId, usuarioId);
+            return ResponseEntity.ok(Map.of("message", "Publicación reportada correctamente"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("message", "Error al reportar publicación"));
+        }
+    }
+
+    private Long obtenerIdUsuarioPorPrincipal(Principal principal) {
+        if (principal == null) {
+            throw new RuntimeException("Usuario no autenticado");
+        }
+        return publicacionServicio.obtenerIdUsuarioPorUsername(principal.getName());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarPublicacion(@PathVariable Long id, Principal principal) {
+        try {
+            publicacionServicio.eliminarPublicacion(id, principal.getName());
+            return ResponseEntity.ok(Map.of("message", "Publicación eliminada correctamente"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(403).body(Map.of("message", e.getMessage()));
+        }
+    }
 }
