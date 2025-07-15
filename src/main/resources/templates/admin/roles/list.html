@@ -1,57 +1,134 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Gestión de Roles</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
-</head>
-<body class="bg-light text-dark">
-    <div class="container py-4 bg-white rounded shadow-sm">
-        <h1 class="mb-4">Gestión de Roles</h1>
-        <a class="btn btn-success mb-3" th:href="@{/admin/roles/nuevo}">
-            <i class="bi bi-plus-circle"></i> Nuevo Rol
-        </a>
-        <table class="table table-striped table-hover align-middle">
-            <thead class="table-success">
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="rol : ${rolesPage.content}">
-                    <td th:text="${rol.id}">1</td>
-                    <td th:text="${rol.nombre}">Nombre</td>
-                    <td th:text="${rol.descripcion}">Descripción</td>
-                    <td>
-                        <a class="btn btn-warning btn-sm me-2" th:href="@{'/admin/roles/editar/' + ${rol.id}}">
-                            <i class="bi bi-pencil"></i> Editar
-                        </a>
-                        <a class="btn btn-danger btn-sm" th:href="@{'/admin/roles/eliminar/' + ${rol.id}}" 
-                           onclick="return confirm('¿Estás seguro de eliminar este rol?');">
-                            <i class="bi bi-trash"></i> Eliminar
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gestión de Roles</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet"/>
+  <style>
+    body {
+      background-color: #FAF6E9;
+      font-family: "Segoe UI", sans-serif;
+    }
 
-        <nav aria-label="Paginación">
-            <ul class="pagination justify-content-center">
-                <li class="page-item" th:classappend="${!rolesPage.hasPrevious()} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/roles(page=${rolesPage.number - 1}, size=${rolesPage.size})}">Anterior</a>
-                </li>
-                <li class="page-item disabled">
-                    <span class="page-link">Página <span th:text="${rolesPage.number + 1}">1</span> de <span th:text="${rolesPage.totalPages}">1</span></span>
-                </li>
-                <li class="page-item" th:classappend="${!rolesPage.hasNext()} ? 'disabled'">
-                    <a class="page-link" th:href="@{/admin/roles(page=${rolesPage.number + 1}, size=${rolesPage.size})}">Siguiente</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    .container {
+      background-color: #FFFDF6;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 12px rgba(160, 200, 120, 0.2);
+      margin-top: 2rem;
+    }
+
+    .table thead {
+      background-color: #DDEB9D;
+    }
+
+    .btn-accion {
+      font-size: 0.9rem;
+      padding: 0.4rem 0.6rem;
+      margin-right: 0.3rem;
+    }
+
+    .permiso-badge {
+      background-color: #A0C878;
+      color: white;
+      font-size: 0.7rem;
+      padding: 0.3em 0.6em;
+      border-radius: 0.5rem;
+      margin: 0.2rem 0.2rem 0 0;
+      display: inline-block;
+    }
+
+    .sin-permisos {
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .btn-success {
+      background-color: #A0C878;
+      border-color: #7A9A4A;
+    }
+
+    .btn-secondary {
+      background-color: #DDEB9D;
+      border-color: #c3db75;
+      color: #4a6a1a;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-success">Listado de Roles</h2>
+    <a href="/admin/roles/crear" class="btn btn-success">
+      <i class="bi bi-plus-circle"></i> Nuevo Rol
+    </a>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Permisos</th>
+          <th>Activo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="rol : ${roles.content}">
+          <td th:text="${rol.id}">1</td>
+          <td th:text="${rol.nombre}">Admin</td>
+          <td th:text="${rol.descripcion}">Acceso completo</td>
+          <td>
+            <div class="d-flex flex-wrap">
+              <span class="permiso-badge"
+                    th:each="permiso : ${rol.permisosDetallados}"
+                    th:text="${permiso.nombre}">Permiso</span>
+            </div>
+            <div th:if="${#lists.isEmpty(rol.permisosDetallados)}" class="sin-permisos">
+              Sin permisos asignados
+            </div>
+          </td>
+          <td>
+            <i class="bi" th:classappend="${rol.activo} ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger'"></i>
+          </td>
+          <td>
+            <a th:href="@{'/admin/roles/editar/' + ${rol.id}}" class="btn btn-warning btn-sm btn-accion" title="Editar">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <form th:action="@{'/admin/roles/eliminar/' + ${rol.id}}" method="post" style="display:inline;" onsubmit="return confirm('¿Eliminar este rol?')">
+              <button type="submit" class="btn btn-danger btn-sm btn-accion" title="Eliminar">
+                <i class="bi bi-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginación -->
+  <nav th:if="${roles.totalPages > 1}">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" th:classappend="${roles.first} ? 'disabled'">
+        <a class="page-link" th:href="@{/admin/roles(page=0)}">&laquo;</a>
+      </li>
+      <li class="page-item" th:each="i : ${#numbers.sequence(0, roles.totalPages - 1)}"
+          th:classappend="${i == roles.number} ? 'active'">
+        <a class="page-link" th:href="@{/admin/roles(page=${i})}" th:text="${i + 1}">1</a>
+      </li>
+      <li class="page-item" th:classappend="${roles.last} ? 'disabled'">
+        <a class="page-link" th:href="@{/admin/roles(page=${roles.totalPages - 1})}">&raquo;</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

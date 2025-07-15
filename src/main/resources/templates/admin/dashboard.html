@@ -86,15 +86,18 @@
     </style>
 </head>
 <body>
-    <nav class="sidebar">
-        <div class="sidebar-header">Piura Expressa</div>
-        <a href="#" th:href="@{/admin/dashboard}"><i class="bi bi-speedometer2"></i> Dashboard</a>
-        <a href="#" th:href="@{/admin/usuarios}"><i class="bi bi-people-fill"></i> Usuarios</a>
-        <a href="#" th:href="@{/admin/provincias}"><i class="bi bi-geo-alt-fill"></i> Provincias</a>
-        <a href="#" th:href="@{/admin/permisos}"><i class="bi bi-shield-lock-fill"></i> Permisos</a>
-        <a href="#" th:href="@{/admin/configuracion}"><i class="bi bi-gear-fill"></i> Configuración</a>
-        <a href="#" th:href="@{/auth/logout}"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a>
-    </nav>
+        <nav class="sidebar">
+            <div class="sidebar-header">Piura Expressa</div>
+            <a href="#" th:href="@{/admin/dashboard}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+            <a href="#" th:href="@{/admin/usuarios}"><i class="bi bi-people-fill"></i> Usuarios</a>
+            <a href="#" th:href="@{/admin/provincias}"><i class="bi bi-geo-alt-fill"></i> Provincias</a>
+            <a href="#" th:href="@{/admin/publicaciones}"><i class="bi bi-file-text"></i> Publicaciones</a>
+            <a href="#" th:href="@{/admin/eventos}"><i class="bi bi-calendar-event"></i> Eventos</a>
+            <a href="#" th:href="@{/admin/permisos}"><i class="bi bi-shield-lock-fill"></i> Permisos</a>
+            <a href="#" th:href="@{/admin/roles}"><i class="bi bi-shield-lock"></i> Roles</a>
+            <a href="#" th:href="@{/admin/configuracion}"><i class="bi bi-gear-fill"></i> Configuración</a>
+            <a href="#" th:href="@{/auth/logout}"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a>
+        </nav>
     <main class="content">
         <h1 class="mb-4" style="color:#A0C878;">Panel de Administración</h1>
         <div class="row g-4">

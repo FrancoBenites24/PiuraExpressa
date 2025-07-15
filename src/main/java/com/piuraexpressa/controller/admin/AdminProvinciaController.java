@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @Controller
 @RequestMapping("/admin/provincias")
@@ -22,7 +23,7 @@ public class AdminProvinciaController {
 
     private final ProvinciaServicio provinciaServicio;
 
-    // Listado de provincias (para la tabla)
+    @PreAuthorize("hasAuthority('ADMINISTRAR_PROVINCIA_LISTAR')")
     @GetMapping
     public String listarProvincias(
             @RequestParam(defaultValue = "0") int page,
@@ -41,7 +42,7 @@ public class AdminProvinciaController {
         return "admin/provincias/list";
     }
 
-    // Mostrar formulario para crear una nueva provincia
+    @PreAuthorize("hasAuthority('ADMINISTRAR_PROVINCIA_NUEVO')")
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevaProvincia(Model modelo) {
         modelo.addAttribute("provincia", new ProvinciaDTO());
@@ -49,7 +50,7 @@ public class AdminProvinciaController {
         return "admin/provincias/formulario";
     }
 
-    // POST: Crear nueva provincia
+    @PreAuthorize("hasAuthority('ADMINISTRAR_PROVINCIA_GUARDAR')")
     @PostMapping("/guardar")
     public String guardarProvincia(@Valid @ModelAttribute("provincia") ProvinciaDTO provinciaDTO,
             BindingResult bindingResult,
@@ -76,7 +77,7 @@ public class AdminProvinciaController {
         }
     }
 
-    // Mostrar formulario para editar
+    @PreAuthorize("hasAuthority('ADMINISTRAR_PROVINCIA_EDITAR')")
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditar(@PathVariable("id") Long id, Model modelo,
             RedirectAttributes redirectAttributes) {
@@ -90,7 +91,7 @@ public class AdminProvinciaController {
         return "admin/provincias/formulario";
     }
 
-    // POST: Actualizar provincia existente
+    @PreAuthorize("hasAuthority('ADMINISTRAR_PROVINCIA_ACTUALIZAR')")
     @PostMapping("/actualizar/{id}")
     public String actualizarProvincia(@PathVariable Long id,
             @Valid @ModelAttribute("provincia") ProvinciaDTO provinciaDTO,
@@ -115,8 +116,8 @@ public class AdminProvinciaController {
         }
     }
 
-    // Activar provincia
-    @PostMapping("/activar/{id}")
+    @PreAuthorize("hasAuthority('ADMINISTRAR_PROVINCIA_ACTIVAR')")
+    @PostMapping("{id}/activar")
     public String activarProvincia(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
             provinciaServicio.activarProvincia(id);
@@ -127,8 +128,8 @@ public class AdminProvinciaController {
         return "redirect:/admin/provincias";
     }
 
-    // Desactivar provincia
-    @PostMapping("/desactivar/{id}")
+    @PreAuthorize("hasAuthority('ADMINISTRAR_PROVINCIA_DESACTIVAR')")
+    @PostMapping("{id}/desactivar")
     public String desactivarProvincia(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
             provinciaServicio.desactivarProvincia(id);
@@ -139,7 +140,7 @@ public class AdminProvinciaController {
         return "redirect:/admin/provincias";
     }
 
-    // Eliminar provincia
+    @PreAuthorize("hasAuthority('ADMINISTRAR_PROVINCIA_ELIMINAR')")
     @PostMapping("/eliminar/{id}")
     public String eliminarProvincia(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
@@ -153,6 +154,7 @@ public class AdminProvinciaController {
         return "redirect:/admin/provincias";
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRAR_PROVINCIA_GESTION')")
     @GetMapping("/gestion/{id}")
     public String gestionProvincia(@PathVariable Long id, Model model) {
         ProvinciaDTO provincia = provinciaServicio.buscarPorId(id);

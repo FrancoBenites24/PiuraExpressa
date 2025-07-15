@@ -1,6 +1,7 @@
 package com.piuraexpressa.servicio;
 
 import com.piuraexpressa.dto.PermisoDTO;
+import com.piuraexpressa.model.seguridad.Permiso;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,4 +26,9 @@ public interface PermisoServicio {
     void eliminar(Long id);
 
     boolean existePorNombre(String nombre);
+
+    Permiso crearSiNoExiste(Permiso permiso);
+
+    List<PermisoDTO> obtenerPorIds(List<Long> ids);
+
 }

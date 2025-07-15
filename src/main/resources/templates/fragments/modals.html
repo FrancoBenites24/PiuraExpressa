@@ -1,0 +1,110 @@
+<!-- fragments/modals.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div th:fragment="modals">
+      
+      <!-- Modal: Confirmar Participación -->
+      <div class="modal fade" id="participationModal" tabindex="-1" aria-labelledby="participationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="participationModalLabel">
+                <i class="bi bi-calendar-plus me-2"></i>Confirmar Participación
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+              <div class="confirmation-icon">
+                <i class="bi bi-calendar-check"></i>
+              </div>
+              <div class="confirmation-text">
+                <h4>¿Confirmas tu participación?</h4>
+                <p>Te estás registrando para participar en este evento. Recibirás una confirmación por email.</p>
+              </div>
+              <div class="confirmation-details" id="eventDetails">
+                <!-- Se llena con JS -->
+              </div>
+              <form id="participationForm" novalidate>
+                <div class="mb-3">
+                  <label for="observaciones" class="form-label">
+                    <i class="bi bi-chat-text me-1"></i>Observaciones (opcional)
+                  </label>
+                  <textarea class="form-control" id="observaciones" rows="3" placeholder="Algún comentario o requerimiento"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Confirmar</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal: Escribir Reseña -->
+      <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <form id="reviewForm" novalidate>
+              <div class="modal-header">
+                <h5 class="modal-title" id="reviewModalLabel">Escribir Reseña</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label for="reviewRating" class="form-label">Calificación</label>
+                  <select id="reviewRating" class="form-select" required>
+                    <option value="" selected disabled>Seleccione una calificación</option>
+                    <option value="1">1 estrella</option>
+                    <option value="2">2 estrellas</option>
+                    <option value="3">3 estrellas</option>
+                    <option value="4">4 estrellas</option>
+                    <option value="5">5 estrellas</option>
+                  </select>
+                  <div class="invalid-feedback">Por favor seleccione una calificación.</div>
+                </div>
+                <div class="mb-3">
+                  <label for="reviewComment" class="form-label">Comentario</label>
+                  <textarea id="reviewComment" class="form-control" rows="3" maxlength="1000" placeholder="Escribe tu reseña aquí..."></textarea>
+                </div>
+                <div id="reviewError" class="text-danger mb-2" style="display:none;"></div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Enviar Reseña</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal: Detalles del Evento -->
+      <div class="modal fade" id="eventDetailsModal" tabindex="-1" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+              <h5 class="modal-title" id="eventDetailsModalLabel">
+                <i class="bi bi-info-circle me-2"></i>Detalles del Evento
+              </h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+              <div id="detalleEventoContenido" class="mb-4">
+                <!-- Detalles se cargan por JavaScript -->
+              </div>
+
+              <div class="reviews-section border-top pt-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h5 class="mb-0">Reseñas</h5>
+                  <span id="reviewsCount" class="text-muted small"></span>
+                </div>
+                <div id="reviewsList">
+                  <!-- Reseñas renderizadas dinámicamente -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>

@@ -131,16 +131,16 @@
               <a th:href="@{'/admin/provincias/gestion/' + ${provincia.id}}" class="btn btn-outline-info btn-accion" title="Gestionar">
                 <i class="bi bi-gear"></i>
               </a>
-            <form th:action="@{'/admin/provincias/' + ${provincia.id} + (provincia.activo ? '/desactivar' : '/activar')}"
-                  method="post"
-                  th:onsubmit="${provincia.activo} ? 'return confirm(\'¿Estás seguro de desactivar esta provincia?\')' : null"
-                  style="display:inline;">
-                <button type="submit"
-                        class="btn btn-accion"
-                        th:classappend="${provincia.activo} ? 'btn-outline-warning' : 'btn-outline-success'"
-                        th:title="${provincia.activo} ? 'Desactivar' : 'Activar'">
-                    <i th:class="${provincia.activo} ? 'bi bi-toggle-on' : 'bi bi-toggle-off'"></i>
-                </button>
+              <form th:action="@{/admin/provincias/{id}/{accion}(id=${provincia.id}, accion=${provincia.activo} ? 'desactivar' : 'activar')}"
+                    method="post"
+                    th:onsubmit="${provincia.activo} ? 'return confirm(\'¿Estás seguro de desactivar esta provincia?\')' : null"
+                    style="display:inline;">
+                  <button type="submit"
+                          class="btn btn-accion"
+                          th:classappend="${provincia.activo} ? 'btn-outline-warning' : 'btn-outline-success'"
+                          th:title="${provincia.activo} ? 'Desactivar' : 'Activar'">
+                      <i th:class="${provincia.activo} ? 'bi bi-toggle-on' : 'bi bi-toggle-off'"></i>
+                  </button>
               </form>
               <form th:action="@{'/admin/provincias/eliminar/' + ${provincia.id}}" 
                   method="post" 

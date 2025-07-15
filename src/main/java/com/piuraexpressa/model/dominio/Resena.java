@@ -26,9 +26,9 @@ public class Resena {
     private int calificacion;
 
     @Size(max = 1000)
-    private String comentario;
+    private String contenido;
 
-    @Column(nullable = false)
+    @Column(name = "fecha_creacion",nullable = false)
     private LocalDateTime fechaResena;
 
     @Builder.Default

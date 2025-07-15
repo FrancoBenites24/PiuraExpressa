@@ -482,7 +482,7 @@ function initLazyLoading() {
 // Performance optimization: Preload critical resources
 function preloadCriticalResources() {
   const criticalImages = [
-    "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/917778ca-0f78-4862-9368-70fd4d35819e.png",
+    "https://th.bing.com/th/id/R.8656631f8babbf2c1a3890d4251663f0?rik=EbK4doIKcviJZQ&riu=http%3a%2f%2f3.bp.blogspot.com%2f-V7tOURmX5jw%2fVBmsoJjhCvI%2fAAAAAAAAABE%2fbErf3FM342g%2fs1600%2fpiura-peru.jpg&ehk=1HfH9%2bhahG0DftyStGarkvcvSfRUn5PJpzsqby62wHw%3d&risl=&pid=ImgRaw&r=0",
     "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/8b8aa9ca-4cb9-433c-8293-698909baca42.png",
     "https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/11fa5d85-cb0a-40ec-a51c-23b8605d1d45.png"
   ];

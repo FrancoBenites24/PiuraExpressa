@@ -2,6 +2,9 @@ package com.piuraexpressa.servicio;
 
 import com.piuraexpressa.dto.RegistroDTO;
 import com.piuraexpressa.dto.UsuarioDTO;
+import com.piuraexpressa.dto.UsuarioPerfilDTO;
+import com.piuraexpressa.model.seguridad.Usuario;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,6 +18,8 @@ public interface UsuarioServicio {
     Optional<UsuarioDTO> buscarPorEmail(String email);
 
     Optional<UsuarioDTO> buscarPorUsername(String username);
+
+    Optional<UsuarioPerfilDTO> buscarPorUsernameConPaginacion(String username, int pubPage, int evtPage);
 
     Optional<Long> obtenerIdPorUsername(String username);
 
@@ -39,4 +44,9 @@ public interface UsuarioServicio {
     void registrarDesdeDTO(RegistroDTO dto);
 
     Long obtenerRolPrincipalId(Long usuarioId);
+
+    void actualizarPerfil(String usernameActual, UsuarioDTO usuarioDTO);
+
+    Optional<Usuario> obtenerEntidadPorUsername(String username);
+
 }

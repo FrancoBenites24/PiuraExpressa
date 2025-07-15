@@ -21,7 +21,7 @@ public class RolDTO {
     private String descripcion;
 
     private List<Long> permisos; // Lista de IDs de permisos asociados
-
+    private List<PermisoDTO> permisosDetallados; //lista de los nombres de los id de los permisos
     private boolean activo = true;
 
     private LocalDate fechaBaja;

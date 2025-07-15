@@ -3,19 +3,16 @@ package com.piuraexpressa.servicio.impl;
 import com.piuraexpressa.dto.PublicacionDTO;
 import com.piuraexpressa.dto.UsuarioDTO;
 import com.piuraexpressa.mapper.PublicacionMapper;
-import com.piuraexpressa.model.dominio.Comentario;
 import com.piuraexpressa.model.dominio.Provincia;
 import com.piuraexpressa.model.dominio.Publicacion;
-import com.piuraexpressa.model.dominio.UsuarioLikePublicacion;
 import com.piuraexpressa.repositorio.dominio.ProvinciaRepositorio;
 import com.piuraexpressa.repositorio.dominio.PublicacionRepositorio;
+import com.piuraexpressa.repositorio.dominio.ReportePublicacionRepositorio;
 import com.piuraexpressa.servicio.ComentarioServicio;
 import com.piuraexpressa.servicio.PublicacionServicio;
 import com.piuraexpressa.servicio.UsuarioServicio;
 import com.piuraexpressa.specification.PublicacionSpecification;
 
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Subquery;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -24,6 +21,9 @@ import java.time.Duration;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import com.piuraexpressa.repositorio.dominio.UsuarioLikePublicacionRepositorio;
@@ -39,6 +39,7 @@ public class PublicacionServicioImpl implements PublicacionServicio {
     private final ProvinciaRepositorio provinciaRepositorio;
     private final UsuarioLikePublicacionRepositorio usuarioLikePublicacionRepositorio;
     private final ComentarioServicio comentarioServicio;
+    private final ReportePublicacionRepositorio reportePublicacionRepositorio;
 
     private String generarSlug(String titulo) {
         return titulo == null ? ""
@@ -92,8 +93,20 @@ public class PublicacionServicioImpl implements PublicacionServicio {
             publicacion.setProvincia(null);
         }
 
-        // 6. Generar slug
-        publicacion.setSlug(generarSlug(dto.getTitulo()));
+        // 6. Generar slug y asegurar unicidad asegurando que al editar el slug
+        // pertenezca a la misam publicadion
+        String baseSlug = generarSlug(dto.getTitulo());
+        String slug = baseSlug;
+        int suffix = 1;
+
+        // Evitar colisión con otros slugs menos en de la msma publicaicon
+        while (publicacionRepositorio.findBySlug(slug)
+                .filter(p -> !p.getId().equals(publicacion.getId()))
+                .isPresent()) {
+            slug = baseSlug + "-" + suffix;
+            suffix++;
+        }
+        publicacion.setSlug(slug);
 
         // 7. Guardar y devolver DTO
         Publicacion saved = publicacionRepositorio.save(publicacion);
@@ -130,7 +143,7 @@ public class PublicacionServicioImpl implements PublicacionServicio {
         if (dto.getActivo() != null) {
             publicacion.setActivo(dto.getActivo());
         } else {
-            publicacion.setActivo(false); // or true, depending on default desired behavior
+            publicacion.setActivo(true); // or true, depending on default desired behavior
         }
 
         // 4. Actualizar provincia si corresponde
@@ -142,8 +155,20 @@ public class PublicacionServicioImpl implements PublicacionServicio {
             publicacion.setProvincia(null);
         }
 
-        // 5. Actualizar slug
-        publicacion.setSlug(generarSlug(dto.getTitulo()));
+        // 5. Actualizar slug con restriccion de unicidad y
+        // evitar errores al actualizar porque es de la mimsma publicacion
+        String baseSlug = generarSlug(dto.getTitulo());
+        String slug = baseSlug;
+        int suffix = 1;
+
+        // Asegurarse que el slug no exista en otra publicación
+        while (publicacionRepositorio.findBySlug(slug)
+                .filter(p -> !p.getId().equals(publicacion.getId()))
+                .isPresent()) {
+            slug = baseSlug + "-" + suffix;
+            suffix++;
+        }
+        publicacion.setSlug(slug);
 
         // 6. Guardar y devolver DTO actualizado
         Publicacion updated = publicacionRepositorio.save(publicacion);
@@ -167,7 +192,11 @@ public class PublicacionServicioImpl implements PublicacionServicio {
         UsuarioDTO usuario = usuarioServicio.buscarPorUsername(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        if (!publicacion.getAutor().equals(usuario.getId())) {
+        // Verificar si el usuario es admin
+        boolean esAdmin = usuario.getRoles().stream()
+                .anyMatch(rol -> "ROLE_ADMIN".equals(rol));
+
+        if (!esAdmin && !publicacion.getAutor().equals(usuario.getId())) {
             throw new RuntimeException("No autorizado para eliminar esta publicación");
         }
 
@@ -175,94 +204,75 @@ public class PublicacionServicioImpl implements PublicacionServicio {
     }
 
     @Override
-    public Page<PublicacionDTO> buscarPublicaciones(int page, int size, String sort, String search, Long usuarioId, Long idUsuarioAutenticado) {
-        // Inicializa Specification con cb.conjunction() (evita el uso de where
-        // deprecado)
+    public Page<PublicacionDTO> buscarPublicaciones(int page, int size, String sort, String search, Long usuarioId,
+            Long idUsuarioAutenticado, boolean isAdmin) {
         Specification<Publicacion> spec = (root, query, cb) -> cb.conjunction();
 
+        // 🔐 Solo publicaciones activas
+        spec = spec.and((root, query, cb) -> cb.equal(root.get("activo"), true));
+
+        String filtroSort = (sort != null) ? sort.trim().toLowerCase() : "";
+
+        // Filtro por usuario específico
         if (usuarioId != null) {
             spec = spec.and(PublicacionSpecification.filtrarPorUsuario(usuarioId));
         }
 
-        if ("recent".equals(sort)) {
-            LocalDateTime haceUnDia = LocalDateTime.now().minusDays(1);
+        // Filtro "recientes"
+        if ("recent".equals(filtroSort)) {
+            LocalDateTime haceUnDia = LocalDateTime.now().minusHours(24);
             spec = spec.and(PublicacionSpecification.filtrarPorFechaDesde(haceUnDia));
         }
 
-        String sortProperty = "fechaCreacion";
-        if ("recent".equals(sort)) {
-            sortProperty = "fechaCreacion";
-        } else if ("popular".equals(sort)) {
-            // Para popular, no usar sortProperty aquí
-            sortProperty = null;
-        } else if (sort != null && !sort.isEmpty()) {
-            sortProperty = sort;
-        }
-
         Pageable pageable;
-        if ("popular".equals(sort)) {
-            pageable = PageRequest.of(page, size);
-        } else {
-            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortProperty));
+        int offset = page * size;
+
+        if ("popular".equals(filtroSort)) {
+            List<Long> ids = publicacionRepositorio.findPublicacionesPopulares(size, offset);
+            List<Publicacion> publicaciones = ids.isEmpty()
+                    ? Collections.emptyList()
+                    : publicacionRepositorio.findAllById(ids);
+            long total = publicacionRepositorio.contarPublicacionesActivas();
+            return mapearADTO(new PageImpl<>(publicaciones, PageRequest.of(page, size), total), idUsuarioAutenticado,
+                    isAdmin);
         }
 
-        Page<Publicacion> publicaciones;
-
-        if ("popular".equals(sort)) {
-            final Specification<Publicacion> finalSpec = spec; // evitar problema de efectividad final
-
-            publicaciones = publicacionRepositorio.findAll((root, query, cb) -> {
-                query.distinct(true);
-                root.fetch("autor"); // opcional si necesitas los datos del autor
-
-                // Subconsulta de likes
-                Subquery<Long> likesSubquery = query.subquery(Long.class);
-                Root<UsuarioLikePublicacion> likesRoot = likesSubquery.from(UsuarioLikePublicacion.class);
-                likesSubquery.select(cb.count(likesRoot));
-                likesSubquery.where(cb.equal(likesRoot.get("id").get("publicacion").get("id"), root.get("id")));
-
-                // Subconsulta de comentarios
-                Subquery<Long> comentariosSubquery = query.subquery(Long.class);
-                Root<Comentario> comentariosRoot = comentariosSubquery.from(Comentario.class);
-                comentariosSubquery.select(cb.count(comentariosRoot));
-                comentariosSubquery.where(cb.equal(comentariosRoot.get("publicacion").get("id"), root.get("id")));
-
-                query.orderBy(cb.desc(cb.sum(likesSubquery.getSelection(), comentariosSubquery.getSelection())));
-
-                return finalSpec.toPredicate(root, query, cb);
-            }, pageable);
-        } else {
-            publicaciones = publicacionRepositorio.findAll(spec, pageable);
+        else if ("mas_comentados".equals(filtroSort)) {
+            List<Long> ids = publicacionRepositorio.findMasComentadas(size, offset);
+            List<Publicacion> publicaciones = ids.isEmpty()
+                    ? Collections.emptyList()
+                    : publicacionRepositorio.findAllById(ids);
+            long total = publicacionRepositorio.contarPublicacionesActivas();
+            return mapearADTO(new PageImpl<>(publicaciones, PageRequest.of(page, size), total), idUsuarioAutenticado,
+                    isAdmin);
         }
 
-        Page<PublicacionDTO> dtos = publicaciones.map(publicacionMapper::toDto);
+        else if ("mayores_reportes".equals(filtroSort)) {
+            List<Long> ids = publicacionRepositorio.findMasReportadas(size, offset);
+            List<Publicacion> publicaciones = ids.isEmpty()
+                    ? Collections.emptyList()
+                    : publicacionRepositorio.findAllById(ids);
+            long total = publicacionRepositorio.contarPublicacionesActivas();
+            return mapearADTO(new PageImpl<>(publicaciones, PageRequest.of(page, size), total), idUsuarioAutenticado,
+                    isAdmin);
+        }
 
-        dtos.forEach(dto -> {
-            LocalDateTime fecha = dto.getFechaPublicacion();
-            if (fecha == null && dto.getId() != null) {
-                fecha = publicacionRepositorio.findById(dto.getId())
-                        .map(Publicacion::getFechaCreacion)
-                        .orElse(LocalDateTime.now());
-            }
-            if (fecha == null) {
-                fecha = LocalDateTime.now();
-            }
-            dto.setTiempoTranscurrido(calcularTiempoTranscurrido(fecha));
-            dto.setTotalLikes(usuarioLikePublicacionRepositorio.countByIdPublicacionId(dto.getId()));
-            dto.setTotalComentarios(comentarioServicio.contarComentariosPorPublicacion(dto.getId()));
+        else if ("mas_likeados".equals(filtroSort)) {
+            List<Long> ids = publicacionRepositorio.findMasLikeadas(size, offset);
+            List<Publicacion> publicaciones = ids.isEmpty()
+                    ? Collections.emptyList()
+                    : publicacionRepositorio.findAllById(ids);
+            long total = publicacionRepositorio.contarPublicacionesActivas();
+            return mapearADTO(new PageImpl<>(publicaciones, PageRequest.of(page, size), total), idUsuarioAutenticado,
+                    isAdmin);
+        }
 
-            // Setear permisos de edición y eliminación según usuario autenticado
-            if (idUsuarioAutenticado != null && dto.getUsuarioId() != null) {
-                boolean esPropietario = idUsuarioAutenticado.equals(dto.getUsuarioId());
-                dto.setPuedeEditar(esPropietario);
-                dto.setPuedeEliminar(esPropietario);
-            } else {
-                dto.setPuedeEditar(false);
-                dto.setPuedeEliminar(false);
-            }
-        });
+        else {
+            pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "fechaCreacion"));
+            Page<Publicacion> publicaciones = publicacionRepositorio.findAll(spec, pageable);
+            return mapearADTO(publicaciones, idUsuarioAutenticado, isAdmin);
+        }
 
-        return dtos;
     }
 
     @Override
@@ -276,4 +286,53 @@ public class PublicacionServicioImpl implements PublicacionServicio {
                 .map(usuario -> usuario.getId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
+
+    private Page<PublicacionDTO> mapearADTO(Page<Publicacion> publicaciones, Long idUsuarioAutenticado,
+            boolean isAdmin) {
+        Page<PublicacionDTO> dtos = publicaciones.map(publicacionMapper::toDto);
+
+        dtos.forEach(dto -> {
+            LocalDateTime fecha = dto.getFechaPublicacion();
+            if (fecha == null && dto.getId() != null) {
+                fecha = publicacionRepositorio.findById(dto.getId())
+                        .map(Publicacion::getFechaCreacion)
+                        .orElse(LocalDateTime.now());
+            }
+
+            dto.setTiempoTranscurrido(calcularTiempoTranscurrido(fecha));
+            dto.setTotalLikes(usuarioLikePublicacionRepositorio.countByIdPublicacionId(dto.getId()));
+            dto.setTotalComentarios(comentarioServicio.contarComentariosPorPublicacion(dto.getId()));
+
+            if (dto.getContenido() != null) {
+                dto.setContenidoResumen(dto.getContenido().length() > 100
+                        ? dto.getContenido().substring(0, 100) + "..."
+                        : dto.getContenido());
+            } else {
+                dto.setContenidoResumen("");
+            }
+
+            dto.setTotalReportes(reportePublicacionRepositorio.countByPublicacionId(dto.getId()));
+
+            // Permisos
+            if (isAdmin) {
+                dto.setPuedeEditar(false); // o true si deseas que edite también
+                dto.setPuedeEliminar(true);
+            } else if (idUsuarioAutenticado != null) {
+                boolean esPropietario = dto.getUsuarioId() != null && idUsuarioAutenticado.equals(dto.getUsuarioId());
+                dto.setPuedeEditar(esPropietario); // permitir edición si es dueño
+                dto.setPuedeEliminar(esPropietario);
+            } else {
+                dto.setPuedeEditar(false);
+                dto.setPuedeEliminar(false);
+            }
+        });
+
+        return dtos;
+    }
+
+    @Override
+    public Optional<UsuarioDTO> buscarUsuarioPorUsername(String username) {
+        return usuarioServicio.buscarPorUsername(username);
+    }
+
 }

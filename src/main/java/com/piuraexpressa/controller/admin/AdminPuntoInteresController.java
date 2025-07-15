@@ -18,8 +18,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @Controller
+@PreAuthorize("hasAuthority('ADMINISTRAR_PUNTO_INTERES')")
 @RequestMapping("/admin/provincias/{provinciaId}/puntos-interes")
 @RequiredArgsConstructor
 public class AdminPuntoInteresController {
@@ -27,6 +29,7 @@ public class AdminPuntoInteresController {
     private final PuntoInteresServicio puntoServicio;
     private final CategoriaPuntoInteresServicio categoriaServicio;
 
+    @PreAuthorize("hasAuthority('ADMINISTRAR_PUNTO_INTERES_LISTAR')")
     @GetMapping
     public String listar(
             @PathVariable Long provinciaId,
@@ -47,6 +50,7 @@ public class AdminPuntoInteresController {
         return "admin/provincias/puntos-interes/list";
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRAR_PUNTO_INTERES_NUEVO')")
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevo(@PathVariable Long provinciaId, Model model) {
         PuntoInteresDTO dto = new PuntoInteresDTO();
@@ -58,6 +62,7 @@ public class AdminPuntoInteresController {
         return "admin/provincias/puntos-interes/formulario";
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRAR_PUNTO_INTERES_GUARDAR')")
     @PostMapping("/guardar")
     public String guardar(
             @PathVariable Long provinciaId,
@@ -84,6 +89,7 @@ public class AdminPuntoInteresController {
         return "redirect:/admin/provincias/" + provinciaId + "/puntos-interes";
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRAR_PUNTO_INTERES_EDITAR')")
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditar(
             @PathVariable Long provinciaId,
@@ -103,6 +109,7 @@ public class AdminPuntoInteresController {
         return "admin/provincias/puntos-interes/formulario";
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRAR_PUNTO_INTERES_ELIMINAR')")
     @PostMapping("/eliminar/{id}")
     public String eliminar(
             @PathVariable Long provinciaId,
@@ -113,6 +120,7 @@ public class AdminPuntoInteresController {
         return "redirect:/admin/provincias/" + provinciaId + "/puntos-interes";
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRAR_PUNTO_INTERES_DESACTIVAR')")
     @PostMapping("/desactivar/{id}")
     public String desactivar(
             @PathVariable Long provinciaId,
@@ -123,6 +131,7 @@ public class AdminPuntoInteresController {
         return "redirect:/admin/provincias/" + provinciaId + "/puntos-interes";
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRAR_PUNTO_INTERES_ACTIVAR')")
     @PostMapping("/activar/{id}")
     public String activar(
             @PathVariable Long provinciaId,

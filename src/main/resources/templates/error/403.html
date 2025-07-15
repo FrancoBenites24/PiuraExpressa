@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Acceso Denegado</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body class="container mt-5 text-center">
+    <img src="/img/mascota_acceso_denegado.png" alt="Sin acceso" class="imagen-mascota">
+    <h1 class="display-4 text-danger">Parece que este sendero requiere permisos especiales. Regresa o explora otra ruta.</h1>
+    <p class="lead">No tienes permisos para acceder a esta sección.</p>
+    <a th:href="@{/}" class="btn btn-primary mt-3">Volver al inicio</a>
+</body>
+</html>

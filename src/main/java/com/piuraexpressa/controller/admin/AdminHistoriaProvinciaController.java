@@ -19,6 +19,7 @@ import com.piuraexpressa.servicio.HistoriaProvinciaServicio;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @Controller
 @RequestMapping("/admin/provincias/{provinciaId}/historia")
@@ -27,6 +28,7 @@ public class AdminHistoriaProvinciaController {
 
     private final HistoriaProvinciaServicio historiaServicio;
 
+    @PreAuthorize("hasAuthority('ADMINISTRAR_HISTORIA_PROVINCIA_LISTAR')")
     @GetMapping
     public String listar(@PathVariable Long provinciaId,
             @RequestParam(defaultValue = "0") int page,
@@ -44,7 +46,7 @@ public class AdminHistoriaProvinciaController {
         return "admin/provincias/historia/list";
     }
 
-    // Mostrar formulario de nueva historia
+    @PreAuthorize("hasAuthority('ADMINISTRAR_HISTORIA_PROVINCIA_NUEVO')")
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevo(@PathVariable Long provinciaId, Model model) {
         HistoriaProvinciaDTO dto = new HistoriaProvinciaDTO();
@@ -54,7 +56,7 @@ public class AdminHistoriaProvinciaController {
         return "admin/provincias/historia/formulario";
     }
 
-    // Guardar nueva historia
+    @PreAuthorize("hasAuthority('ADMINISTRAR_HISTORIA_PROVINCIA_GUARDAR')")
     @PostMapping("/guardar")
     public String guardarHistoria(@PathVariable Long provinciaId,
             @Valid @ModelAttribute("historiaProvinciaDTO") HistoriaProvinciaDTO dto,
@@ -76,7 +78,7 @@ public class AdminHistoriaProvinciaController {
         return "redirect:/admin/provincias/" + provinciaId + "/historia";
     }
 
-    // Editar historia
+    @PreAuthorize("hasAuthority('ADMINISTRAR_HISTORIA_PROVINCIA_EDITAR')")
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditar(@PathVariable Long provinciaId, @PathVariable Long id, Model model,
             RedirectAttributes redirectAttrs) {
@@ -90,6 +92,7 @@ public class AdminHistoriaProvinciaController {
         return "admin/provincias/historia/formulario";
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRAR_HISTORIA_PROVINCIA_ACTUALIZAR')")
     @PostMapping("/actualizar/{id}")
     public String actualizarHistoria(
             @PathVariable Long provinciaId,
@@ -109,6 +112,7 @@ public class AdminHistoriaProvinciaController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("provinciaId", provinciaId);
+            model.addAttribute("modo", "editar");
             return "admin/provincias/historia/formulario";
         }
 
@@ -117,7 +121,7 @@ public class AdminHistoriaProvinciaController {
         return "redirect:/admin/provincias/" + provinciaId + "/historia";
     }
 
-    // Eliminar historia (soft delete)
+    @PreAuthorize("hasAuthority('ADMINISTRAR_HISTORIA_PROVINCIA_ELIMINAR')")
     @PostMapping("/eliminar/{id}")
     public String eliminarHistoria(@PathVariable Long provinciaId, @PathVariable Long id,
             RedirectAttributes redirectAttrs) {

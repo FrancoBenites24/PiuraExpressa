@@ -3,26 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title
-      th:text="'Perfil de ' + ${usuario.nombre + ' ' + usuario.apellido} + ' - Piura Expressa'"
-    >
+<title th:if="${usuario != null}" th:text="'Perfil de ' + ${usuario.nombres + ' ' + usuario.apellidos} + ' - Piura Expressa'">
       Perfil de Usuario - Piura Expressa
     </title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
-    />
+    <title th:unless="${usuario != null}">Perfil - Piura Expressa</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"/>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/footer.css}" href="../static/css/footer.css" />
+    <link rel="stylesheet" th:href="@{/css/perfil-sidebar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+
     <style>
       :root {
         --color-primary: #a0c878;
@@ -32,6 +27,7 @@
         --color-text: #2d3748;
         --color-text-light: #4a5568;
         --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
         --border-radius: 16px;
         --transition: all 0.3s ease;
       }
@@ -61,167 +57,13 @@
       ::-webkit-scrollbar-thumb:hover {
         background: #8bb564;
       }
-      /* Navigation */
-      .navbar {
-        background-color: rgba(255, 253, 246, 0.95);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid rgba(160, 200, 120, 0.1);
-        transition: var(--transition);
-        padding: 1rem 0;
-      }
-
-      .navbar.scrolled {
-        background-color: rgba(255, 253, 246, 0.98);
-        box-shadow: var(--shadow-sm);
-      }
-
-      .navbar-brand {
-        font-weight: 700;
-        font-size: 1.5rem;
-        color: var(--color-primary);
-        text-decoration: none;
-      }
-
-      .navbar-brand:hover {
-        color: #8bb564;
-      }
-
-      .navbar-nav .nav-link {
-        color: var(--color-text);
-        font-weight: 500;
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        transition: var(--transition);
-        position: relative;
-      }
-
-      .navbar-nav .nav-link:hover,
-      .navbar-nav .nav-link:focus {
-        color: var(--color-primary);
-        background-color: rgba(160, 200, 120, 0.1);
-      }
-
-      .navbar-nav .nav-link.active {
-        color: var(--color-primary);
-        background-color: rgba(160, 200, 120, 0.15);
-      }
-
-      .btn-login {
-        background-color: var(--color-primary);
-        color: white;
-        border: none;
-        padding: 0.5rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 500;
-        transition: var(--transition);
-      }
-
-      .btn-login:hover {
-        background-color: #8bb564;
-        color: white;
-        transform: translateY(-1px);
-        box-shadow: var(--shadow-md);
-      }
-.dropdown-menu {
-    background-color: #FAF6E9; /* Color de fondo del menú desplegable */
-    border-radius: 15px; /* Bordes redondeados para el menú */
-    box-shadow: 4px 4px 8px #d9d9d9, /* Sombra para el efecto neumórfico */
-                -4px -4px 8px #ffffff; /* Sombra para el efecto neumórfico */
-}
-
-.dropdown-item {
-    color: #4a4a4a; /* Color del texto de los elementos del menú */
-}
-
-.dropdown-item:hover {
-    background-color: #DDEB9D; /* Color de fondo al pasar el mouse */
-    color: #4a4a4a; /* Color del texto al pasar el mouse */
-}
-
+      
       .profile-container {
         max-width: 1200px;
         margin: 0 auto;
         display: flex;
         gap: 2rem;
         padding: 0 1rem;
-      }
-
-      /* Sidebar Menu */
-      .profile-menu {
-        flex: 0 0 260px;
-        background: white;
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow-md);
-        display: flex;
-        flex-direction: column;
-        padding: 1.5rem;
-        position: sticky;
-        top: 2rem;
-        height: fit-content;
-        user-select: none;
-      }
-
-      .profile-menu .avatar {
-        width: 130px;
-        height: 130px;
-        border-radius: 50%;
-        overflow: hidden;
-        margin: 0 auto 1.2rem;
-        border: 3px solid var(--color-primary);
-        background-color: var(--color-light);
-        box-shadow: var(--shadow-md);
-      }
-
-      .profile-menu .avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-      }
-
-      .profile-menu h2 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--color-primary);
-        text-align: center;
-        margin-bottom: 0;
-      }
-
-      .profile-menu .username {
-        text-align: center;
-        font-weight: 500;
-        font-size: 1rem;
-        color: var(--color-text-light);
-        margin-bottom: 1.5rem;
-      }
-
-      .menu-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-      }
-
-      .menu-list li {
-        cursor: pointer;
-        padding: 0.75rem 1rem;
-        border-radius: 12px;
-        font-weight: 600;
-        color: var(--color-text);
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        transition: all 0.3s ease;
-      }
-
-      .menu-list li.active,
-      .menu-list li:hover {
-        background: var(--color-primary);
-        color: white;
-        box-shadow: 0 8px 20px rgba(160, 200, 120, 0.6);
-        transform: translateX(5px);
       }
 
       /* Content Area */
@@ -397,585 +239,172 @@
           margin-bottom: 1rem;
         }
       }
-      footer {
-        background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
-        color: white;
-        padding: 4rem 0 2rem;
-      }
 
-      footer h5 {
-        color: #ddeb9d;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-      }
-
-      footer .footer-link {
-        color: #cbd5e0;
-        text-decoration: none;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: block;
-        padding: 0.25rem 0;
-      }
-
-      footer .footer-link:hover {
-        color: #ddeb9d;
-        padding-left: 0.5rem;
-      }
-
-      footer .social-links {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1rem;
-      }
-
-      footer .social-link {
-        width: 45px;
-        height: 45px;
-        background: rgba(160, 200, 120, 0.1);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #ddeb9d;
-        font-size: 1.25rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      footer .social-link:hover {
-        background: #a0c878;
-        color: white;
-        transform: translateY(-2px);
-      }
-
-      footer .footer-bottom {
-        border-top: 1px solid rgba(160, 200, 120, 0.2);
-        margin-top: 3rem;
-        padding-top: 2rem;
-        text-align: center;
-        color: #a0aec0;
-      }
     </style>
+
   </head>
 
   <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg fixed-top">
-      <div class="container">
-        <a class="navbar-brand" href="/">
-          <i class="bi bi-compass me-2"></i>Piura Expressa
-        </a>
+      <div th:replace="fragments/navbar :: navbar"></div>
 
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <i class="bi bi-list"></i>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav mx-auto">
-            <li class="nav-item">
-              <a class="nav-link active" href="#inicio">
-                <i class="bi bi-house me-1"></i>Inicio
-              </a>
-            </li>
-            <!-- Dropdown de Provincias -->
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="provinciasDropdown" role="button"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-map me-1"></i>Provincias
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="provinciasDropdown">
-                <!-- Enlace para ver todas las provincias -->
-                <li>
-                  <a class="dropdown-item" href="/provincias">
-                    <i class="bi bi-list-ul me-2"></i>Ver todas las provincias
-                  </a>
-                </li>
-
-                <!-- Separador -->
-                <li>
-                  <hr class="dropdown-divider">
-                </li>
-
-                <!-- Lista dinámica de provincias -->
-                <th:block th:if="${not #lists.isEmpty(provinciasNavbar)}">
-                  <li th:each="provincia : ${provinciasNavbar}">
-                    <a class="dropdown-item" th:href="@{'/provincias/' + ${provincia.nombre.toLowerCase()}}">
-                      <i class="bi bi-geo-alt me-2"></i>
-                      <span th:text="${provincia.nombre}">Nombre Provincia</span>
-                    </a>
-                  </li>
-                </th:block>
-
-                <!-- Mensaje si no hay provincias -->
-                <th:block th:if="${#lists.isEmpty(provinciasNavbar)}">
-                  <li>
-                    <span class="dropdown-item-text text-muted">
-                      <i class="bi bi-info-circle me-2"></i>No hay provincias disponibles
-                    </span>
-                  </li>
-                </th:block>
-
-                <!-- Separador y enlace de administración (solo para admins) -->
-                <th:block sec:authorize="hasRole('ADMINISTRADOR')">
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li>
-                    <a class="dropdown-item text-primary" href="/admin/provincias">
-                      <i class="bi bi-gear me-2"></i>Administrar provincias
-                    </a>
-                  </li>
-                </th:block>
-              </ul>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" href="/eventos">
-                <i class="bi bi-calendar-event me-1"></i>Eventos
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/foro">
-                <i class="bi bi-chat-dots me-1"></i>Foro
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/platos">
-                <i class="bi bi-egg-fried me-1"></i>Gastronomía
-              </a>
-            </li>
-          </ul>
-
-          <div class="d-flex align-items-center">
-            <div th:if="${#authentication.principal.username != null}">
-              <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2" type="button"
-                  id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="bi bi-person-circle" style="font-size: 1.5rem"></i>
-                  <span th:text="${#authentication.principal.username}"></span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/perfil}">
-                      <i class="bi bi-person"></i> Perfil
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/mis-publicaciones}">
-                      <i class="bi bi-file-text"></i> Mis Publicaciones
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/mis-eventos}">
-                      <i class="bi bi-calendar-check"></i> Mis Participaciones
-                    </a>
-                  </li>
-                  <li>
-                    <hr class="dropdown-divider" />
-                  </li>
-                  <li>
-                    <form action="#" th:action="@{/logout}" method="post" style="margin: 0">
-                      <button type="submit" class="dropdown-item d-flex align-items-center gap-2">
-                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
-                      </button>
-                    </form>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div th:unless="${#authentication.principal.username != null}">
-              <a href="/auth/login" class="btn btn-login d-flex align-items-center gap-2">
-                <i class="bi bi-person-circle"></i> Iniciar Sesión
-              </a>
-            </div>
-          </div>
-        </div>
-        <div th:if="${#authentication.principal.username == null}">
-          <a href="/auth/login" class="btn btn-login">
-            <i class="bi bi-person-circle me-1"></i>Iniciar Sesión
-          </a>
-        </div>
-      </div>
-    </nav>
 
     <div class="profile-container" data-aos="fade-up" data-aos-duration="900" style="padding: 80px 30px;">
-      <!-- Sidebar Menu -->
-      <nav
-        class="profile-menu"
-        role="navigation"
-        aria-label="Menú de perfil de usuario"
-      >
-        <div class="avatar">
-<img th:src="@{/img/default-profile.png}" alt="Foto de perfil por defecto" />
-        </div>
-        <h2 th:text="${usuario.nombre + ' ' + usuario.apellido}">Nombre Apellido</h2>
-        <div class="username" th:text="'@' + ${usuario.username}">@usuario</div>
+      
+    <div th:replace="fragments/perfil-sidebar :: sidebar(${usuario})"></div>
 
-        <ul
-          class="menu-list"
-          role="menu"
-          id="profileMenu"
-          aria-orientation="vertical"
-        >
-          <li
-            role="menuitem"
-            class="active"
-            tabindex="0"
-            data-section="miperfil"
-          >
-            <i class="bi bi-person-circle"> Mi Perfil</i>
+<!-- Main Content Area -->
+<section class="profile-content" id="profileContent" aria-live="polite" aria-atomic="true">
+
+  <!-- Mi Perfil -->
+  <div id="miperfilSection" class="content-section">
+    <h2 class="section-title">Mi Perfil</h2>
+    <th:block th:if="${usuario != null}">
+      <div class="stats-grid">
+        <div class="stat-card" tabindex="0" role="group" aria-labelledby="posts-label posts-number">
+          <div id="posts-label" class="stat-label">Publicaciones</div>
+          <div id="posts-number" class="stat-number" th:text="${usuario.totalPublicaciones}">0</div>
+        </div>
+        <div class="stat-card" tabindex="0" role="group" aria-labelledby="comments-label comments-number">
+          <div id="comments-label" class="stat-label">Comentarios</div>
+          <div id="comments-number" class="stat-number" th:text="${usuario.totalComentarios}">0</div>
+        </div>
+        <div class="stat-card" tabindex="0" role="group" aria-labelledby="events-label events-number">
+          <div id="events-label" class="stat-label">Eventos Asistidos</div>
+          <div id="events-number" class="stat-number" th:text="${usuario.totalEventosAsistidos}">0</div>
+        </div>
+      </div>
+    </th:block>
+    <th:block th:unless="${usuario != null}">
+      <div class="alert alert-warning">Debes iniciar sesión para ver tu información de perfil.</div>
+    </th:block>
+  </div>
+
+  <!-- Mis Publicaciones -->
+  <div id="publicacionesSection" class="content-section d-none">
+    <h2 class="section-title">Tus Publicaciones</h2>
+    <th:block th:if="${usuario != null}">
+      <div th:if="${#lists.isEmpty(usuario.publicaciones)}" class="text-muted">
+        No has publicado nada todavía.
+      </div>
+      <div th:each="pub : ${publicacionesPage.content}" class="list-group-item">
+        <div class="post-title" th:text="${pub.titulo}">Título de publicación</div>
+        <div class="post-date" th:text="${#temporals.format(pub.fechaCreacion, 'dd MMM yyyy')}">15 Marzo 2025</div>
+        <div class="post-summary" th:text="${#strings.abbreviate(pub.contenido, 150)}">Resumen de contenido...</div>
+      </div>
+      <!-- Paginación -->
+      <nav th:if="${publicacionesPage.totalPages > 1}">
+        <ul class="pagination">
+          <li th:classappend="${publicacionesPage.first} ? 'disabled'" class="page-item">
+            <a th:href="@{/perfil(index=${publicacionesPage.number - 1}, pubPage=${publicacionesPage.number -1})}" class="page-link">Anterior</a>
           </li>
-          <li role="menuitem" tabindex="-1" data-section="publicaciones">
-            <i class="bi bi-file-text"> Mis Publicaciones</i>
+          <li th:each="i : ${#numbers.sequence(0, publicacionesPage.totalPages - 1)}"
+              th:classappend="${i == publicacionesPage.number} ? 'active'" class="page-item">
+            <a class="page-link" th:href="@{/perfil(index=${i}, pubPage=${i})}" th:text="${i + 1}">1</a>
           </li>
-          <li role="menuitem" tabindex="-1" data-section="eventos">
-            <i class="bi bi-calendar-check"> Mis Participaciones</i>
-          </li>
-          <li role="menuitem" tabindex="-1" data-section="configuracion">
-            <i class="bi bi-gear"> Configuración</i>
+          <li th:classappend="${publicacionesPage.last} ? 'disabled'" class="page-item">
+            <a th:href="@{/perfil(index=${publicacionesPage.number + 1}, pubPage=${publicacionesPage.number + 1})}" class="page-link">Siguiente</a>
           </li>
         </ul>
       </nav>
+    </th:block>
+    <th:block th:unless="${usuario != null}">
+      <div class="alert alert-warning">Inicia sesión para ver tus publicaciones.</div>
+    </th:block>
+  </div>
 
-      <!-- Main Content Area -->
-      <section
-        class="profile-content"
-        id="profileContent"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        <!-- Mi Perfil -->
-        <div id="miperfilSection" class="content-section">
-          <h2 class="section-title">Mi Perfil</h2>
-          <div class="stats-grid">
-            <div
-              class="stat-card"
-              tabindex="0"
-              role="group"
-              aria-labelledby="posts-label posts-number"
-            >
-              <div id="posts-label" class="stat-label">Publicaciones</div>
-              <div
-                id="posts-number"
-                class="stat-number"
-                th:text="${usuario.totalPublicaciones}"
-              >
-                0
-              </div>
-            </div>
-            <div
-              class="stat-card"
-              tabindex="0"
-              role="group"
-              aria-labelledby="comments-label comments-number"
-            >
-              <div id="comments-label" class="stat-label">Comentarios</div>
-              <div
-                id="comments-number"
-                class="stat-number"
-                th:text="${usuario.totalComentarios}"
-              >
-                0
-              </div>
-            </div>
-            <div
-              class="stat-card"
-              tabindex="0"
-              role="group"
-              aria-labelledby="events-label events-number"
-            >
-              <div id="events-label" class="stat-label">Eventos Asistidos</div>
-              <div
-                id="events-number"
-                class="stat-number"
-                th:text="${usuario.totalEventosAsistidos}"
-              >
-                0
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Mis Publicaciones -->
-        <div id="publicacionesSection" class="content-section d-none">
-          <h2 class="section-title">Tus Publicaciones</h2>
-          <div
-            th:if="${#lists.isEmpty(usuario.publicaciones)}"
-            class="text-muted"
-          >
-            No has publicado nada todavía.
-          </div>
-          <div
-            th:each="pub : ${publicacionesPage.content}"
-            class="list-group-item"
-          >
-            <div class="post-title" th:text="${pub.titulo}">
-              Título de publicación
-            </div>
-            <div
-              class="post-date"
-              th:text="${#temporals.format(pub.fechaCreacion, 'dd MMM yyyy')}"
-            >
-              15 Marzo 2025
-            </div>
-            <div
-              class="post-summary"
-              th:text="${#strings.abbreviate(pub.contenido, 150)}"
-            >
-              Resumen de contenido...
-            </div>
-          </div>
-
-          <!-- Paginación -->
-          <nav th:if="${publicacionesPage.totalPages > 1}">
-            <ul class="pagination">
-              <li
-                th:classappend="${publicacionesPage.first} ? 'disabled'"
-                class="page-item"
-              >
-                <a
-                  th:href="@{/perfil(index=${publicacionesPage.number - 1}, pubPage=${publicacionesPage.number -1})}"
-                  class="page-link"
-                  >Anterior</a
-                >
-              </li>
-              <li
-                th:each="i : ${#numbers.sequence(0, publicacionesPage.totalPages - 1)}"
-                th:classappend="${i == publicacionesPage.number} ? 'active'"
-                class="page-item"
-              >
-                <a
-                  class="page-link"
-                  th:href="@{/perfil(index=${i}, pubPage=${i})}"
-                  th:text="${i + 1}"
-                  >1</a
-                >
-              </li>
-              <li
-                th:classappend="${publicacionesPage.last} ? 'disabled'"
-                class="page-item"
-              >
-                <a
-                  th:href="@{/perfil(index=${publicacionesPage.number + 1}, pubPage=${publicacionesPage.number + 1})}"
-                  class="page-link"
-                  >Siguiente</a
-                >
-              </li>
-            </ul>
-          </nav>
-        </div>
-
-        <!-- Mis Participaciones -->
-        <div id="eventosSection" class="content-section d-none">
-          <h2 class="section-title">Tus Participaciones en Eventos</h2>
-          <div
-            th:if="${#lists.isEmpty(eventosPage.content)}"
-            class="text-muted"
-          >
-            No has asistido a ningún evento todavía.
-          </div>
-          <div class="list-group">
-            <div th:each="evt : ${eventosPage.content}">
-              <div class="list-group-item">
-                <div class="post-title" th:text="${evt.titulo}">
-                  Nombre del evento
-                </div>
-                <div
-                  class="post-date"
-                  th:text="${#temporals.format(evt.fechaInicio, 'dd MMM yyyy')}"
-                >
-                  20 Abril 2025
-                </div>
-                <div
-                  class="post-summary"
-                  th:text="${#strings.abbreviate(evt.descripcion, 150)}"
-                >
-                  Resumen del evento...
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Paginación para eventos -->
-          <nav th:if="${eventosPage.totalPages > 1}">
-            <ul class="pagination">
-              <li
-                th:classappend="${eventosPage.first} ? 'disabled'"
-                class="page-item"
-              >
-                <a
-                  th:href="@{/perfil(index=${eventosPage.number - 1}, evtPage=${eventosPage.number - 1})}"
-                  class="page-link"
-                  >Anterior</a
-                >
-              </li>
-              <li
-                th:each="i : ${#numbers.sequence(0, eventosPage.totalPages - 1)}"
-                th:classappend="${i == eventosPage.number} ? 'active'"
-                class="page-item"
-              >
-                <a
-                  class="page-link"
-                  th:href="@{/perfil(index=${i}, evtPage=${i})}"
-                  th:text="${i + 1}"
-                  >1</a
-                >
-              </li>
-              <li
-                th:classappend="${eventosPage.last} ? 'disabled'"
-                class="page-item"
-              >
-                <a
-                  th:href="@{/perfil(index=${eventosPage.number + 1}, evtPage=${eventosPage.number + 1})}"
-                  class="page-link"
-                  >Siguiente</a
-                >
-              </li>
-            </ul>
-          </nav>
-        </div>
-
-        <!-- Configuración -->
-        <div id="configuracionSection" class="content-section d-none">
-          <h2 class="section-title">Actualizar datos de perfil</h2>
-          <form
-            th:action="@{/perfil/actualizar}"
-            method="post"
-            th:object="${usuario}"
-            novalidate
-          >
-            <div class="mb-3">
-              <label for="email">Correo electrónico</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                th:field="*{email}"
-                class="form-control"
-                required
-              />
-            </div>
-            <div class="mb-3">
-              <label for="telefono">Teléfono</label>
-              <input
-                type="text"
-                id="telefono"
-                name="telefono"
-                th:field="*{telefono}"
-                class="form-control"
-              />
-            </div>
-            <div class="mb-3">
-              <label for="provincia">Provincia</label>
-              <input
-                type="text"
-                id="provincia"
-                name="provincia"
-                th:field="*{provincia}"
-                class="form-control"
-              />
-            </div>
-            <div class="mb-3">
-              <label for="direccion">Dirección</label>
-              <input
-                type="text"
-                id="direccion"
-                name="direccion"
-                th:field="*{direccion}"
-                class="form-control"
-              />
-            </div>
-            <button type="submit" class="btn-submit">Guardar cambios</button>
-          </form>
-        </div>
-      </section>
-    </div>
-    <footer>
-      <div class="container">
-        <div class="row g-4">
-          <div class="col-lg-4">
-            <h5><i class="bi bi-compass me-2"></i>Piura Expressa</h5>
-            <p class="text-muted">
-              Tu puerta de entrada a la riqueza cultural y gastronómica de
-              Piura. Conectamos tradiciones, sabores y experiencias únicas.
-            </p>
-            <div class="social-links">
-              <a href="#" class="social-link" aria-label="Facebook">
-                <i class="bi bi-facebook"></i>
-              </a>
-              <a href="#" class="social-link" aria-label="Instagram">
-                <i class="bi bi-instagram"></i>
-              </a>
-              <a href="#" class="social-link" aria-label="Twitter">
-                <i class="bi bi-twitter"></i>
-              </a>
-              <a href="#" class="social-link" aria-label="YouTube">
-                <i class="bi bi-youtube"></i>
-              </a>
-            </div>
-          </div>
-
-          <div class="col-lg-2 col-md-6">
-            <h5>Explorar</h5>
-            <div class="d-flex flex-column">
-              <a href="/provincias" class="footer-link">Provincias</a>
-              <a href="/eventos" class="footer-link">Eventos</a>
-              <a href="/platos" class="footer-link">Gastronomía</a>
-              <a href="/cultura" class="footer-link">Cultura</a>
-            </div>
-          </div>
-
-          <div class="col-lg-2 col-md-6">
-            <h5>Comunidad</h5>
-            <div class="d-flex flex-column">
-              <a href="/foro" class="footer-link">Foro</a>
-              <a href="/blog" class="footer-link">Blog</a>
-              <a href="/testimonios" class="footer-link">Testimonios</a>
-              <a href="/galeria" class="footer-link">Galería</a>
-            </div>
-          </div>
-
-          <div class="col-lg-2 col-md-6">
-            <h5>Soporte</h5>
-            <div class="d-flex flex-column">
-              <a href="/ayuda" class="footer-link">Centro de Ayuda</a>
-              <a href="/contacto" class="footer-link">Contacto</a>
-              <a href="/sugerencias" class="footer-link">Sugerencias</a>
-              <a href="/reportes" class="footer-link">Reportar Problema</a>
-            </div>
-          </div>
-
-          <div class="col-lg-2 col-md-6">
-            <h5>Legal</h5>
-            <div class="d-flex flex-column">
-              <a href="/terminos" class="footer-link">Términos de Uso</a>
-              <a href="/privacidad" class="footer-link">Privacidad</a>
-              <a href="/cookies" class="footer-link">Cookies</a>
-              <a href="/accesibilidad" class="footer-link">Accesibilidad</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="footer-bottom">
-          <div class="row align-items-center">
-            <div class="col-md-6">
-              <p>&copy; 2025 Piura Expressa. Todos los derechos reservados.</p>
-            </div>
-            <div class="col-md-6 text-md-end">
-              <p>
-                <i class="bi bi-envelope me-2"></i>
-                <a href="mailto:contacto@piuraexpressa.com" class="text-muted"
-                  >contacto@piuraexpressa.com</a
-                >
-              </p>
-            </div>
+  <!-- Mis Participaciones -->
+  <div id="eventosSection" class="content-section d-none">
+    <h2 class="section-title">Tus Participaciones en Eventos</h2>
+    <th:block th:if="${usuario != null}">
+      <div th:if="${#lists.isEmpty(eventosPage.content)}" class="text-muted">
+        No has asistido a ningún evento todavía.
+      </div>
+      <div class="list-group">
+        <div th:each="evt : ${eventosPage.content}">
+          <div class="list-group-item">
+            <div class="post-title" th:text="${evt.titulo}">Nombre del evento</div>
+            <div class="post-date" th:text="${#temporals.format(evt.fechaInicio, 'dd MMM yyyy')}">20 Abril 2025</div>
+            <div class="post-summary" th:text="${#strings.abbreviate(evt.descripcion, 150)}">Resumen del evento...</div>
           </div>
         </div>
       </div>
-    </footer>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-      defer
-    ></script>
+      <!-- Paginación -->
+      <nav th:if="${eventosPage.totalPages > 1}">
+        <ul class="pagination">
+          <li th:classappend="${eventosPage.first} ? 'disabled'" class="page-item">
+            <a th:href="@{/perfil(index=${eventosPage.number - 1}, evtPage=${eventosPage.number - 1})}" class="page-link">Anterior</a>
+          </li>
+          <li th:each="i : ${#numbers.sequence(0, eventosPage.totalPages - 1)}"
+              th:classappend="${i == eventosPage.number} ? 'active'" class="page-item">
+            <a class="page-link" th:href="@{/perfil(index=${i}, evtPage=${i})}" th:text="${i + 1}">1</a>
+          </li>
+          <li th:classappend="${eventosPage.last} ? 'disabled'" class="page-item">
+            <a th:href="@{/perfil(index=${eventosPage.number + 1}, evtPage=${eventosPage.number + 1})}" class="page-link">Siguiente</a>
+          </li>
+        </ul>
+      </nav>
+    </th:block>
+    <th:block th:unless="${usuario != null}">
+      <div class="alert alert-warning">Inicia sesión para ver tus eventos asistidos.</div>
+    </th:block>
+  </div>
+
+  <!-- Configuración -->
+  <div id="configuracionSection" class="content-section d-none">
+    <h2 class="section-title">Actualizar datos de perfil</h2>
+    <th:block th:if="${usuario != null}">
+      <form th:action="@{/perfil/actualizar}" method="post" th:object="${usuario}" novalidate>
+        <div class="mb-3">
+          <label for="nombres">Nombres</label>
+          <input type="text" id="nombres" th:field="*{nombres}" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label for="apellidos">Apellidos</label>
+          <input type="text" id="apellidos" th:field="*{apellidos}" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label for="username">Nombre de usuario</label>
+          <input type="text" id="username" th:field="*{username}" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label for="numeroDocumento">Número de documento</label>
+          <input type="text" id="numeroDocumento" th:field="*{numeroDocumento}" class="form-control" disabled />
+        </div>
+        <div class="mb-3">
+          <label for="email">Correo electrónico</label>
+          <input type="email" id="email" th:field="*{email}" class="form-control" disabled />
+        </div>
+        <div class="mb-3">
+          <label for="telefono">Teléfono</label>
+          <input type="text" id="telefono" th:field="*{telefono}" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label for="provincia">Provincia</label>
+          <select id="provincia" th:field="*{provincia}" class="form-control" required>
+            <option value="" disabled>Seleccione una provincia</option>
+            <option th:each="prov : ${provincias}" th:value="${prov.nombre}" th:text="${prov.nombre}"
+                    th:selected="${prov.nombre == usuario.provincia}">
+            </option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="direccion">Dirección</label>
+          <input type="text" id="direccion" th:field="*{direccion}" class="form-control" />
+        </div>
+        <button type="submit" class="btn-submit">Guardar cambios</button>
+      </form>
+    </th:block>
+    <th:block th:unless="${usuario != null}">
+      <div class="alert alert-warning">Inicia sesión para actualizar tus datos.</div>
+    </th:block>
+  </div>
+</section>
+
+    </div>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
     <script>
       // AOS initialization

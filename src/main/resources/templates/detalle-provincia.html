@@ -11,8 +11,11 @@
   <!-- AOS -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <!-- Tu CSS custom -->
+       <link rel="stylesheet" th:href="@{/css/footer.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+
   <style>
 :root {
   --color-primary: #a0c878;
@@ -45,52 +48,24 @@ body {
   overflow-x: hidden;
 }
 
-/* NAVBAR */
-.glass-nav {
-  background: rgba(255,253,246,0.85);
-  backdrop-filter: blur(15px);
-  border-bottom: 1.5px solid rgba(160,200,120,0.13);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
 }
-.navbar-brand {
-  font-weight: 800;
-  font-size: 1.65rem;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-decoration: none;
-  letter-spacing: -1px;
-  transition: var(--transition);
+
+::-webkit-scrollbar-track {
+  background: var(--color-light);
 }
-.navbar-brand:hover { transform: scale(1.04);}
-.nav-link, .dropdown-item {
-  color: var(--color-text) !important;
-  font-weight: 500;
-  border-radius: 14px;
-  transition: var(--transition);
-  position: relative;
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 4px;
 }
-.nav-link:hover, .nav-link.active { color: var(--color-primary) !important; background: rgba(160,200,120,0.11);}
-.dropdown-menu {
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-lg);
-  border: 0;
-  min-width: 210px;
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8bb564;
 }
-.btn-login {
-  background: var(--gradient-primary);
-  color: #fff !important;
-  border: none;
-  border-radius: 13px;
-  font-weight: 600;
-  padding: 0.44rem 1.4rem;
-  transition: var(--transition);
-}
-.btn-login:hover, .btn-login:focus {
-  background: var(--color-accent);
-  color: #fff !important;
-}
+
 /*HERO SECCION*/
 .hero-parallax {
   min-height: 68vh;
@@ -403,68 +378,6 @@ body {
 }
 .poi-details:hover { color: var(--color-accent); gap: 1rem;}
 
-/* FOOTER */
-.footer {
-  background: #232937 var(--footer-dot) repeat;
-  color: #e9ecef;
-  border-radius: 0 0 2.3rem 2.3rem;
-  margin-top: 5rem;
-  padding-top: 3rem;
-  padding-bottom: 1.5rem;
-}
-.footer h5, .footer .footer-link.active, .footer .footer-link:hover {
-  color: var(--color-primary) !important;
-  border-bottom: 2px solid var(--color-primary);
-}
-.footer-section h5 {
-  font-weight: 700;
-  margin-bottom: 1rem;
-  letter-spacing: 0.02em;
-}
-.footer-link {
-  color: #e9ecef;
-  opacity: 0.91;
-  text-decoration: none;
-  margin-bottom: 0.7rem;
-  transition: color 0.14s, border-bottom 0.14s;
-  border-bottom: 2px solid transparent;
-  font-weight: 500;
-}
-.footer-link:hover {
-  color: var(--color-primary) !important;
-  border-bottom: 2px solid var(--color-primary);
-}
-.footer .text-muted, .footer .footer-bottom, .footer p {
-  color: #a6b2c0 !important;
-  opacity: 0.85;
-}
-.social-link {
-  color: var(--color-primary);
-  background: rgba(255,255,255,0.08);
-  font-size: 1.5rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem; height: 2.5rem;
-  border-radius: 50%;
-  margin-right: 0.48rem;
-  transition: background 0.18s, color 0.18s;
-}
-.social-link:hover {
-  background: var(--color-primary);
-  color: #fff !important;
-}
-.footer-bottom {
-  border-top: 1px solid #3d464e;
-  margin-top: 2.5rem;
-  padding-top: 1rem;
-  font-size: 1rem;
-}
-.footer .bi-envelope {
-  color: var(--color-primary);
-  font-size: 1.2rem;
-}
-
 /* GENERAL & RESPONSIVE */
 @media (max-width: 991.98px) {
   .stat-card, .info-card { min-height: 120px; padding: 1.5rem 0.6rem;}
@@ -485,84 +398,10 @@ body {
   .hero-content { padding: 1.1rem 0.5rem 0.9rem 0.5rem;}
   .hero-title { font-size: 2rem;}
 }
-::-webkit-scrollbar { width: 9px; background: var(--color-lightest);}
-::-webkit-scrollbar-thumb { background: var(--color-secondary); border-radius: 8px;}
-::-webkit-scrollbar-thumb:hover { background: var(--color-primary);}
-  </style>
+</style>
 </head>
 <body>
-<!-- ====================== NAVBAR ====================== -->
-<nav class="navbar navbar-expand-lg fixed-top glass-nav shadow-sm py-2">
-  <div class="container">
-    <a class="navbar-brand fw-bold" href="/">
-      <i class="bi bi-compass me-2"></i>Piura Expressa
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-1">
-        <li class="nav-item">
-          <a class="nav-link active" href="/"><i class="bi bi-house me-1"></i>Inicio</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="provinciasDropdown" role="button"
-             data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-map me-1"></i>Provincias
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="provinciasDropdown">
-            <li><a class="dropdown-item" href="/provincias"><i class="bi bi-list-ul me-2"></i>Ver todas las provincias</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <th:block th:if="${not #lists.isEmpty(provinciasNavbar)}">
-              <li th:each="provincia : ${provinciasNavbar}">
-                <a class="dropdown-item" th:href="@{'/provincias/' + ${provincia.nombre.toLowerCase()}}">
-                  <i class="bi bi-geo-alt me-2"></i>
-                  <span th:text="${provincia.nombre}">Nombre Provincia</span>
-                </a>
-              </li>
-            </th:block>
-            <th:block th:if="${#lists.isEmpty(provinciasNavbar)}">
-              <li><span class="dropdown-item-text text-muted"><i class="bi bi-info-circle me-2"></i>No hay provincias disponibles</span></li>
-            </th:block>
-            <th:block sec:authorize="hasRole('ADMIN')">
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item text-primary" href="/admin/provincias"><i class="bi bi-gear me-2"></i>Administrar provincias</a></li>
-            </th:block>
-          </ul>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="/eventos"><i class="bi bi-calendar-event me-1"></i>Eventos</a></li>
-        <li class="nav-item"><a class="nav-link" href="/foro"><i class="bi bi-chat-dots me-1"></i>Foro</a></li>
-      </ul>
-      <div class="d-flex align-items-center gap-2">
-        <div sec:authorize="isAuthenticated()">
-          <div class="dropdown">
-            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2" type="button"
-                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-person-circle" style="font-size: 1.5rem"></i>
-              <span sec:authentication="name"></span>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li><a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/perfil}"><i class="bi bi-person"></i>Perfil</a></li>
-              <li><a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/mis-publicaciones}"><i class="bi bi-file-text"></i>Mis Publicaciones</a></li>
-              <li><a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/mis-eventos}"><i class="bi bi-calendar-check"></i>Mis Participaciones</a></li>
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <form action="#" th:action="@{/logout}" method="post" style="margin: 0">
-                  <button type="submit" class="dropdown-item d-flex align-items-center gap-2">
-                    <i class="bi bi-box-arrow-right"></i>Cerrar Sesión
-                  </button>
-                </form>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div sec:authorize="!isAuthenticated()">
-          <a href="/auth/login" class="btn btn-login d-flex align-items-center gap-2"><i class="bi bi-person-circle"></i> Iniciar Sesión</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</nav>
+  <div th:replace="fragments/navbar :: navbar"></div>
 <div style="height:64px"></div> <!-- Separación por navbar fixed -->
     <!-- Hero Parallax Section -->
     <section class="hero-parallax" th:style="'background-image: linear-gradient(135deg, rgba(160, 200, 120, 0.9), rgba(102, 126, 234, 0.8)), url(' + ${provincia.imagenPrincipal ?: 'https://example.com/default-image.jpg'} + '); background-attachment: fixed; background-size: cover; background-position: center;'">
@@ -852,82 +691,9 @@ body {
     <button id="backToTop" class="btn btn-primary position-fixed d-none" style="bottom: 2rem; right: 2rem; z-index: 1000; border-radius: 50%; width: 60px; height: 60px;">
       <i class="bi bi-arrow-up"></i>
     </button>
-<!-- ====================== FOOTER ====================== -->
-<footer class="footer">
-  <div class="container">
-    <div class="row g-4">
-      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
-        <h5><i class="bi bi-compass me-2"></i>Piura Expressa</h5>
-        <p class="text-muted">
-          Tu puerta de entrada a la riqueza cultural y gastronómica de
-          Piura. Conectamos tradiciones, sabores y experiencias únicas.
-        </p>
-        <div class="social-links">
-          <a href="#" class="social-link" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="social-link" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-          <a href="#" class="social-link" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
-          <a href="#" class="social-link" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
-        </div>
-      </div>
-      <div class="col-lg-2 col-md-6" data-aos="fade-up" data-aos-delay="200">
-        <div class="footer-section">
-          <h5>Explorar</h5>
-          <div class="d-flex flex-column">
-            <a href="/provincias" class="footer-link">Provincias</a>
-            <a href="/eventos" class="footer-link">Eventos</a>
-            <a href="/cultura" class="footer-link">Cultura</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-2 col-md-6" data-aos="fade-up" data-aos-delay="300">
-        <div class="footer-section">
-          <h5>Comunidad</h5>
-          <div class="d-flex flex-column">
-            <a href="/foro" class="footer-link">Foro</a>
-            <a href="/blog" class="footer-link">Blog</a>
-            <a href="/testimonios" class="footer-link">Testimonios</a>
-            <a href="/galeria" class="footer-link">Galería</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-2 col-md-6" data-aos="fade-up" data-aos-delay="400">
-        <div class="footer-section">
-          <h5>Soporte</h5>
-          <div class="d-flex flex-column">
-            <a href="/ayuda" class="footer-link">Centro de Ayuda</a>
-            <a href="/contacto" class="footer-link">Contacto</a>
-            <a href="/sugerencias" class="footer-link">Sugerencias</a>
-            <a href="/reportes" class="footer-link">Reportar Problema</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-2 col-md-6" data-aos="fade-up" data-aos-delay="500">
-        <div class="footer-section">
-          <h5>Legal</h5>
-          <div class="d-flex flex-column">
-            <a href="/terminos" class="footer-link">Términos de Uso</a>
-            <a href="/privacidad" class="footer-link">Privacidad</a>
-            <a href="/cookies" class="footer-link">Cookies</a>
-            <a href="/accesibilidad" class="footer-link">Accesibilidad</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom" data-aos="fade-up" data-aos-delay="600">
-      <div class="row align-items-center">
-        <div class="col-md-6">
-          <p>&copy; 2025 Piura Expressa. Todos los derechos reservados.</p>
-        </div>
-        <div class="col-md-6 text-md-end">
-          <p>
-            <i class="bi bi-envelope me-2"></i>
-            <a href="mailto:contacto@piuraexpressa.com" class="text-muted">contacto@piuraexpressa.com</a>
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
+    
+    <div th:replace="fragments/footer :: footer"></div>
+
 <!-- JS SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>

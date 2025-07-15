@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface ReportePublicacionRepositorio extends JpaRepository<ReportePublicacion, Long> {
     Optional<ReportePublicacion> findByPublicacionIdAndUsuarioId(Long publicacionId, Long usuarioId);
+
+    long countByPublicacionId(Long publicacionId);
 }

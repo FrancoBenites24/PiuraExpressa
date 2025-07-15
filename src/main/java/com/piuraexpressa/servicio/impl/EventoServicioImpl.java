@@ -3,7 +3,6 @@ package com.piuraexpressa.servicio.impl;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +19,7 @@ import com.piuraexpressa.repositorio.dominio.EventoRepositorio;
 import com.piuraexpressa.repositorio.dominio.ProvinciaRepositorio;
 import com.piuraexpressa.repositorio.dominio.ResenaRepositorio;
 import com.piuraexpressa.servicio.EventoServicio;
+import com.piuraexpressa.servicio.ResenaServicio;
 import com.piuraexpressa.specification.EventoSpecification;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -33,6 +33,7 @@ public class EventoServicioImpl implements EventoServicio {
     private final ProvinciaRepositorio provinciaRepositorio;
     private final EventoMapper eventoMapper;
     private final ResenaRepositorio resenaRepositorio;
+    private final ResenaServicio resenaServicio;
 
     @Override
     public Page<EventoDTO> buscarEventos(FiltroEventoDTO filtro) {
@@ -133,6 +134,11 @@ public class EventoServicioImpl implements EventoServicio {
     public EventoDTO obtenerPorId(Long id) {
         Evento evento = eventoRepositorio.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Evento no encontrado con ID: " + id));
-        return eventoMapper.toDto(evento, resenaRepositorio);
+        EventoDTO eventoDto = eventoMapper.toDto(evento, resenaRepositorio);
+
+        eventoDto.setResenas(resenaServicio.obtenerResenasPorEvento(evento.getId()));
+
+        return eventoDto;
     }
+
 }

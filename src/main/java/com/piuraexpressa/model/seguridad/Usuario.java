@@ -85,7 +85,7 @@ public class Usuario {
 
     @Builder.Default
     @Column(nullable = false)
-    private boolean activo = true;
+    private Boolean activo = true;
 
     @Column(name = "fecha_baja")
     private LocalDateTime fechaBaja;

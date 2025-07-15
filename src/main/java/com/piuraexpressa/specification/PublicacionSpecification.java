@@ -1,7 +1,6 @@
 package com.piuraexpressa.specification;
 
 import com.piuraexpressa.model.dominio.Publicacion;
-import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;

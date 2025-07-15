@@ -44,7 +44,7 @@ public class UsuarioServicioImplAdditionalTest {
 
         usuarioServicio.activar(id);
 
-        assertTrue(usuario.isActivo());
+        assertTrue(usuario.getActivo());
         assertNull(usuario.getFechaBaja());
         assertNull(usuario.getMotivoBaja());
         verify(usuarioRepositorio).findById(id);

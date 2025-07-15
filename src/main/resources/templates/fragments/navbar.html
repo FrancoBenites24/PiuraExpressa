@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+  <nav class="navbar navbar-expand-lg fixed-top" th:fragment="navbar">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <i class="bi bi-compass me-2"></i>Piura Expressa
+      </a>
+
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <i class="bi bi-list"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#inicio">
+              <i class="bi bi-house me-1"></i>Inicio
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" href="#" id="provinciasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-map me-1"></i>Provincias
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="provinciasDropdown">
+              <li>
+                <a class="dropdown-item" href="/provincias">
+                  <i class="bi bi-list-ul me-2"></i>Ver todas las provincias
+                </a>
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+
+              <th:block th:if="${not #lists.isEmpty(provincias)}">
+                <li th:each="provincia : ${provincias}">
+                  <a class="dropdown-item" th:href="@{'/provincias/' + ${provincia.nombre.toLowerCase()}}">
+                    <i class="bi bi-geo-alt me-2"></i>
+                    <span th:text="${provincia.nombre}">Nombre Provincia</span>
+                  </a>
+                </li>
+              </th:block>
+              <th:block th:if="${#lists.isEmpty(provincias)}">
+                <li>
+                  <span class="dropdown-item-text text-muted">
+                    <i class="bi bi-info-circle me-2"></i>No hay provincias disponibles
+                  </span>
+                </li>
+              </th:block>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/eventos">
+              <i class="bi bi-calendar-event me-1"></i>Eventos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/foro">
+              <i class="bi bi-chat-dots me-1"></i>Foro
+            </a>
+          </li>
+        </ul>
+
+        <!-- Autenticación -->
+        <div class="d-flex align-items-center">
+          <!-- Si está autenticado -->
+          <div sec:authorize="isAuthenticated()">
+            <div class="dropdown">
+              <a class="btn btn-login dropdown-toggle d-flex align-items-center gap-2"
+                 href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle"></i>
+                <span sec:authentication="name">Usuario</span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" href="/perfil"><i class="bi bi-person"></i> Mi Perfil</a></li>
+                <li><a class="dropdown-item" href="/mis-publicaciones"><i class="bi bi-file-text"></i> Mis Publicaciones</a></li>
+                <li><a class="dropdown-item" href="/mis-eventos"><i class="bi bi-calendar-check"></i> Mis Participaciones</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="dropdown-item">
+                      <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                    </button>
+                  </form>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Si NO está autenticado -->
+          <div sec:authorize="!isAuthenticated()">
+            <a href="/auth/login" class="btn btn-login d-flex align-items-center gap-2">
+              <i class="bi bi-person-circle"></i> Iniciar Sesión
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </nav>
+</body>
+</html>

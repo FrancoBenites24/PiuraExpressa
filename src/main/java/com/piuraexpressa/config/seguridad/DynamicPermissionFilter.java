@@ -72,7 +72,7 @@ public class DynamicPermissionFilter extends OncePerRequestFilter {
 
     private String mapUrlToPermissionName(String url) {
         if (url.startsWith("/admin/dashboard")) {
-            return "MOSTRAR_PANEL_ADMIN";
+            return "MOSTRAR_DASHBOARD_ADMIN";
         } else if (url.startsWith("/admin/provincias/editar")) {
             return "ADMIN_PROVINCIAS_EDITAR";
         } else if (url.startsWith("/admin/usuarios")) {

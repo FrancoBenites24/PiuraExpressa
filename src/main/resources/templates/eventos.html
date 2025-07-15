@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="_csrf" th:content="${_csrf.token}" />
-    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Eventos - Piura Expressa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" th:href="@{/css/footer.css}" href="../static/css/footer.css" />
+    <link rel="stylesheet" th:href="@{/css/navbar.css}" href="../static/css/footer.css" />
+
     <style>
         :root {
     --color-primary: #A0C878;
@@ -64,81 +66,6 @@ body {
     background: #8bb564;
 }
 
-/* Navigation */
-.navbar {
-    background-color: rgba(255, 253, 246, 0.95);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(160, 200, 120, 0.1);
-    transition: var(--transition);
-    padding: 1rem 0;
-    box-shadow: var(--shadow-sm);
-}
-
-.navbar-brand {
-    font-weight: 700;
-    font-size: 1.5rem;
-    color: var(--color-primary);
-    text-decoration: none;
-}
-
-.navbar-brand:hover {
-    color: #8bb564;
-}
-
-.navbar-nav .nav-link {
-    color: var(--color-text);
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    transition: var(--transition);
-    position: relative;
-}
-
-.navbar-nav .nav-link:hover,
-.navbar-nav .nav-link:focus {
-    color: var(--color-primary);
-    background-color: rgba(160, 200, 120, 0.1);
-}
-
-.navbar-nav .nav-link.active {
-    color: var(--color-primary);
-    background-color: rgba(160, 200, 120, 0.15);
-}
-
-.btn-login {
-    background-color: var(--color-primary);
-    color: white;
-    border: none;
-    padding: 0.5rem 1.5rem;
-    border-radius: var(--border-radius-sm);
-    font-weight: 500;
-    transition: var(--transition);
-}
-
-.btn-login:hover {
-    background-color: #8bb564;
-    color: white;
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-}
-
-.dropdown-menu {
-    background-color: var(--color-light);
-    border-radius: 15px;
-    box-shadow: var(--shadow-lg);
-    border: none;
-}
-
-.dropdown-item {
-    color: var(--color-text);
-    transition: var(--transition);
-}
-
-.dropdown-item:hover {
-    background-color: var(--color-secondary);
-    color: var(--color-text);
-}
-
 /* Main Content */
 .main-content {
     padding-top: 100px;
@@ -146,27 +73,7 @@ body {
     min-height: 100vh;
 }
 
-/* Hero Section */
-.hero-section {
-    background: linear-gradient(135deg, var(--color-primary) 0%, #8bb564 100%);
-    color: white;
-    padding: 4rem 0;
-    margin-bottom: 3rem;
-    border-radius: 0 0 var(--border-radius) var(--border-radius);
-}
-
-.hero-section h1 {
-    font-weight: 700;
-    font-size: 3rem;
-    margin-bottom: 1rem;
-}
-
-.hero-section p {
-    font-size: 1.2rem;
-    opacity: 0.9;
-}
-
-/* Filters Section */
+/* seccion de filtors*/
 .filters-section {
     background: white;
     border-radius: var(--border-radius);
@@ -329,7 +236,7 @@ body {
     margin-bottom: 1rem;
     line-height: 1.5;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -823,98 +730,10 @@ body {
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg fixed-top">
-      <div class="container">
-        <a class="navbar-brand" href="/">
-          <i class="bi bi-compass me-2"></i>Piura Expressa
-        </a>
-
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <i class="bi bi-list"></i>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav mx-auto">
-            <li class="nav-item">
-              <a class="nav-link active" href="#inicio">
-                <i class="bi bi-house me-1"></i>Inicio
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#provincias">
-                <i class="bi bi-map me-1"></i>Provincias
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/eventos">
-                <i class="bi bi-calendar-event me-1"></i>Eventos
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/foro">
-                <i class="bi bi-chat-dots me-1"></i>Foro
-              </a>
-            </li>
-          </ul>
-
-          <div class="d-flex align-items-center">
-            <div sec:authorize="isAuthenticated()">
-              <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="bi bi-person-circle" style="font-size: 1.5rem"></i>
-                  <span sec:authentication="name"></span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/perfil}">
-                      <i class="bi bi-person"></i> Perfil
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/mis-publicaciones}">
-                      <i class="bi bi-file-text"></i> Mis Publicaciones
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2" th:href="@{/mis-eventos}">
-                      <i class="bi bi-calendar-check"></i> Mis Participaciones
-                    </a>
-                  </li>
-                  <li>
-                    <hr class="dropdown-divider" />
-                  </li>
-                  <li>
-                    <form action="#" th:action="@{/logout}" method="post" style="margin: 0">
-                      <button type="submit" class="dropdown-item d-flex align-items-center gap-2">
-                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
-                      </button>
-                    </form>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div sec:authorize="!isAuthenticated()">
-              <a href="/auth/login" class="btn btn-login d-flex align-items-center gap-2">
-                <i class="bi bi-person-circle"></i> Iniciar Sesión
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-
+  <div th:replace="fragments/navbar :: navbar"></div>
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Hero Section -->
-        <section class="hero-section" data-aos="fade-down">
-            <div class="container text-center">
-                <h1><i class="bi bi-calendar-event me-3"></i>Eventos de Piura</h1>
-                <p class="lead">Descubre y participa en los eventos más emocionantes de cada provincia de Piura</p>
-            </div>
-        </section>
-
         <div class="container">
         <!-- Filters Section -->
         <section class="filters-section" data-aos="fade-up" data-aos-delay="100">
@@ -1001,89 +820,108 @@ body {
             </form>
         </section>
 
-            <!-- Sección de tarjetas de eventos generada dinámicamente -->
-            <section class="events-grid" id="eventsGrid">
-            <div th:each="evento : ${eventos}" class="event-card fade-in">
-                <div class="position-relative">
-                <img th:src="${evento.imagenUrl}" th:alt="${evento.titulo}" class="event-image">
-                <div class="event-status" th:classappend="${evento.estadoCss}">
-                    <span th:text="${evento.estado}"></span>
+        <!-- Sección de tarjetas de eventos generada dinámicamente -->
+        <section class="events-grid" id="eventsGrid">
+        <div th:each="evento : ${eventos}" class="event-card fade-in">
+            <div class="position-relative">
+            <img th:if="${evento.imagenUrl != null}" th:src="${evento.imagenUrl}" th:alt="${evento.titulo}" class="event-image"/>
+            <img th:unless="${evento.imagenUrl != null}" src="/img/default-event.jpg" alt="Evento" class="event-image"/>
+
+            <div class="event-status" th:classappend="${evento.estadoCss != null ? evento.estadoCss : ''}">
+                <span th:text="${evento.estado != null ? evento.estado : 'Desconocido'}"></span>
+            </div>
+
+            <div class="event-price"
+                th:classappend="${evento.precio != null and evento.precio == 0 ? ' price-free' : ''}"
+                th:text="${evento.precioTexto != null ? evento.precioTexto : 'S/ 0.00'}">
+            </div>
+            </div>
+
+            <div class="event-content">
+            <h3 class="event-title" th:text="${evento.titulo != null ? evento.titulo : 'Evento sin título'}"></h3>
+            <p class="event-description" th:text="${evento.descripcionCorta != null ? evento.descripcionCorta : 'Sin descripción'}"></p>
+
+            <div class="event-meta">
+                <div class="meta-item">
+                <i class="bi bi-calendar-event meta-icon"></i>
+                <span th:text="${evento.rangoFechas != null ? evento.rangoFechas : 'Fecha no disponible'}"></span>
                 </div>
-                <div class="event-price" th:classappend="${evento.precio == 0 ? ' price-free' : ''}" th:text="${evento.precioTexto}"></div>
+                <div class="meta-item">
+                <i class="bi bi-geo-alt meta-icon"></i>
+                <span th:text="${evento.ubicacion != null ? evento.ubicacion : 'Ubicación desconocida'}"></span>
                 </div>
-                <div class="event-content">
-                <h3 class="event-title" th:text="${evento.titulo}"></h3>
-                <p class="event-description" th:text="${evento.descripcionCorta}"></p>
-
-                <div class="event-meta">
-                    <div class="meta-item">
-                    <i class="bi bi-calendar-event meta-icon"></i>
-                    <span th:text="${evento.rangoFechas}"></span>
-                    </div>
-                    <div class="meta-item">
-                    <i class="bi bi-geo-alt meta-icon"></i>
-                    <span th:text="${evento.ubicacion}"></span>
-                    </div>
-                    <div class="meta-item">
-                    <i class="bi bi-person meta-icon"></i>
-                    <span th:text="${evento.organizador}"></span>
-                    </div>
-                </div>
-
-                <div class="event-capacity">
-                    <div class="capacity-info">
-                    <strong th:text="${evento.participantesActuales}"></strong>
-                    <span th:text="' de ' + ${evento.capacidad} + ' disponibles'"></span>
-                    </div>
-                    <div class="capacity-bar">
-                    <div class="capacity-fill" th:style="'width:' + ${evento.porcentajeOcupado} + '%'"> </div>
-                    </div>
-                </div>
-
-                <div class="event-rating">
-                    <div class="stars">
-                    <i th:each="i : ${#numbers.sequence(1, 5)}"
-                        th:class="${i <= evento.promedioCalificacion} ? 'bi bi-star-fill star' : 'bi bi-star star empty'">
-                    </i>
-                    </div>
-                    <span class="rating-text" th:text="${evento.promedioCalificacionTexto}"></span>
-                </div>
-
-                <div class="event-actions">
-                    <button class="btn-participate"
-                            th:if="${#authorization.expression('isAuthenticated()') and evento.puedeParticipar}"
-                            th:onclick="'participarEnEvento(' + ${evento.id} + ')'"><i class="bi bi-calendar-plus"></i> Participar</button>
-
-                    <button class="btn-participate btn-warning" disabled
-                            th:if="${#authorization.expression('isAuthenticated()') and evento.yaParticipa}"
-                            th:onclick="'cancelarParticipacion(' + ${evento.id} + ')'">
-                    <i class="bi bi-calendar-x"></i> Cancelar participación
-                    </button>
-
-                    <button class="btn-review"
-                            th:if="${evento.finalizado != null and evento.yaParticipa != null and evento.yaResenado != null and evento.finalizado and evento.yaParticipa and not evento.yaResenado}"
-                            th:onclick="'abrirModalResena(' + ${evento.id} + ')'">
-                    <i class="bi bi-star"></i> Escribir Reseña
-                    </button>
-
-                    <button class="btn-review" disabled
-                            th:if="${evento.finalizado != null and evento.yaResenado != null and evento.finalizado and evento.yaResenado}"
-                            title="Ya has enviado una reseña para este evento">
-                    <i class="bi bi-star-fill"></i> Ya reseñado
-                    </button>
-
-                    <button class="btn-secondary-action" th:onclick="'compartirEvento(' + ${evento.id} + ')'">
-                    <i class="bi bi-share"></i>
-                    </button>
-                    <button class="btn-secondary-action" th:onclick="'verDetallesEvento(' + ${evento.id} + ')'">
-                    <i class="bi bi-eye"></i>
-                    </button>
-                </div>
-
-                <!-- Reseñas visibles solo en el modal de detalles -->
+                <div class="meta-item">
+                <i class="bi bi-person meta-icon"></i>
+                <span th:text="${evento.organizador != null ? evento.organizador : 'Organizador no disponible'}"></span>
                 </div>
             </div>
-            </section>
+
+            <div class="event-capacity">
+                <div class="capacity-info">
+                <strong th:text="${evento.participantesActuales != null ? evento.participantesActuales : 0}"></strong>
+                <span th:if="${evento.capacidad != null}" th:text="${evento.capacidad}"></span>
+                <span th:unless="${evento.capacidad != null}">Sin límite</span>
+                </div>
+                <div class="capacity-bar">
+                <div class="capacity-fill"
+                    th:style="${evento.porcentajeOcupado != null ? 'width:' + evento.porcentajeOcupado + '%' : 'width:0%'}">
+                </div>
+                </div>
+            </div>
+
+            <div class="event-rating">
+                <div class="stars">
+                <i th:each="i : ${#numbers.sequence(1, 5)}"
+                    th:class="${evento.promedioCalificacion != null and i <= evento.promedioCalificacion} ?
+                                'bi bi-star-fill star' : 'bi bi-star star empty'">
+                </i>
+                </div>
+                <span class="rating-text"
+                    th:text="${evento.promedioCalificacionTexto != null ? evento.promedioCalificacionTexto : 'Sin calificación'}">
+                </span>
+            </div>
+
+            <div class="event-actions">
+                <!-- Participar -->
+                <button class="btn-participate"
+                        th:if="${#authorization.expression('isAuthenticated()') and evento.puedeParticipar and not evento.finalizado}"
+                        th:onclick="'participarEnEvento(' + ${evento.id} + ')'">
+                <i class="bi bi-calendar-plus"></i> Participar
+                </button>
+
+                <!-- Cancelar -->
+                <button class="btn-participate btn-warning"
+                        th:if="${#authorization.expression('isAuthenticated()') and evento.yaParticipa and not evento.finalizado}"
+                        th:onclick="'cancelarParticipacion(' + ${evento.id} + ')'">
+                <i class="bi bi-calendar-x"></i> Cancelar participación
+                </button>
+
+                <!-- Escribir Reseña -->
+                <button class="btn-review"
+                        th:if="${evento.finalizado and evento.yaParticipa and not evento.yaResenado}"
+                        th:onclick="'abrirModalResena(' + ${evento.id} + ')'">
+                <i class="bi bi-star"></i> Escribir Reseña
+                </button>
+
+                <!-- Ya reseñado -->
+                <button class="btn-review" disabled
+                        th:if="${evento.finalizado and evento.yaResenado}">
+                <i class="bi bi-star-fill"></i> Ya reseñado
+                </button>
+
+                <!-- Compartir / Detalles -->
+                <button class="btn-secondary-action"
+                        th:onclick="'compartirEvento(' + ${evento.id} + ')'">
+                <i class="bi bi-share"></i>
+                </button>
+                <button class="btn-secondary-action"
+                        th:onclick="'verDetallesEvento(' + ${evento.id} + ')'">
+                <i class="bi bi-eye"></i>
+                </button>
+            </div>
+            </div>
+        </div>
+        </section>
 
             <!-- Pagination -->
             <nav class="pagination-wrapper" aria-label="Navegación de páginas de eventos">
@@ -1092,487 +930,12 @@ body {
         </div>
     </main>
 
-    <!-- Participation Modal -->
-    <div class="modal fade" id="participationModal" tabindex="-1" aria-labelledby="participationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="participationModalLabel">
-                        <i class="bi bi-calendar-plus me-2"></i>Confirmar Participación
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="confirmation-icon">
-                        <i class="bi bi-calendar-check"></i>
-                    </div>
-                    <div class="confirmation-text">
-                        <h4>¿Confirmas tu participación?</h4>
-                        <p>Te estás registrando para participar en este evento. Recibirás una confirmación por email.</p>
-                    </div>
-                    <div class="confirmation-details" id="eventDetails">
-                        <!-- Event details will be populated by JavaScript -->
-                    </div>
-                    <form id="participationForm" novalidate>
-                        <div class="mb-3">
-                            <label for="observaciones" class="form-label">
-                                <i class="bi bi-chat-text me-1"></i>Observaciones (opcional)
-                            </label>
-                            <textarea class="form-control" id="observaciones" rows="3" placeholder="Algún comentario o requerimiento"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Confirmar</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div th:replace="fragments/modals :: modals"></div>
 
-    <!-- Review Modal -->
-    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="reviewModalLabel">
-              <i class="bi bi-star me-2"></i>Escribir Reseña
-            </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-          </div>
-          <div class="modal-body">
-            <form id="reviewForm" novalidate>
-              <div class="mb-3">
-                <label for="reviewText" class="form-label">Reseña</label>
-                <textarea class="form-control" id="reviewText" rows="4" placeholder="Escribe tu reseña aquí..." required></textarea>
-                <div class="invalid-feedback">La reseña es obligatoria.</div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Calificación</label>
-                <select class="form-select" id="reviewRating" required>
-                  <option value="" disabled selected>Selecciona una calificación</option>
-                  <option value="1">1 estrella</option>
-                  <option value="2">2 estrellas</option>
-                  <option value="3">3 estrellas</option>
-                  <option value="4">4 estrellas</option>
-                  <option value="5">5 estrellas</option>
-                </select>
-                <div class="invalid-feedback">La calificación es obligatoria.</div>
-              </div>
-              <input type="hidden" id="reviewEventId" />
-              <button type="submit" class="btn btn-primary w-100">Enviar Reseña</button>
-            </form>
-          </div>
-        </div>
-      </div>
+    <div th:replace="fragments/footer :: footer"></div>
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:inline="javascript">
-    const token = /*[[${_csrf.token}]]*/ 'default';
-    const header = /*[[${_csrf.headerName}]]*/ 'X-CSRF-TOKEN';
-
-      const form = document.getElementById('filtersForm');
-      const grid = document.getElementById('eventsGrid');
-
-      window.participarEnEvento = function(eventoId) {
-          fetch('/eventos/' + eventoId + '/participar', {
-              method: 'POST',
-              cache: 'no-store',
-              headers: {
-                  [header]: token
-              }
-          })
-          .then(response => {
-              if (response.ok) {
-                  location.reload();
-              } else {
-                  alert("No se pudo registrar tu participación.");
-              }
-          })
-          .catch(error => {
-              console.error("Error al participar:", error);
-              alert("Hubo un problema.");
-          });
-      }
-
-      document.addEventListener('DOMContentLoaded', () => {
-          form.addEventListener('submit', async (e) => {
-              e.preventDefault();
-              await cargarEventos();
-          });
-
-      async function cargarEventos() {
-          const filtros = {
-              texto: document.getElementById('searchInput').value,
-              provincia: document.getElementById('provinciaSelect').value,
-              fecha: document.getElementById('fechaSelect').value,
-              precio: document.getElementById('precioSelect').value,
-              pagina: 0,
-              tamanio: 10
-          };
-
-          const response = await fetch('/api/eventos/buscar', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(filtros)
-          });
-
-          const data = await response.json();
-          grid.innerHTML = '';
-
-          if (!data.content || data.content.length === 0) {
-              grid.innerHTML = `
-                  <div class="empty-state">
-                      <div class="empty-state-icon"><i class="bi bi-calendar-x"></i></div>
-                      <h3>No se encontraron eventos</h3>
-                      <p>Intenta con otros filtros o vuelve más tarde.</p>
-                  </div>
-              `;
-              return;
-          }
-
-          data.content.forEach(evento => {
-              const statusClass = evento.estado === 'EN_CURSO' ? 'status-ongoing' :
-                                  evento.estado === 'FINALIZADO' ? 'status-finished' : 'status-upcoming';
-
-              const precioLabel = evento.precio && evento.precio > 0 ? `S/ ${evento.precio}` : 'Gratuito';
-              const precioClass = evento.precio && evento.precio > 0 ? '' : 'price-free';
-
-              const calificacion = evento.calificacionPromedio || 0;
-              const estrellas = Array.from({ length: 5 }).map((_, i) => {
-                  const icon = i < Math.floor(calificacion) ? 'star-fill'
-                              : (i < calificacion ? 'star-half' : 'star');
-                  return `<i class="bi bi-${icon} star${icon === 'star' ? ' empty' : ''}"></i>`;
-              }).join('');
-
-              const puedeParticipar = evento.puedeParticipar === true;
-              const yaParticipa = evento.yaParticipa === true;
-
-              const btnParticipar = puedeParticipar
-                ? `<button class="btn-participate" ${evento.finalizado ? 'disabled' : ''} onclick="participarEnEvento('${evento.id}')"><i class="bi bi-calendar-plus"></i> Participar</button>`
-                : '';
-              const btnCancelar = yaParticipa
-                ? `<button class="btn-participate btn-warning" onclick="cancelarParticipacion('${evento.id}')"><i class="bi bi-calendar-x"></i> Cancelar participación</button>`
-                : '';
-
-              const card = `
-              <article class="event-card fade-in" data-evento-id="${evento.id}">
-                  <div class="position-relative">
-                      <img src="${evento.imagenUrl || '/img/evento-default.jpg'}" alt="${evento.titulo}" class="event-image">
-                      <div class="event-status ${statusClass}">${formatearEstado(evento.estado)}</div>
-                      <div class="event-price ${precioClass}">${precioLabel}</div>
-                  </div>
-                  <div class="event-content">
-                      <h3 class="event-title">${evento.titulo}</h3>
-                      <p class="event-description">${evento.descripcion || ''}</p>
-                      <div class="event-meta">
-                          <div class="meta-item"><i class="bi bi-calendar-event meta-icon"></i> ${formatearFecha(evento.fechaInicio)}</div>
-                          <div class="meta-item"><i class="bi bi-geo-alt meta-icon"></i> ${evento.ubicacion || evento.provincia}</div>
-                      </div>
-                      <div class="event-capacity">
-                          <div class="capacity-info">
-                              <strong>${evento.cantidadParticipantes || 0} participantes</strong>
-                              ${evento.capacidad ? ` de ${evento.capacidad} disponibles` : ''}
-                          </div>
-                          ${evento.capacidad ? `
-                          <div class="capacity-bar">
-                              <div class="capacity-fill" style="width: ${evento.porcentajeOcupado || 0}%"></div>
-                          </div>` : ''}
-                      </div>
-                      <div class="event-rating">
-                          <div class="stars">${estrellas}</div>
-                          <span class="rating-text">${calificacion.toFixed(1)} (${evento.cantidadResenas || 0} reseñas)</span>
-                      </div>
-                      <div class="event-actions">
-${btnParticipar}
-${btnCancelar}
-                          <button class="btn-secondary-action" onclick="shareEvent('${evento.titulo}')" aria-label="Compartir evento">
-                              <i class="bi bi-share"></i>
-                          </button>
-                          <button class="btn-secondary-action" onclick="toggleFavorite(this)" aria-label="Agregar a favoritos">
-                              <i class="bi bi-heart"></i>
-                          </button>
-                          <button class="btn-secondary-action" onclick="showEventDetails('${evento.titulo}')" aria-label="Ver detalles">
-                              <i class="bi bi-eye"></i>
-                          </button>
-                      </div>
-                  </div>
-              </article>`;
-
-              grid.insertAdjacentHTML('beforeend', card);
-          });
-      }
-
-      function formatearEstado(estado) {
-          switch (estado) {
-              case 'EN_CURSO': return 'En curso';
-              case 'FINALIZADO': return 'Finalizado';
-              case 'PROXIMO': return 'Próximo';
-              default: return '';
-          }
-      }
-
-      function formatearFecha(fechaISO) {
-          const fecha = new Date(fechaISO);
-          return fecha.toLocaleDateString('es-PE', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
-          });
-      }
-
-      
-    function participarEnEvento(id) {
-        fetch('/eventos/' + id + '/participar', {
-        method: 'POST',
-        headers: {'X-CSRF-TOKEN': /*[[${_csrf.token}]]*/ ''}
-        })
-        .then(res => {
-            if (res.ok) {
-                actualizarEventoUI(id);
-            } else {
-                alert('Error al participar');
-            }
-        })
-        .catch(() => alert('Error al participar'));
-    }
-
-      window.cancelarParticipacion = function(id) {
-          fetch('/eventos/' + id + '/cancelar', {
-              method: 'POST',
-              cache: 'no-store',
-              headers: {'X-CSRF-TOKEN': /*[[${_csrf.token}]]*/ ''}
-          })
-        .then(res => {
-            if (res.ok) {
-                actualizarEventoUI(id);
-            } else {
-                alert('Error al cancelar participación');
-            }
-        })
-        .catch(() => alert('Error al cancelar participación'));
-      }
-
-function actualizarEventoUI(id) {
-          fetch('/api/eventos/' + id, {cache: 'no-store'})
-              .then(response => response.json())
-              .then(evento => {
-                const card = document.querySelector(`.event-card[data-evento-id="${id}"]`);
-                if (!card) return;
-
-                // Actualizar botones
-                const btnParticipar = card.querySelector('.btn-participate');
-                const btnCancelar = card.querySelector('.btn-participate.btn-warning');
-                const btnEscribirResena = card.querySelector('.btn-review:not([disabled])');
-                const btnYaResenado = card.querySelector('.btn-review[disabled]');
-
-                if (evento.finalizado) {
-                    if (evento.yaParticipa && !evento.yaResenado) {
-                        if (btnParticipar) btnParticipar.style.display = 'none';
-                        if (btnCancelar) btnCancelar.style.display = 'none';
-                        if (btnEscribirResena) btnEscribirResena.style.display = 'inline-block';
-                        if (btnYaResenado) btnYaResenado.style.display = 'none';
-                    } else if (evento.yaResenado) {
-                        if (btnParticipar) btnParticipar.style.display = 'none';
-                        if (btnCancelar) btnCancelar.style.display = 'none';
-                        if (btnEscribirResena) btnEscribirResena.style.display = 'none';
-                        if (btnYaResenado) btnYaResenado.style.display = 'inline-block';
-                    } else {
-                        if (btnParticipar) btnParticipar.style.display = 'inline-block';
-                        if (btnCancelar) btnCancelar.style.display = 'none';
-                        if (btnEscribirResena) btnEscribirResena.style.display = 'none';
-                        if (btnYaResenado) btnYaResenado.style.display = 'none';
-                    }
-                } else {
-                    if (evento.yaParticipa) {
-                        if (btnParticipar) btnParticipar.style.display = 'none';
-                        if (btnCancelar) btnCancelar.style.display = 'inline-block';
-                        if (btnEscribirResena) btnEscribirResena.style.display = 'none';
-                        if (btnYaResenado) btnYaResenado.style.display = 'none';
-                    } else {
-                        if (btnParticipar) btnParticipar.style.display = 'inline-block';
-                        if (btnCancelar) btnCancelar.style.display = 'none';
-                        if (btnEscribirResena) btnEscribirResena.style.display = 'none';
-                        if (btnYaResenado) btnYaResenado.style.display = 'none';
-                    }
-                }
-
-                // Actualizar participantes y barra
-                const participantesInfo = card.querySelector('.capacity-info strong');
-                if (participantesInfo) {
-                    participantesInfo.textContent = evento.participantesActuales != null ? evento.participantesActuales : 0;
-                }
-                const capacidadTotal = evento.capacidad || 0;
-                const capacidadTexto = card.querySelector('.capacity-info span');
-                if (capacidadTexto) {
-                    capacidadTexto.textContent = ` de ${capacidadTotal} disponibles`;
-                }
-                const capacityFill = card.querySelector('.capacity-fill');
-                if (capacityFill) {
-                    capacityFill.style.width = evento.porcentajeOcupado + '%';
-                }
-            })
-            .catch(error => {
-                console.error('Error al actualizar UI del evento:', error);
-            });
-    }
-
-    function abrirModalResena(id) {
-        window.location.href = '/eventos/' + id + '/resena';
-    }
-
-    function compartirEvento(id) {
-        navigator.clipboard.writeText('https://piuraexpressa.com/eventos/' + id).then(() => {
-        alert('Enlace copiado al portapapeles.');
-        });
-    }
-
-    function verDetallesEvento(id) {
-        // puedes reemplazarlo con un modal cargado por AJAX o navegación
-        window.location.href = '/eventos/' + id;
-    }
-    async function cargarProvincias() {
-        try {
-            const response = await fetch('/api/provincias/todas');
-            const provincias = await response.json();
-            const select = document.getElementById('provinciaSelect');
-
-            provincias.forEach(p => {
-                const option = document.createElement('option');
-                option.value = p.nombre.toLowerCase();
-                option.textContent = p.nombre;
-                select.appendChild(option);
-            });
-        } catch (error) {
-            console.error('Error al cargar provincias:', error);
-        }
-    }
-        function renderizarPaginacion(data) {
-        const paginationContainer = document.querySelector('.pagination');
-        if (!paginationContainer) return;
-
-        paginationContainer.innerHTML = '';
-
-        const { totalPages, number, first, last } = data;
-
-        if (totalPages <= 1) return;
-
-        const crearItem = (text, disabled, page, active = false) => `
-            <li class="page-item ${disabled ? 'disabled' : ''} ${active ? 'active' : ''}">
-                <a class="page-link" href="#" onclick="cargarEventos(${page}); return false;">${text}</a>
-            </li>`;
-
-        paginationContainer.innerHTML += crearItem('Anterior', first, number - 1);
-
-        for (let i = 0; i < totalPages; i++) {
-            paginationContainer.innerHTML += crearItem(i + 1, false, i, i === number);
-        }
-
-        paginationContainer.innerHTML += crearItem('Siguiente', last, number + 1);
-    }
-
-      // Cargar inicial
-      cargarEventos();
-      cargarProvincias();
-  })
-
-
-    </script>
-<!-- Review Modal -->
-<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <form id="reviewForm" novalidate>
-        <div class="modal-header">
-          <h5 class="modal-title" id="reviewModalLabel">Escribir Reseña</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="reviewRating" class="form-label">Calificación</label>
-            <select id="reviewRating" class="form-select" required>
-              <option value="" selected disabled>Seleccione una calificación</option>
-              <option value="1">1 estrella</option>
-              <option value="2">2 estrellas</option>
-              <option value="3">3 estrellas</option>
-              <option value="4">4 estrellas</option>
-              <option value="5">5 estrellas</option>
-            </select>
-            <div class="invalid-feedback">Por favor seleccione una calificación.</div>
-          </div>
-          <div class="mb-3">
-            <label for="reviewComment" class="form-label">Comentario</label>
-            <textarea id="reviewComment" class="form-control" rows="3" maxlength="1000" placeholder="Escribe tu reseña aquí..."></textarea>
-          </div>
-          <div id="reviewError" class="text-danger mb-2" style="display:none;"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Enviar Reseña</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<script th:inline="javascript">
-  let currentReviewEventId = null;
-
-  function abrirModalResena(id) {
-    currentReviewEventId = id;
-    const reviewModal = new bootstrap.Modal(document.getElementById('reviewModal'));
-    document.getElementById('reviewRating').value = '';
-    document.getElementById('reviewComment').value = '';
-    document.getElementById('reviewError').style.display = 'none';
-    reviewModal.show();
-  }
-
-  document.getElementById('reviewForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const rating = document.getElementById('reviewRating').value;
-    const comment = document.getElementById('reviewComment').value.trim();
-
-    if (!rating) {
-      document.getElementById('reviewError').textContent = 'Por favor seleccione una calificación.';
-      document.getElementById('reviewError').style.display = 'block';
-      return;
-    }
-
-    const comentarioDTO = {
-      calificacion: parseInt(rating),
-      comentario: comment
-    };
-
-    fetch('/api/eventos/' + currentReviewEventId + '/resena', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': /*[[${_csrf.token}]]*/ ''
-      },
-      body: JSON.stringify(comentarioDTO)
-    })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else if (response.status === 401) {
-        alert('Debe iniciar sesión para enviar una reseña.');
-        throw new Error('Unauthorized');
-      } else {
-        throw new Error('Error al enviar la reseña.');
-      }
-    })
-    .then(data => {
-      const reviewModal = bootstrap.Modal.getInstance(document.getElementById('reviewModal'));
-      reviewModal.hide();
-      alert('Reseña enviada correctamente.');
-      actualizarEventoUI(currentReviewEventId);
-    })
-    .catch(error => {
-      document.getElementById('reviewError').textContent = error.message;
-      document.getElementById('reviewError').style.display = 'block';
-    });
-  });
-</script>
-
+<script th:src="@{/js/eventos.js}"></script>
 </body>
 </html>

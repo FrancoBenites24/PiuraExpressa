@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -66,4 +67,20 @@ public class PermisoServicioImpl implements PermisoServicio {
         return permisoRepositorio.findAll(pageable)
                 .map(permisoMapper::toDto);
     }
+
+    public Permiso crearSiNoExiste(Permiso permiso) {
+        Optional<Permiso> permisoExistente = permisoRepositorio.findByNombreIgnoreCase(permiso.getNombre());
+        if (permisoExistente.isPresent()) {
+            return permisoExistente.get();
+        }
+        return permisoRepositorio.save(permiso);
+    }
+
+    @Override
+    public List<PermisoDTO> obtenerPorIds(List<Long> ids) {
+        if (ids == null || ids.isEmpty())
+            return List.of();
+        return permisoMapper.toDtoLista(permisoRepositorio.findAllById(ids));
+    }
+
 }

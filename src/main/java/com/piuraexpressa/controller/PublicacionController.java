@@ -1,6 +1,7 @@
 package com.piuraexpressa.controller;
 
 import com.piuraexpressa.dto.PublicacionDTO;
+import com.piuraexpressa.dto.UsuarioDTO;
 import com.piuraexpressa.dto.UsuarioLikePublicacionDTO;
 import com.piuraexpressa.servicio.PublicacionServicio;
 import com.piuraexpressa.servicio.ReportePublicacionServicio;
@@ -23,12 +24,21 @@ public class PublicacionController {
     private final ReportePublicacionServicio reportePublicacionServicio;
 
     @PostMapping
-    public PublicacionDTO crearPublicacion(@RequestBody PublicacionDTO dto, Principal principal) {
-        return publicacionServicio.crearPublicacion(dto, principal.getName());
+    public ResponseEntity<PublicacionDTO> crearPublicacion(@RequestBody PublicacionDTO dto, Principal principal) {
+        try {
+            PublicacionDTO created = publicacionServicio.crearPublicacion(dto, principal.getName());
+            return ResponseEntity.ok(created);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500)
+                    .body(null);
+        }
     }
 
+
     @PutMapping("/{id}")
-    public PublicacionDTO actualizarPublicacion(@PathVariable Long id, @RequestBody PublicacionDTO dto, Principal principal) {
+    public PublicacionDTO actualizarPublicacion(@PathVariable Long id, @RequestBody PublicacionDTO dto,
+            Principal principal) {
         return publicacionServicio.actualizarPublicacion(id, dto, principal.getName());
     }
 
@@ -45,18 +55,23 @@ public class PublicacionController {
             Principal principal) {
         // Obtener id del usuario autenticado
         Long idUsuarioAutenticado = null;
+        boolean isAdmin = false;
+
         if (principal != null) {
-            // Aquí se debe obtener el id del usuario autenticado desde el servicio de usuario
-            // Por simplicidad, se asume que el username es el nombre principal
-            // y se busca el usuario para obtener su id
             try {
-                idUsuarioAutenticado = publicacionServicio.obtenerIdUsuarioPorUsername(principal.getName());
+                UsuarioDTO usuario = publicacionServicio.buscarUsuarioPorUsername(principal.getName())
+                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                idUsuarioAutenticado = usuario.getId();
+                isAdmin = usuario.getRoles() != null && usuario.getRoles().contains("ROLE_ADMIN");
             } catch (Exception e) {
                 idUsuarioAutenticado = null;
+                isAdmin = false;
             }
         }
+
         // Ajusta los filtros según tu servicio
-        Page<PublicacionDTO> publicaciones = publicacionServicio.buscarPublicaciones(page, size, sort, search, usuarioId, idUsuarioAutenticado);
+        Page<PublicacionDTO> publicaciones = publicacionServicio.buscarPublicaciones(page, size, sort, search,
+                usuarioId, idUsuarioAutenticado, false);
         return ResponseEntity.ok(publicaciones);
     }
 

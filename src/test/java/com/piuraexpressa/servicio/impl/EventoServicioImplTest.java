@@ -7,6 +7,8 @@ import com.piuraexpressa.model.dominio.Provincia;
 import com.piuraexpressa.repositorio.dominio.EventoRepositorio;
 import com.piuraexpressa.repositorio.dominio.ProvinciaRepositorio;
 import com.piuraexpressa.repositorio.dominio.ResenaRepositorio;
+import com.piuraexpressa.servicio.ResenaServicio;
+
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +30,7 @@ public class EventoServicioImplTest {
     @Mock private ProvinciaRepositorio provinciaRepositorio;
     @Mock private EventoMapper eventoMapper;
     @Mock private ResenaRepositorio resenaRepositorio;
+    @Mock private ResenaServicio resenaServicio;
 
     @InjectMocks private EventoServicioImpl eventoServicio;
 

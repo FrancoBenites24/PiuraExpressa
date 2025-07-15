@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
 @Getter
@@ -30,7 +31,6 @@ public class EventoDTO {
 
     private Double porcentajeOcupado;
     private Double promedioCalificacion = 0.0;
-    private Integer cantidadParticipantes;
     private Integer cantidadResenas;
     private Integer participantesActuales;
 
@@ -39,6 +39,8 @@ public class EventoDTO {
     private Boolean yaParticipa;
     private Boolean finalizado;
     private Boolean yaResenado;
+    
+    private List<ResenaDTO> resenas;
 
     // Texto bonito
     public String getRangoFechas() {

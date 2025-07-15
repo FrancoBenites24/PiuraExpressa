@@ -75,7 +75,7 @@
                     <select class="form-select" th:field="*{tipoDocumento}" required>
                         <option value="">Seleccionar...</option>
                         <option value="DNI">DNI</option>
-                        <!-- Se ocultan otras opciones para restringir solo a DNI -->
+                        <!-- por ahora np los ocuparé -->
                         <!-- <option value="CARNET_EXTRANJERIA">Carnet de Extranjería</option> -->
                         <!-- <option value="PASAPORTE">Pasaporte</option> -->
                     </select>
@@ -190,6 +190,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const usernameInput = document.querySelector('input[name="username"]');
     const emailInput = document.querySelector('input[name="email"]');
     const numeroDocumentoInput = document.querySelector('input[name="numeroDocumento"]');
+    const passwordInput = document.querySelector('input[name="password"]');
+    const telefonoInput = document.querySelector('input[name="telefono"]');
 
     const showError = (input, message) => {
         let feedback = input.nextElementSibling;
@@ -261,9 +263,99 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     };
 
+    const esPasswordSegura = (password) => {
+        const minLength = 8;
+        const mayuscula = /[A-Z]/;
+        const minuscula = /[a-z]/;
+        const numero = /[0-9]/;
+        const especial = /[^A-Za-z0-9]/;
+        return password.length >= minLength &&
+               mayuscula.test(password) &&
+               minuscula.test(password) &&
+               numero.test(password) &&
+               especial.test(password);
+    };
+
+    const checkPassword = () => {
+        const password = passwordInput.value;
+        if (password.length === 0) {
+            clearError(passwordInput);
+            return;
+        }
+        if (!esPasswordSegura(password)) {
+            showError(passwordInput, 'La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y caracteres especiales.');
+        } else {
+            clearError(passwordInput);
+        }
+    };
+
+    const esTelefonoValido = (telefono) => {
+        if (!telefono) return true;
+        const cleaned = telefono.replace(/[\s\-\(\)\+]/g, '');
+        const patrones = [
+            /^9\d{8}$/,
+            /^[1-7]\d{6}$/,
+            /^51[1-9]\d{6,8}$/,
+        ];
+        return patrones.some(patron => patron.test(cleaned));
+    };
+
+    const checkTelefono = () => {
+        const telefono = telefonoInput.value.trim();
+        if (telefono.length === 0) {
+            clearError(telefonoInput);
+            return;
+        }
+        if (!esTelefonoValido(telefono)) {
+            showError(telefonoInput, 'El número de teléfono no es válido.');
+        } else {
+            clearError(telefonoInput);
+        }
+    };
+
     usernameInput.addEventListener('blur', checkUsername);
     emailInput.addEventListener('blur', checkEmail);
     numeroDocumentoInput.addEventListener('blur', checkNumeroDocumento);
+    passwordInput.addEventListener('blur', checkPassword);
+    telefonoInput.addEventListener('blur', checkTelefono);
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form.needs-validation');
+    const fechaNacimientoInput = form.querySelector('input[name="fechaNacimiento"]');
+
+    form.addEventListener('submit', function (event) {
+        const fechaNacimientoValue = fechaNacimientoInput.value;
+        if (fechaNacimientoValue) {
+            const fechaNacimiento = new Date(fechaNacimientoValue);
+            const hoy = new Date();
+            const fechaMinima = new Date(hoy.getFullYear() - 16, hoy.getMonth(), hoy.getDate());
+
+            if (fechaNacimiento > fechaMinima) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                // Mostrar mensaje de error
+                let feedback = fechaNacimientoInput.nextElementSibling;
+                if (!feedback || !feedback.classList.contains('invalid-feedback')) {
+                    feedback = document.createElement('div');
+                    feedback.className = 'invalid-feedback';
+                    fechaNacimientoInput.parentNode.appendChild(feedback);
+                }
+                feedback.textContent = 'Debes tener al menos 16 años para registrarte.';
+                fechaNacimientoInput.classList.add('is-invalid');
+            } else {
+                // Limpiar mensaje de error si existe
+                let feedback = fechaNacimientoInput.nextElementSibling;
+                if (feedback && feedback.classList.contains('invalid-feedback')) {
+                    feedback.textContent = '';
+                }
+                fechaNacimientoInput.classList.remove('is-invalid');
+            }
+        }
+    });
 });
 </script>
 </body>

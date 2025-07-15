@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.piuraexpressa.servicio.UsuarioServicio;
-import com.piuraexpressa.servicio.PublicacionServicio;
 
 import com.piuraexpressa.model.dominio.Comentario;
 
@@ -58,7 +57,7 @@ public class ComentarioServicioImpl implements ComentarioServicio {
         for (ComentarioDTO dto : dtos) {
             // Obtener nombre de usuario por usuarioId
             usuarioServicio.buscarPorId(dto.getUsuarioId()).ifPresent(usuario -> {
-                dto.setNombreUsuario(usuario.getNombre() + " " + usuario.getApellido());
+                dto.setNombreUsuario(usuario.getUsername());
             });
             // Calcular tiempo transcurrido
             dto.setTiempoTranscurrido(calcularTiempoTranscurrido(dto.getFechaRegistro()));
@@ -89,7 +88,7 @@ public class ComentarioServicioImpl implements ComentarioServicio {
         ComentarioDTO savedDto = comentarioMapper.toDto(saved);
 
         // Setear nombreUsuario y tiempoTranscurrido en DTO guardado
-        savedDto.setNombreUsuario(usuarioDTO.getNombre() + " " + usuarioDTO.getApellido());
+        savedDto.setNombreUsuario(usuarioDTO.getUsername());
         savedDto.setTiempoTranscurrido(calcularTiempoTranscurrido(saved.getFechaCreacion()));
 
         return savedDto;

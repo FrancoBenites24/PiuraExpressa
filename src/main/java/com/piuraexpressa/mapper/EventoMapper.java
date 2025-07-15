@@ -16,7 +16,6 @@ public interface EventoMapper {
     @Mapping(target = "estado", ignore = true)
     @Mapping(target = "porcentajeOcupado", ignore = true)
     @Mapping(target = "promedioCalificacion", ignore = true)
-    @Mapping(target = "cantidadParticipantes", ignore = true)
     @Mapping(target = "cantidadResenas", ignore = true)
     @Mapping(target = "imagenUrl", source = "imagen")
     EventoDTO toDto(Evento evento, @Context ResenaRepositorio resenaRepositorio);
@@ -61,12 +60,11 @@ public interface EventoMapper {
         dto.setPromedioCalificacion(promedio != null ? promedio : 0.0);
 
         // dto.setPorcentajeOcupado(null);
-        // dto.setCantidadParticipantes(null);
         // dto.setCantidadResenas(null);
         // dto.setParticipantesActuales(null);
 
-        // dto.setPuedeParticipar(false);
-        // dto.setYaParticipa(false);
-        // dto.setYaResenado(false);
+        dto.setPuedeParticipar(false);
+        dto.setYaParticipa(false);
+        dto.setYaResenado(false);
     }
 }

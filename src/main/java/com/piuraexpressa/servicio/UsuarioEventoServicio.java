@@ -5,4 +5,6 @@ public interface UsuarioEventoServicio {
     void cancelarParticipacion(Long eventoId, String username);
     boolean yaEstaParticipando(Long eventoId, Long usuarioId);
     int contarParticipantes(Long eventoId);
+    boolean yaResenoEvento(Long eventoId, Long usuarioId);
+
 }

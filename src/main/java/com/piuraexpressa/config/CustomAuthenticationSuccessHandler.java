@@ -38,7 +38,7 @@ public void onAuthenticationSuccess(HttpServletRequest request,
     String redirectUrl = "/";
 
     boolean isAdmin = authorities.stream()
-            .anyMatch(ga -> ga.getAuthority().equals("MOSTRAR_PANEL_ADMIN"));
+            .anyMatch(ga -> ga.getAuthority().equals("MOSTRAR_DASHBOARD_ADMIN"));
 
     if (isAdmin) {
         redirectUrl = "/admin/dashboard";

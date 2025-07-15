@@ -28,4 +28,9 @@ public class ReportePublicacionServicioImpl implements ReportePublicacionServici
 
         reportePublicacionRepositorio.save(reporte);
     }
+
+    @Override
+    public long contarReportesPorPublicacion(Long publicacionId) {
+        return reportePublicacionRepositorio.countByPublicacionId(publicacionId);
+    }
 }

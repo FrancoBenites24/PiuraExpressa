@@ -19,6 +19,8 @@ public class PublicacionDTO {
     @NotBlank(message = "El contenido es obligatorio")
     private String contenido;
 
+    private String contenidoResumen;
+
     private String imagenPrincipal;
 
     @NotNull(message = "Debe indicarse si está activa")
@@ -41,6 +43,7 @@ public class PublicacionDTO {
     private Long totalLikes;
     private String tiempoTranscurrido;
     private Long totalComentarios;
+    private Long totalReportes;
 
     private Boolean puedeEditar;
     private Boolean puedeEliminar;

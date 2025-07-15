@@ -4,43 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foro Piura Expressa</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"/>
+    
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/scrollbar.css}"/>
+
     <style>
         :root {
             --primary-color: #A0C878;
             --secondary-color: #DDEB9D;
-            --light-bg: #FFFDF6;
+            --light-bg: #faf6e9;
             --card-bg: #FAF6E9;
-            --text-dark: #333;
-            --border-color: #DDEB9D;
+            --color-lightest: #fffdf6;
+            --color-text: #2d3748;
+            --color-text-light: #4a5568;
+            --color-text-muted: #718096;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+                0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, #8bb564 100%);
+            --gradient-secondary: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);
+  
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
         }
 
+        ::-webkit-scrollbar-track {
+            background: var(--light-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient-primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
         body {
             background-color: var(--light-bg);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             padding-top: 70px; /* Para evitar superposición con navbar fija */
         }
 
-        .navbar {
-            background-color: var(--primary-color) !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .navbar-brand, .nav-link {
-            color: white !important;
-        }
-
-        .forum-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 2rem 0;
-            margin-bottom: 2rem;
-        }
-
         .post-card {
             background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--primary-color);
             border-radius: 12px;
             margin-bottom: 1.5rem;
             transition: all 0.3s ease;
@@ -54,7 +72,7 @@
 
         .post-header {
             padding: 1rem 1.5rem 0.5rem;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--primary-color);
         }
 
         .user-avatar {
@@ -83,7 +101,7 @@
 
         .post-actions {
             padding: 0.5rem 1.5rem 1rem;
-            border-top: 1px solid var(--border-color);
+            border-top: 1px solid var(--primary-color);
             background: rgba(255,255,255,0.5);
         }
 
@@ -95,6 +113,39 @@
             border-radius: 20px;
             transition: all 0.3s ease;
             margin-right: 0.5rem;
+        }
+        
+        .modal-permiso-custom {
+        background-color: #FFFDF6;
+        padding: 2.5rem 2rem 2rem;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        border-radius: 1rem;
+        max-width: 440px;
+        margin: auto;
+        text-align: center;
+        align-items: center;
+        }
+
+        .imagen-mascota {
+        width: 150px;
+        margin-bottom: 1.2rem;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        }
+
+        .mensaje-denegado {
+        font-size: 1.25rem;
+        color: #333;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        }
+
+        #modalAccesoDenegado .btn-success {
+        width: 60%;
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+
         }
 
         .action-btn:hover {
@@ -110,7 +161,7 @@
         .comment-section {
             background: rgba(255,255,255,0.7);
             padding: 1rem 1.5rem;
-            border-top: 1px solid var(--border-color);
+            border-top: 1px solid var(--primary-color);
         }
 
         .comment-item {
@@ -148,7 +199,7 @@
             border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--primary-color);
         }
 
         .filter-chip {
@@ -170,7 +221,7 @@
 
         .trending-topic {
             padding: 0.5rem 0;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--primary-color);
         }
 
         .trending-topic:last-child {
@@ -179,7 +230,7 @@
 
         .search-box {
             background: white;
-            border: 2px solid var(--border-color);
+            border: 2px solid var(--primary-color);
             border-radius: 25px;
             padding: 0.5rem 1rem;
             transition: all 0.3s ease;
@@ -194,7 +245,7 @@
             display: none;
             position: absolute;
             background: white;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--primary-color);
             border-radius: 25px;
             padding: 0.5rem;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -251,128 +302,10 @@
         }
     </style>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg fixed-top">
-      <div class="container">
-        <a class="navbar-brand" href="/">
-          <i class="bi bi-compass me-2"></i>Piura Expressa
-        </a>
+<body th:attr="data-permisos=${permisos}">
+  <div th:replace="fragments/navbar :: navbar"></div>
 
-        <button
-          class="navbar-toggler border-0"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <i class="bi bi-list"></i>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav mx-auto">
-            <li class="nav-item">
-              <a class="nav-link active" href="#inicio">
-                <i class="bi bi-house me-1"></i>Inicio
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#provincias">
-                <i class="bi bi-map me-1"></i>Provincias
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/eventos">
-                <i class="bi bi-calendar-event me-1"></i>Eventos
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/foro">
-                <i class="bi bi-chat-dots me-1"></i>Foro
-              </a>
-            </li>
-          </ul>
-
-          <div class="d-flex align-items-center">
-            <div sec:authorize="isAuthenticated()">
-              <div class="dropdown">
-                <button
-                  class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2"
-                  type="button"
-                  id="dropdownMenuButton"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  <i class="bi bi-person-circle" style="font-size: 1.5rem"></i>
-                  <span sec:authentication="name"></span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <li>
-                    <a
-                      class="dropdown-item d-flex align-items-center gap-2"
-                      th:href="@{/perfil}"
-                    >
-                      <i class="bi bi-person"></i> Perfil
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      class="dropdown-item d-flex align-items-center gap-2"
-                      th:href="@{/mis-publicaciones}"
-                    >
-                      <i class="bi bi-file-text"></i> Mis Publicaciones
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      class="dropdown-item d-flex align-items-center gap-2"
-                      th:href="@{/mis-eventos}"
-                    >
-                      <i class="bi bi-calendar-check"></i> Mis Participaciones
-                    </a>
-                  </li>
-                  <li>
-                    <hr class="dropdown-divider" />
-                  </li>
-                  <li>
-                    <form
-                      action="#"
-                      th:action="@{/logout}"
-                      method="post"
-                      style="margin: 0"
-                    >
-                      <button
-                        type="submit"
-                        class="dropdown-item d-flex align-items-center gap-2"
-                      >
-                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
-                      </button>
-                    </form>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div sec:authorize="!isAuthenticated()">
-              <a
-                href="/auth/login"
-                class="btn btn-login d-flex align-items-center gap-2"
-              >
-                <i class="bi bi-person-circle"></i> Iniciar Sesión
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-
-    <!-- Header del Foro -->
-    <div class="forum-header">
-        <div class="container text-center">
-            <h1><i class="bi bi-people-fill me-3"></i>Comunidad Piurana</h1>
-            <p class="mb-0">Comparte experiencias, descubre lugares y conecta con otros piuranos</p>
-        </div>
-    </div>
-
-    <div class="container" style="padding-top: 120px;">
+    <div class="container" style="padding-top: 70px;">
         <div class="row">
             <!-- Sidebar -->
             <div class="col-lg-3">
@@ -391,6 +324,7 @@
                         <span class="filter-chip" data-filter="recent">Recientes</span>
                         <span class="filter-chip" data-filter="mine">Mis Posts</span>
                     </div>
+
                 </div>
 
                 <!-- Temas Trending -->
@@ -418,8 +352,13 @@
             </div>
 
             <!-- Feed Principal -->
-            <div class="col-lg-9" id="postsContainer">
-                <!-- Aquí se cargarán dinámicamente las publicaciones -->
+            <div class="col-lg-9">
+                <div id="publicacionesContainer" class="row g-4">
+                    <!-- Aquí se cargarán dinámicamente las publicaciones -->
+                </div>
+                <nav aria-label="Paginación de publicaciones" class="mt-4">
+                    <ul id="pagination" class="pagination justify-content-center"></ul>
+                </nav>
             </div>
         </div>
     </div>
@@ -500,490 +439,19 @@
         </div>
     </div>
 
+        <div class="modal fade" id="modalAccesoDenegado" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-permiso-custom">
+            <img src="/img/mascota_permiso_de_comentar_denegado.png" alt="Sin acceso" class="imagen-mascota">
+            <h5 class="mensaje-denegado">No tienes permiso para comentar 😢</h5>
+            <button class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+        </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Variables globales
-        let currentPage = 0;
-        const pageSize = 5;
-        let loading = false;
-        let currentFilter = 'all';
-        let currentSearch = '';
-        let currentUser = null;
+<script src="/js/foro.js"></script>
 
-        // Obtener usuario autenticado y mostrar botón de crear evento si es admin
-        async function loadCurrentUser() {
-            try {
-                const response = await fetch('/api/usuario/autenticado');
-                if (!response.ok) throw new Error('No autenticado');
-                window.currentUser = await response.json();
-                if (window.currentUser && window.currentUser.roles && window.currentUser.roles.includes('ROLE_ADMIN')) {
-                    document.getElementById('newEventBtn').style.display = 'block';
-                    document.getElementById('newEventBtn').addEventListener('click', () => {
-                        window.location.href = '/admin/eventos';
-                    });
-                }
-            } catch (error) {
-                console.log('Usuario no autenticado o sin permisos admin');
-            }
-        }
-
-        // Función para cargar publicaciones desde el backend
-        async function loadPosts(reset = false) {
-            if (loading) return;
-            loading = true;
-            if (reset) {
-                currentPage = 0;
-                document.getElementById('postsContainer').innerHTML = '';
-            }
-            let url = `/api/publicaciones?page=${currentPage}&size=${pageSize}`;
-            if (window.currentUser && window.currentUser.id) {
-                url += `&usuarioId=${window.currentUser.id}`;
-            }
-            if (currentFilter === 'popular') {
-                url += '&sort=totalLikes,desc';
-            } else if (currentFilter === 'recent') {
-                url += '&sort=fechaCreacion,desc';
-            } else if (currentFilter === 'mine') {
-                // ya se envía usuarioId arriba
-            }
-            if (currentSearch) {
-                url += `&search=${encodeURIComponent(currentSearch)}`;
-            }
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('Error al cargar publicaciones');
-                const data = await response.json();
-                data.content.forEach(post => {
-                    document.getElementById('postsContainer').insertAdjacentHTML('beforeend', renderPost(post));
-                });
-                if (data.last) {
-                    window.removeEventListener('scroll', handleScroll);
-                } else {
-                    currentPage++;
-                }
-            } catch (error) {
-                console.error(error);
-            } finally {
-                loading = false;
-            }
-        }
-
-        // Función para editar publicación
-        function editPost(postId) {
-            const postElement = document.querySelector(`.post-card[data-post-id="${postId}"]`);
-            if (!postElement) return;
-            
-            // Obtener datos actuales del post
-            const titulo = postElement.querySelector('.post-content h5').textContent;
-            const contenido = postElement.querySelector('.post-content p').textContent;
-            
-            // Llenar el formulario de edición
-            document.getElementById('editPostId').value = postId;
-            document.getElementById('editPostTitle').value = titulo;
-            document.getElementById('editPostContent').value = contenido;
-            
-            // Mostrar el modal
-            new bootstrap.Modal(document.getElementById('editPostModal')).show();
-        }
-
-        // Función para eliminar publicación
-        async function deletePost(postId) {
-            if (!confirm('¿Estás seguro de que deseas eliminar esta publicación?')) {
-                return;
-            }
-
-            try {
-                const response = await fetch(`/api/publicaciones/${postId}`, {
-                    method: 'DELETE'
-                });
-                if (!response.ok) throw new Error('Error al eliminar la publicación');
-                
-                // Eliminar la publicación del DOM
-                const postElement = document.querySelector(`.post-card[data-post-id="${postId}"]`);
-                if (postElement) {
-                    postElement.remove();
-                }
-            } catch (error) {
-                console.error(error);
-                alert('Error al eliminar la publicación');
-            }
-        }
-
-        // Función para renderizar una publicación
-        function renderPost(post) {
-            console.log('Render post:', post.id, 'usuarioHaDadoLike:', post.usuarioHaDadoLike, 'totalLikes:', post.totalLikes);
-            const likedClass = post.usuarioHaDadoLike === true ? 'liked' : '';
-            const totalLikes = post.totalLikes !== undefined && post.totalLikes !== null ? post.totalLikes : 0;
-            const tags = post.etiquetas ? post.etiquetas.split(',').map(tag => `<span class="badge" style="background-color: var(--secondary-color); color: var(--text-dark); margin-right: 0.25rem;">#${tag.trim()}</span>`).join('') : '';
-            return `
-                <div class="post-card" data-post-id="${post.id}">
-                    <div class="post-header">
-                        <div class="d-flex align-items-center">
-                            <div class="user-avatar me-3">${getInitials(post.nombreUsuario)}</div>
-                            <div class="flex-grow-1">
-                                <h6 class="mb-0 fw-bold">${post.nombreUsuario}</h6>
-                                <small class="text-muted">${post.tiempoTranscurrido}</small>
-                            </div>
-                            <div class="dropdown">
-                                <button class="btn btn-sm" data-bs-toggle="dropdown">
-                                    <i class="bi bi-three-dots"></i>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    ${post.puedeEditar ? `<li><a class="dropdown-item edit-post" href="#" data-post-id="${post.id}"><i class="bi bi-pencil-square me-2"></i>Editar</a></li>` : ''}
-                                    ${post.puedeEliminar ? `<li><a class="dropdown-item delete-post" href="#" data-post-id="${post.id}"><i class="bi bi-trash me-2"></i>Eliminar</a></li>` : ''}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>  
-                    <div class="post-content">
-                        <h5 class="mb-3">${post.titulo}</h5>
-                        <p>${post.contenido}</p>
-                        ${post.imagen ? `<img src="${post.imagen}" alt="Imagen de la publicación" class="post-image">` : ''}
-                        <div class="mt-3">${tags}</div>
-                    </div>
-                    <div class="post-actions">
-                        <div class="d-flex align-items-center justify-content-between flex-wrap">
-                            <button class="action-btn ${likedClass}" data-post-id="${post.id}" onclick="toggleLike(this)" title="Me gusta">
-                                <i class="bi bi-heart${post.usuarioHaDadoLike ? '-fill' : ''} me-1"></i>${totalLikes}
-                            </button>
-                            <button class="action-btn" onclick="toggleComments(this)" title="Comentarios">
-                                <i class="bi bi-chat me-1"></i>${post.totalComentarios} comentarios
-                            </button>
-                            <button class="action-btn" onclick="reportPost(${post.id}, this)" title="Reportar">
-                                <i class="bi bi-flag"></i>
-                            </button>
-                            <button class="action-btn" onclick="savePost(${post.id}, this)" title="Guardar">
-                                <i class="bi bi-bookmark"></i>
-                            </button>
-                            <button class="action-btn" onclick="sharePost(${post.id}, this)" title="Compartir">
-                                <i class="bi bi-share"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="comment-section" style="display: none;">
-                        <div class="comments-container"></div>
-                        <div class="mt-3">
-                            <textarea class="form-control comment-input" rows="2" placeholder="Escribe un comentario..."></textarea>
-                            <button class="btn btn-sm btn-primary mt-2" onclick="submitComment(this)">Comentar</button>
-                            <div class="text-danger comment-error mt-2" style="display:none;"></div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Función para obtener iniciales del nombre
-        function getInitials(name) {
-            if (!name) return '';
-            const parts = name.trim().split(' ');
-            if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
-            return parts[0].charAt(0).toUpperCase() + parts[1].charAt(0).toUpperCase();
-        }
-
-        // Función para alternar like
-        async function toggleLike(button) {
-            const postId = button.getAttribute('data-post-id');
-            const liked = button.classList.contains('liked');
-            // Obtener usuarioId del usuario autenticado (simulado aquí, debe obtenerse dinámicamente)
-            const usuarioId = window.currentUser ? window.currentUser.id : null;
-            if (!usuarioId) {
-                alert('Debes iniciar sesión para dar like.');
-                return;
-            }
-            try {
-                const response = await fetch(`/api/publicaciones/${postId}/${liked ? 'unlike' : 'like'}?usuarioId=${usuarioId}`, {
-                    method: 'POST',
-                });
-                if (!response.ok) throw new Error('Error al actualizar like');
-                const data = await response.json();
-                button.classList.toggle('liked');
-                button.innerHTML = `<i class="bi bi-heart${button.classList.contains('liked') ? '-fill' : ''} me-1"></i>${data.totalLikes}`;
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        // Función para reportar publicación
-        async function reportPost(postId, button) {
-            try {
-                const response = await fetch(`/api/publicaciones/${postId}/reportar`, {
-                    method: 'POST',
-                });
-                if (!response.ok) throw new Error('Error al reportar publicación');
-                alert('Publicación reportada correctamente');
-            } catch (error) {
-                console.error(error);
-                alert('Error al reportar publicación');
-            }
-        }
-
-        // Función para guardar publicación
-        async function savePost(postId, button) {
-            try {
-                const response = await fetch(`/api/publicaciones/${postId}/guardar`, {
-                    method: 'POST',
-                });
-                if (!response.ok) throw new Error('Error al guardar publicación');
-                alert('Publicación guardada correctamente');
-            } catch (error) {
-                console.error(error);
-                alert('Error al guardar publicación');
-            }
-        }
-
-        // Función para compartir publicación
-        async function sharePost(postId, button) {
-            try {
-                const response = await fetch(`/api/publicaciones/${postId}/compartir`, {
-                    method: 'POST',
-                });
-                if (!response.ok) throw new Error('Error al compartir publicación');
-                alert('Publicación compartida correctamente');
-            } catch (error) {
-                console.error(error);
-                alert('Error al compartir publicación');
-            }
-        }
-
-        // Función para alternar comentarios
-        function toggleComments(button) {
-            const postCard = button.closest('.post-card');
-            const commentSection = postCard.querySelector('.comment-section');
-            if (commentSection.style.display === 'block') {
-                commentSection.style.display = 'none';
-            } else {
-                commentSection.style.display = 'block';
-                loadComments(postCard.getAttribute('data-post-id'), commentSection.querySelector('.comments-container'));
-            }
-        }
-
-        // Función para cargar comentarios
-        async function loadComments(postId, container) {
-            try {
-                const response = await fetch(`/api/publicaciones/${postId}/comentarios`);
-                if (!response.ok) throw new Error('Error al cargar comentarios');
-                const comentarios = await response.json();
-                container.innerHTML = '';
-                comentarios.forEach(comentario => {
-                    container.insertAdjacentHTML('beforeend', renderComment(comentario));
-                });
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        // Función para renderizar un comentario
-        function renderComment(comentario) {
-            return `
-                <div class="comment-item">
-                    <div class="d-flex">
-                        <div class="user-avatar me-2" style="width: 30px; height: 30px; font-size: 0.8rem;">${getInitials(comentario.nombreUsuario)}</div>
-                        <div class="flex-grow-1">
-                            <strong>${comentario.nombreUsuario}</strong>
-                            <p class="mb-1">${comentario.contenido}</p>
-                            <small class="text-muted">${comentario.tiempoTranscurrido}</small>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Función para enviar un comentario
-        async function submitComment(button) {
-            const commentSection = button.closest('.comment-section');
-            const postCard = button.closest('.post-card');
-            const postId = postCard.getAttribute('data-post-id');
-            const textarea = commentSection.querySelector('.comment-input');
-            const errorDiv = commentSection.querySelector('.comment-error');
-            const contenido = textarea.value.trim();
-
-            if (!contenido) {
-                errorDiv.textContent = 'El comentario no puede estar vacío.';
-                errorDiv.style.display = 'block';
-                return;
-            }
-
-            try {
-                const response = await fetch(`/api/publicaciones/${postId}/comentarios`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ contenido })
-                });
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    errorDiv.textContent = errorData.message || 'Error al enviar el comentario.';
-                    errorDiv.style.display = 'block';
-                    return;
-                }
-                const nuevoComentario = await response.json();
-                commentSection.querySelector('.comments-container').insertAdjacentHTML('beforeend', renderComment(nuevoComentario));
-                textarea.value = '';
-                errorDiv.style.display = 'none';
-                // Actualizar contador de comentarios
-                const commentBtn = postCard.querySelector('.action-btn[onclick^="toggleComments"]');
-                commentBtn.innerHTML = `<i class="bi bi-chat me-1"></i>${parseInt(commentBtn.textContent) + 1} comentarios`;
-            } catch (error) {
-                console.error(error);
-                errorDiv.textContent = 'Error al enviar el comentario.';
-                errorDiv.style.display = 'block';
-            }
-        }
-
-        // Enviar nueva publicación
-        document.getElementById('submitPostBtn').addEventListener('click', async () => {
-            const form = document.getElementById('newPostForm');
-            const titulo = form.titulo.value.trim();
-            const contenido = form.contenido.value.trim();
-            const etiquetas = form.etiquetas.value.trim();
-            const errorDiv = document.getElementById('postError');
-
-            if (!titulo || !contenido) {
-                errorDiv.textContent = 'El título y contenido son obligatorios.';
-                errorDiv.style.display = 'block';
-                return;
-            }
-
-            // Validación de palabras restringidas (ejemplo simple)
-            const palabrasRestringidas = ['feo', 'xd'];
-            const textoParaValidar = titulo.toLowerCase() + ' ' + contenido.toLowerCase();
-            for (const palabra of palabrasRestringidas) {
-                if (textoParaValidar.includes(palabra)) {
-                    errorDiv.textContent = 'El texto contiene palabras no permitidas.';
-                    errorDiv.style.display = 'block';
-                    return;
-                }
-            }
-
-            errorDiv.style.display = 'none';
-
-            try {
-                const response = await fetch('/api/publicaciones', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ titulo, contenido, etiquetas })
-                });
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    errorDiv.textContent = errorData.message || 'Error al crear la publicación.';
-                    errorDiv.style.display = 'block';
-                    return;
-                }
-                const nuevaPublicacion = await response.json();
-                document.getElementById('postsContainer').insertAdjacentHTML('afterbegin', renderPost(nuevaPublicacion));
-                var modal = bootstrap.Modal.getInstance(document.getElementById('newPostModal'));
-                modal.hide();
-                form.reset();
-            } catch (error) {
-                console.error(error);
-                errorDiv.textContent = 'Error al crear la publicación.';
-                errorDiv.style.display = 'block';
-            }
-        });
-
-        // Filtros
-        document.querySelectorAll('.filter-chip').forEach(chip => {
-            chip.addEventListener('click', () => {
-                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-                chip.classList.add('active');
-                currentFilter = chip.getAttribute('data-filter');
-                loadPosts(true);
-            });
-        });
-
-        // Búsqueda
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            currentSearch = e.target.value;
-            loadPosts(true);
-        });
-
-        // Scroll infinito
-        function handleScroll() {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000 && !loading) {
-                loadPosts();
-            }
-        }
-        window.addEventListener('scroll', handleScroll);
-
-        // Event listener para el formulario de edición
-        document.getElementById('submitEditBtn').addEventListener('click', async () => {
-            const form = document.getElementById('editPostForm');
-            const postId = document.getElementById('editPostId').value;
-            const titulo = form.titulo.value.trim();
-            const contenido = form.contenido.value.trim();
-            const errorDiv = document.getElementById('editPostError');
-
-            if (!titulo || !contenido) {
-                errorDiv.textContent = 'El título y contenido son obligatorios.';
-                errorDiv.style.display = 'block';
-                return;
-            }
-
-            errorDiv.style.display = 'none';
-
-            try {
-                // Obtener el ID del usuario actual
-                const userResponse = await fetch('/api/usuario/autenticado');
-                if (!userResponse.ok) throw new Error('Error al obtener usuario');
-                const userData = await userResponse.json();
-
-                const response = await fetch(`/api/publicaciones/${postId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        id: postId,
-                        usuarioId: userData.id,
-                        titulo,
-                        contenido
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    errorDiv.textContent = errorData.message || 'Error al actualizar la publicación.';
-                    errorDiv.style.display = 'block';
-                    return;
-                }
-
-                const publicacionActualizada = await response.json();
-                
-                // Actualizar la publicación en el DOM
-                const postElement = document.querySelector(`.post-card[data-post-id="${postId}"]`);
-                if (postElement) {
-                    postElement.outerHTML = renderPost(publicacionActualizada);
-                }
-
-                // Cerrar el modal
-                var modal = bootstrap.Modal.getInstance(document.getElementById('editPostModal'));
-                modal.hide();
-            } catch (error) {
-                console.error(error);
-                errorDiv.textContent = 'Error al actualizar la publicación.';
-                errorDiv.style.display = 'block';
-            }
-        });
-
-        // Event listeners para los botones de editar y eliminar
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('edit-post')) {
-                e.preventDefault();
-                const postId = e.target.getAttribute('data-post-id');
-                editPost(postId);
-            } else if (e.target.classList.contains('delete-post')) {
-                e.preventDefault();
-                const postId = e.target.getAttribute('data-post-id');
-                deletePost(postId);
-            }
-        });
-
-        // Cargar usuario autenticado y publicaciones iniciales
-        loadCurrentUser();
-        loadPosts();
-    </script>
 </body>
 </html>

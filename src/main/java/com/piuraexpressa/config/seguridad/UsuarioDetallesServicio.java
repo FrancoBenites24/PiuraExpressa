@@ -45,7 +45,7 @@ public class UsuarioDetallesServicio implements UserDetailsService {
                 .map(p -> p.getPermisoId()) // luego deberías mapear a nombre si deseas
                 .collect(Collectors.toSet());
 
-        // ⚠️ Si deseas el nombre del permiso, deberías consultarlo con PermisoRepositorio
+        //nombre del permiso
 
         List<SimpleGrantedAuthority> authorities = permisos.stream()
                 .map(SimpleGrantedAuthority::new)

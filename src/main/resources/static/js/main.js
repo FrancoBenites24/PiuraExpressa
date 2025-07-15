@@ -59,3 +59,23 @@ function loadStatistics() {
     // Placeholder for loading statistics
     console.log('Loading statistics...');
 }
+
+// Client-side filtering for posts
+function filterPostsByUser(userId) {
+    $('.card').each(function() {
+        var postUserId = $(this).data('user-id'); // Assuming each post card has data-user-id attribute
+        if (!userId || postUserId == userId) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+}
+
+// Example: Event listener for filter dropdown or buttons
+$(document).ready(function() {
+    $('#filterUserSelect').on('change', function() {
+        var selectedUserId = $(this).val();
+        filterPostsByUser(selectedUserId);
+    });
+});

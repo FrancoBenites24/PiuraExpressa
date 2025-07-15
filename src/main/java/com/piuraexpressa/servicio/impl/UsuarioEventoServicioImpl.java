@@ -2,6 +2,7 @@ package com.piuraexpressa.servicio.impl;
 
 import com.piuraexpressa.model.dominio.UsuarioEvento;
 import com.piuraexpressa.model.dominio.UsuarioEventoId;
+import com.piuraexpressa.repositorio.dominio.ResenaRepositorio;
 import com.piuraexpressa.repositorio.dominio.UsuarioEventoRepositorio;
 import com.piuraexpressa.servicio.UsuarioEventoServicio;
 import com.piuraexpressa.servicio.UsuarioServicio;
@@ -17,6 +18,7 @@ public class UsuarioEventoServicioImpl implements UsuarioEventoServicio {
 
     private final UsuarioEventoRepositorio usuarioEventoRepositorio;
     private final UsuarioServicio usuarioServicio;
+    private final ResenaRepositorio resenaRepositorio;
 
     @Override
     @Transactional("dominioTransactionManager")
@@ -57,4 +59,10 @@ public class UsuarioEventoServicioImpl implements UsuarioEventoServicio {
     public int contarParticipantes(Long eventoId) {
         return usuarioEventoRepositorio.countByIdEventoId(eventoId);
     }
+
+    @Override
+    public boolean yaResenoEvento(Long eventoId, Long usuarioId) {
+        return resenaRepositorio.existsByEventoIdAndUsuarioIdAndActivaTrue(eventoId, usuarioId);
+    }
+
 }

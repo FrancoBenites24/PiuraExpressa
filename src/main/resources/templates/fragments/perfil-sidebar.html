@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <nav th:fragment="sidebar(usuario)">
+      <div class="profile-menu">
+        <div class="avatar">
+          <img th:if="${usuario != null}" th:src="@{/img/default-profile.png}" alt="Foto de perfil" />
+        </div>
+
+        <h2 th:if="${usuario != null}" th:text="${usuario.nombres + ' ' + usuario.apellidos}">Nombre Apellido</h2>
+        <h2 th:unless="${usuario != null}">Invitado</h2>
+
+        <div class="username" th:if="${usuario != null}" th:text="'@' + ${usuario.username}">@usuario</div>
+
+        <ul class="menu-list" id="profileMenu" role="menu" aria-orientation="vertical">
+          <li role="menuitem" class="active" tabindex="0" data-section="miperfil">
+            <i class="bi bi-person-circle"> Mi Perfil</i>
+          </li>
+          <li role="menuitem" tabindex="-1" data-section="publicaciones">
+            <i class="bi bi-file-text"> Mis Publicaciones</i>
+          </li>
+          <li role="menuitem" tabindex="-1" data-section="eventos">
+            <i class="bi bi-calendar-check"> Mis Participaciones</i>
+          </li>
+          <li role="menuitem" tabindex="-1" data-section="configuracion">
+            <i class="bi bi-gear"> Configuración</i>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </body>
+</html>

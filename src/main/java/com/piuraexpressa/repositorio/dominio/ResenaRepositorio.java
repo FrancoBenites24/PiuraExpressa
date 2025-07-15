@@ -1,6 +1,9 @@
 package com.piuraexpressa.repositorio.dominio;
 
 import com.piuraexpressa.model.dominio.Resena;
+
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,5 +14,9 @@ public interface ResenaRepositorio extends JpaRepository<Resena, Long> {
 
     @Query("SELECT AVG(r.calificacion) FROM Resena r WHERE r.evento.id = :eventoId AND r.activa = true")
     Double obtenerPromedioPorEventoId(@Param("eventoId") Long eventoId);
+
+    boolean existsByEventoIdAndUsuarioIdAndActivaTrue(Long eventoId, Long usuarioId);
+
+    List<Resena> findByEventoIdAndActivaTrueOrderByFechaResenaDesc(Long eventoId);
 
 }

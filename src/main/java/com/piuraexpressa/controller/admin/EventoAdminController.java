@@ -21,8 +21,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @Controller
+@PreAuthorize("hasAuthority('ADMINISTRAR_EVENTO')")
 @RequestMapping("/admin/eventos")
 @RequiredArgsConstructor
 public class EventoAdminController {
@@ -31,6 +33,7 @@ public class EventoAdminController {
     private final ProvinciaServicio provinciaServicio;
     private final UsuarioServicio usuarioServicio;
 
+    @PreAuthorize("hasAuthority('ADMINISTRAR_EVENTO_LISTAR')")
     @GetMapping
     public String listarEventos(
             @RequestParam(defaultValue = "") String search,
@@ -44,25 +47,28 @@ public class EventoAdminController {
         return "admin/eventos/list";
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRAR_EVENTO_ACTIVAR')")
     @PostMapping("/{id}/activar")
     public String activar(@PathVariable Long id) {
         eventoServicio.activar(id);
         return "redirect:/admin/eventos";
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRAR_EVENTO_DESACTIVAR')")
     @PostMapping("/{id}/desactivar")
     public String desactivar(@PathVariable Long id) {
         eventoServicio.desactivar(id);
         return "redirect:/admin/eventos";
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRAR_EVENTO_ELIMINAR')")
     @PostMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id) {
         eventoServicio.eliminar(id);
         return "redirect:/admin/eventos";
     }
 
-    // otras coasas
+    @PreAuthorize("hasAuthority('ADMINISTRAR_EVENTO_NUEVO')")
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevo(Model model) {
         model.addAttribute("evento", new EventoDTO());
@@ -71,6 +77,7 @@ public class EventoAdminController {
         return "admin/eventos/formulario";
     }
 
+    @PreAuthorize("hasAuthority('ADMINISTRAR_EVENTO_CREAR')")
     @PostMapping("/nuevo")
     public String crearEvento(@Valid @ModelAttribute("evento") EventoDTO eventoDTO,
             BindingResult result,
@@ -108,7 +115,7 @@ public class EventoAdminController {
         return "redirect:/admin/eventos";
     }
 
-    // Mostrar formulario de edición
+    @PreAuthorize("hasAuthority('ADMINISTRAR_EVENTO_EDITAR')")
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEdicion(@PathVariable Long id, Model model, RedirectAttributes redirect) {
         EventoDTO evento = eventoServicio.obtenerPorId(id);
@@ -122,7 +129,7 @@ public class EventoAdminController {
         return "admin/eventos/formulario";
     }
 
-    // Procesar edición
+    @PreAuthorize("hasAuthority('ADMINISTRAR_EVENTO_ACTUALIZAR')")
     @PostMapping("/editar/{id}")
     public String editarEvento(@PathVariable Long id,
             @Valid @ModelAttribute("evento") EventoDTO eventoDTO,

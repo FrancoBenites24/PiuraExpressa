@@ -17,10 +17,12 @@ import com.piuraexpressa.servicio.EstadisticaProvinciaServicio;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @Controller
 @RequestMapping("/admin/provincias/{provinciaId}/estadisticas")
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('ADMINISTRAR_ESTADISTICAS_PROVINCIA')")
 public class AdminEstadisticaProvinciaController {
 
     private final EstadisticaProvinciaServicio estadisticaServicio;
